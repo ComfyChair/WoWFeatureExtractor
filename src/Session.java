@@ -10,6 +10,6 @@ public class Session implements LuaToXML{
         return sessionInfo;
     }
 
-    record SessionInfo(String charname, String serverName, Calendar time){}
+    record SessionInfo(int sessionID, String charname, String serverName, Calendar time){}
 
 }

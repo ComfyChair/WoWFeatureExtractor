@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class SessionManager {
     private static SessionManager instance;
-    private static final ArrayList<Session> sessionList = new ArrayList<>();
+    private static final ArrayList<Session.SessionInfo> sessionList = new ArrayList<>();
 
     private SessionManager(){}
 
@@ -14,7 +14,7 @@ public class SessionManager {
         return instance;
     }
 
-    ArrayList<Session> getSessionList(){
+    ArrayList<Session.SessionInfo> getSessionList(){
         return sessionList;
     }
 
@@ -22,7 +22,7 @@ public class SessionManager {
 
     }
 
-    void exportToXML(){
+    void exportToXML(int sessionID){
 
     }
 
