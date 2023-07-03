@@ -17,7 +17,11 @@ public class SessionManager {
     ArrayList<Session.SessionInfo> getSessionList(){
         sessionList = sessionsFromLua();
         ArrayList<Session.SessionInfo> sessionInfos = new ArrayList<>();
-        //TODO: compile Session info into ArrayList
+        for (Session session: sessionList
+             ) {
+            Session.SessionInfo sessionInfo = session.getSessionInfo();
+            sessionInfos.add(sessionInfo);
+        }
         return sessionInfos;
     }
 
@@ -27,8 +31,8 @@ public class SessionManager {
         return sessionList;
     }
 
-    void exportToXML(int sessionID){
-        sessionList.get(sessionID).exportToXML();
+    void exportToXML(String inPath, String outPath, int sessionID){
+        sessionList.get(sessionID).exportToXML(inPath, outPath);
     }
 
 }
