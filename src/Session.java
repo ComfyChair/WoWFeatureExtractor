@@ -1,7 +1,7 @@
 
 import java.util.Calendar;
 
-public class Session implements LuaToXML{
+public class Session implements LuaToXML {
     private SessionInfo sessionInfo;
 
     SessionInfo getSessionInfo(){

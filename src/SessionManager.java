@@ -1,8 +1,10 @@
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SessionManager {
     private static SessionManager instance;
-    private static ArrayList<Session> sessionList = new ArrayList<>();
+    private List<Session> sessionList = new ArrayList<>();
 
     private SessionManager(){}
 
@@ -14,9 +16,10 @@ public class SessionManager {
         return instance;
     }
 
-    ArrayList<Session.SessionInfo> getSessionList(){
-        sessionList = sessionsFromLua();
-        ArrayList<Session.SessionInfo> sessionInfos = new ArrayList<>();
+    List<Session.SessionInfo> getSessionList(File luaFile){
+        // TODO: populate session list by reading lua file and creating sessions
+        sessionList = LuaToXML.readSessionInfo(luaFile);
+        List<Session.SessionInfo> sessionInfos = new ArrayList<>();
         for (Session session: sessionList
              ) {
             Session.SessionInfo sessionInfo = session.getSessionInfo();
@@ -25,13 +28,7 @@ public class SessionManager {
         return sessionInfos;
     }
 
-    ArrayList<Session> sessionsFromLua(){
-        ArrayList<Session> sessionList = new ArrayList<>();
-        // TODO: populate session list by reading lua file and creating sessions
-        return sessionList;
-    }
-
-    void exportToXML(String inPath, String outPath, int sessionID){
+    void exportToXML(File inPath, File outPath, int sessionID){
         sessionList.get(sessionID).exportToXML(inPath, outPath);
     }
 

@@ -1,10 +1,17 @@
 import java.util.ArrayList;
 
 public class Feature {
+    // not sure why I created this - let's see later if we can just delete it or extract the enum to LuaToXML interface
+
     long time; // UNIX time
     FeatureType type;
-    String description;
     ArrayList<Object> objectList;
+
+    Feature(long time, FeatureType type, ArrayList<Feature.Object> objectList){
+        this.time = time;
+        this.type = type;
+        this.objectList = objectList;
+    }
 
     record Object(int id, String term){}
     enum FeatureType{
@@ -23,7 +30,7 @@ public class Feature {
         GRP_1("grouping: group composition update"),
         SPELL_1("sent spellcast");
 
-        private String description;
+        private final String description;
 
         FeatureType(String description){
             this.description = description;
