@@ -1,10 +1,9 @@
 package org.jenhan;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
-    String testFilePath = "/home/jenny/IdeaProjects/WoWFeatureExtractionTool/testRessources/FeatureRecordingTool.lua";
+    String testFilePath = "testRessources/FeatureRecordingTool.lua";
     File testFile = new File(testFilePath);
     List<Session.SessionInfo> sessionInfoList;
     List<Session.SessionInfo> expectedInfoList;
@@ -60,4 +59,33 @@ class SessionTest {
     }
 
 
+    @Test
+    void exportToXML() throws IOException {
+        File testOutput = new File("testOutput/exportTest1");
+        Session session = new Session(sessionInfoList.get(0));
+        session.exportToXML(testFile, testOutput);
+        // check output
+        BufferedReader reader = new BufferedReader(new FileReader(testOutput));
+        String headerLine = reader.readLine();
+        assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?>", headerLine);
+        String collectionLine = reader.readLine();
+        assertEquals("<gmaf-collection>", collectionLine);
+        String emptyLine = reader.readLine();
+        assertEquals("", emptyLine);
+        String dataLine = reader.readLine();
+        assertEquals("<gmaf-data>", dataLine);
+        String fileLine = reader.readLine();
+        assertEquals("<file>" + testOutput.getName() + "</file>", fileLine);
+    }
+
+    @Test
+    void timeConversionTest(){
+        Calendar testTime = Calendar.getInstance();
+        testTime.setTime(new Date(1688372362 * 1000));
+        System.out.println("Jahr: " + testTime.get(Calendar.YEAR));
+        int date = testTime.get(Calendar.DATE);
+        assertEquals(3, date);
+        int month = testTime.get(Calendar.MONTH);
+        assertEquals(7, month);
+    }
 }

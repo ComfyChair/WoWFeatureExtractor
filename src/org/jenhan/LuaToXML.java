@@ -2,42 +2,103 @@ package org.jenhan;
 
 import java.io.*;
 import java.security.InvalidParameterException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public interface LuaToXML {
     Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    String XML_HEADER = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    XmlTag GMAF_COLLECTION = new XmlTag("gmaf-collection");
+    XmlTag GMAF_DATA = new XmlTag("gmaf-data");
+    XmlTag GMAF_FILE = new XmlTag("file");
+    XmlTag GMAF_DATE = new XmlTag("date");
+    XmlTag GMAF_INTERACTION = new XmlTag("interaction");
+    XmlTag GMAF_TYPE = new XmlTag("type");
+    XmlTag GMAF_DESCRIPTION = new XmlTag("description");
+    XmlTag GMAF_OBJECT = new XmlTag("object");
+    XmlTag GMAF_ID = new XmlTag("id");
+    XmlTag GMAF_TERM = new XmlTag("term");
 
 
+    final class XmlTag {
+        String tagName;
+        String openTag;
+        String closeTag;
 
-    // org.jenhan.Main interface function
-    // reads lua session, writes xml file
-    // returns true upon success, false upon failure
-    default boolean exportToXML(File inputFile, File outputFile) {
-        boolean success = false;
-        LineNumberReader luaReader = prepareInput(inputFile);
-        PrintWriter xmlWriter = prepareOutput(outputFile);
+        public XmlTag(String tagName) {
+            this.tagName = tagName;
+            this.openTag = "<" + tagName + ">";
+            this.closeTag = "</" + tagName + ">\n";
+        }
 
-        //TODO: implement the actual conversion
+        public XmlTag(String tagName, String[] attributes) {
+            this.tagName = tagName;
+            this.closeTag = "</" + tagName + ">";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("<").append(tagName);
+            for (String attribute : attributes
+            ) {
+                stringBuilder.append(" ").append(attribute);
+            }
+            stringBuilder.append(">");
+            this.openTag = stringBuilder.toString();
+        }
 
-        return success;
+        public String tagName() {
+            return tagName;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            var that = (XmlTag) obj;
+            return Objects.equals(this.tagName, that.tagName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(tagName);
+        }
+
+        @Override
+        public String toString() {
+            return "XmlTag<" + tagName + '>';
+        }
+
+        public String getOpenTag() {
+            return openTag;
+        }
+
+        public String getCloseTag() {
+            return closeTag;
+        }
     }
 
+    // main interface function
+    // reads lua session, writes xml file
+    // returns true upon success, false upon failure
+    boolean exportToXML(File inputFile, File outputFile);
+
     // Utility methods
-    static boolean isAssignment(String line){
+    static boolean isAssignment(String line) {
         String[] split = line.split("=");
         return split.length == 2;
     }
 
     static String getLuaFieldValue(String line) {
-        if (isAssignment(line)){
+        if (isAssignment(line)) {
             String[] split = line.split("=");
             // right hand side of line = value
             String valueSide = split[1].trim();
             // substring to omit trailing comma
-            valueSide = valueSide.substring(0, valueSide.length()-1);
+            valueSide = valueSide.substring(0, valueSide.length() - 1);
             // remove quotation marks
-            if (valueSide.startsWith("\"")){
-                valueSide = valueSide.substring(1, valueSide.length()-1);
+            if (valueSide.startsWith("\"")) {
+                valueSide = valueSide.substring(1, valueSide.length() - 1);
             }
             return valueSide;
         } else {
@@ -46,20 +107,25 @@ public interface LuaToXML {
     }
 
     static String getLuaFieldKey(String line) {
-        if (isAssignment(line)){
+        if (isAssignment(line)) {
             String[] split = line.split("=");
             // left hand side of line = key
             String keySide = split[0].trim();
             // substring to omit quotation marks and brackets
-            return keySide.substring(2, keySide.length()-2);
+            return keySide.substring(2, keySide.length() - 2);
         } else {
             throw new InvalidParameterException("something went wrong while manipulating lua file strings");
         }
     }
 
     // direct file access functions with exception handling
-    static LineNumberReader getNumberReader(File luaFile) {
+    static LineNumberReader getReader(File luaFile) {
         return prepareInput(luaFile);
+    }
+
+    // direct file access functions with exception handling
+    static PrintWriter getWriter(File xmlFile) {
+        return prepareOutput(xmlFile);
     }
 
     private static LineNumberReader prepareInput(File inputFile) {
@@ -77,11 +143,18 @@ public interface LuaToXML {
         PrintWriter xmlWriter = null;
         try {
             xmlWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputFile)));
+            // first five lines can be already written
+            xmlWriter.write(XML_HEADER);
+            xmlWriter.write(GMAF_COLLECTION.getOpenTag() + "\n\n");
+            xmlWriter.write(GMAF_DATA.getOpenTag() + "\n");
+            xmlWriter.write(GMAF_FILE.getOpenTag() + outputFile.getName() + GMAF_FILE.getCloseTag());
+
         } catch (IOException e) {
             // TODO: handle output exception with user feedback dialog
             log.severe("output error");
         }
         return xmlWriter;
     }
+
 
 }

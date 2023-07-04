@@ -17,7 +17,7 @@ class LuaToXMLTest {
 
     @BeforeEach
     void setUp() {
-        reader = LuaToXML.getNumberReader(testFile);
+        reader = LuaToXML.getReader(testFile);
     }
 
     @AfterEach
