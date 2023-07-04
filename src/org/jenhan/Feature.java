@@ -1,7 +1,9 @@
+package org.jenhan;
+
 import java.util.ArrayList;
 
 public class Feature {
-    // not sure why I created this - let's see later if we can just delete it or extract the enum to LuaToXML interface
+    // not sure why I created this - let's see later if we can just delete it or extract the enum to org.jenhan.LuaToXML interface
 
     long time; // UNIX time
     FeatureType type;

@@ -1,3 +1,5 @@
+package org.jenhan;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +19,13 @@ public class SessionManager {
     }
 
     List<Session.SessionInfo> getSessionList(File luaFile){
-        // TODO: populate session list by reading lua file and creating sessions
-        sessionList = LuaToXML.readSessionInfo(luaFile);
-        List<Session.SessionInfo> sessionInfos = new ArrayList<>();
-        for (Session session: sessionList
+        // get session information from file (static call, thus handled by interface class)
+        List<Session.SessionInfo> sessionInfos = Session.readSessionInfo(luaFile);
+        // create org.jenhan.Session objects from session info
+        for (Session.SessionInfo sessionInfo: sessionInfos
              ) {
-            Session.SessionInfo sessionInfo = session.getSessionInfo();
-            sessionInfos.add(sessionInfo);
+            Session newSession = new Session(sessionInfo);
+            sessionList.add(newSession);
         }
         return sessionInfos;
     }

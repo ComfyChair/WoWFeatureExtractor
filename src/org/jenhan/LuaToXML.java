@@ -1,47 +1,47 @@
+package org.jenhan;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public interface LuaToXML {
-    // Main interface function
+    Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
+    // org.jenhan.Main interface function
     // reads lua session, writes xml file
     // returns true upon success, false upon failure
     default boolean exportToXML(File inputFile, File outputFile) {
         LineNumberReader luaReader = prepareInput(inputFile);
         PrintWriter xmlWriter = prepareOutput(outputFile);
         // TODO: the actual conversion goes here
-        // TODO: should not happen, but handle it anymays
         return xmlWriter != null;
     }
 
-    // Utility for SessionManager class
-    static List<Session> readSessionInfo(File luaFile) {
-        LineNumberReader luaReader = prepareInput(luaFile);
-        List<Session> sessionList = new ArrayList<>();
-        //TODO: read the lua file, find sessions, populate sessionList
-        return sessionList;
+    // direct file access functions with exception handling
+    static LineNumberReader getNumberReader(File luaFile) {
+        return prepareInput(luaFile);
     }
 
-    // direct file access functions with exception handling
-
-    static private LineNumberReader prepareInput(File inputFile) {
-        LineNumberReader luaReader;
+    private static LineNumberReader prepareInput(File inputFile) {
+        LineNumberReader luaReader = null;
         try {
             luaReader = new LineNumberReader(new FileReader(inputFile));
         } catch (FileNotFoundException e) {
             // TODO: handle input exception with user feedback dialog
-            throw new RuntimeException("Could not read file", e);
+            log.severe("Could not read file");
         }
         return luaReader;
     }
 
     private static PrintWriter prepareOutput(File outputFile) {
-        PrintWriter xmlWriter;
+        PrintWriter xmlWriter = null;
         try {
             xmlWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputFile)));
         } catch (IOException e) {
             // TODO: handle output exception with user feedback dialog
-            throw new RuntimeException("Could not write file", e);
+            log.severe("output error");
         }
         return xmlWriter;
     }

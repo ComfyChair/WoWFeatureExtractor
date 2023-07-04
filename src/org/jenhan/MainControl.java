@@ -1,3 +1,5 @@
+package org.jenhan;
+
 import java.io.File;
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class MainControl {
                 // TODO: error message: no session found
             } else if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
                 // TODO: prompt GUI for session selection
-            } else { // only 1 session -> export
+            } else { // only 1 session -> export without further ado
                 sessionManager.exportToXML(inputFile, outputFile, 0);
             }
         }
