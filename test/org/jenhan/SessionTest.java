@@ -22,19 +22,19 @@ class SessionTest {
         sessionInfoList = Session.readSessionInfo(testFile);
         expectedInfoList = new ArrayList<>();
         Calendar startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688372354));
+        startTime.setTime(new Date(1688372354000L));
         expectedInfoList.add(new Session.SessionInfo(0, 3, "Nepi", "Sen'jin",
                 startTime));
         startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688389927));
+        startTime.setTime(new Date(1688389927000L));
         expectedInfoList.add(new Session.SessionInfo(0, 74, "Arvensis", "Sen'jin",
                 startTime));
         startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688372378));
+        startTime.setTime(new Date(1688372378000L));
         expectedInfoList.add(new Session.SessionInfo(0, 89, "Nepi", "Sen'jin",
                 startTime));
         startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688370427));
+        startTime.setTime(new Date(1688370427000L));
         expectedInfoList.add(new Session.SessionInfo(0, 96, "Nepi", "Sen'jin",
                 startTime));
     }
@@ -81,11 +81,13 @@ class SessionTest {
     @Test
     void timeConversionTest(){
         Calendar testTime = Calendar.getInstance();
-        testTime.setTime(new Date(1688372362 * 1000));
-        System.out.println("Jahr: " + testTime.get(Calendar.YEAR));
+        long unixTime = 1688372354L * 1000;
+        testTime.setTime(new Date(unixTime));
+        System.out.println("Tag: " + testTime.get(Calendar.DATE) + "."+
+                (testTime.get(Calendar.MONTH)+1) + "." + testTime.get(Calendar.YEAR));
         int date = testTime.get(Calendar.DATE);
         assertEquals(3, date);
         int month = testTime.get(Calendar.MONTH);
-        assertEquals(7, month);
+        assertEquals(6, month); // JAN = 0
     }
 }

@@ -62,7 +62,7 @@ public class Session implements LuaToXML {
                                 case CHAR_NAME -> charName = LuaToXML.getLuaFieldValue(line);
                                 case SERVER_NAME -> serverName = LuaToXML.getLuaFieldValue(line);
                                 case START_TIME -> {
-                                    long unixStartTime = Long.parseLong(LuaToXML.getLuaFieldValue(line));
+                                    long unixStartTime = Long.parseLong(LuaToXML.getLuaFieldValue(line)) * 1000;
                                     // convert UNIX time to Calendar
                                     startTime = Calendar.getInstance();
                                     startTime.setTime(new Date(unixStartTime));
