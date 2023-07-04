@@ -2,9 +2,6 @@ package org.jenhan;
 
 import java.io.*;
 import java.security.InvalidParameterException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -15,78 +12,17 @@ public interface LuaToXML {
     XmlTag GMAF_DATA = new XmlTag("gmaf-data");
     XmlTag GMAF_FILE = new XmlTag("file");
     XmlTag GMAF_DATE = new XmlTag("date");
-    XmlTag GMAF_INTERACTION = new XmlTag("interaction");
     XmlTag GMAF_TYPE = new XmlTag("type");
     XmlTag GMAF_DESCRIPTION = new XmlTag("description");
     XmlTag GMAF_OBJECT = new XmlTag("object");
     XmlTag GMAF_ID = new XmlTag("id");
     XmlTag GMAF_TERM = new XmlTag("term");
-
-
-    final class XmlTag {
-        String tagName;
-        String openTag;
-        String closeTag;
-
-        public XmlTag(String tagName) {
-            this.tagName = tagName;
-            this.openTag = "<" + tagName + ">";
-            this.closeTag = "</" + tagName + ">\n";
-        }
-
-        public XmlTag(String tagName, String[] attributes) {
-            this.tagName = tagName;
-            this.closeTag = "</" + tagName + ">";
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("<").append(tagName);
-            for (String attribute : attributes
-            ) {
-                stringBuilder.append(" ").append(attribute);
-            }
-            stringBuilder.append(">");
-            this.openTag = stringBuilder.toString();
-        }
-
-        public String tagName() {
-            return tagName;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (obj == null || obj.getClass() != this.getClass()) return false;
-            var that = (XmlTag) obj;
-            return Objects.equals(this.tagName, that.tagName);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(tagName);
-        }
-
-        @Override
-        public String toString() {
-            return "XmlTag<" + tagName + '>';
-        }
-
-        public String getOpenTag() {
-            return openTag;
-        }
-
-        public String getCloseTag() {
-            return closeTag;
-        }
-    }
-
-    // main interface function
-    // reads lua session, writes xml file
-    // returns true upon success, false upon failure
-    boolean exportToXML(File inputFile, File outputFile);
+    XmlTag GMAF_PROBABILITY = new XmlTag("probability");
 
     // Utility methods
     static boolean isAssignment(String line) {
         String[] split = line.split("=");
-        return split.length == 2;
+        return split.length > 1;
     }
 
     static String getLuaFieldValue(String line) {
@@ -123,9 +59,8 @@ public interface LuaToXML {
         return prepareInput(luaFile);
     }
 
-    // direct file access functions with exception handling
-    static PrintWriter getWriter(File xmlFile) {
-        return prepareOutput(xmlFile);
+    static PrintWriter getWriter(File luaFile, File xmlFile) {
+        return prepareOutput(luaFile, xmlFile);
     }
 
     private static LineNumberReader prepareInput(File inputFile) {
@@ -139,7 +74,7 @@ public interface LuaToXML {
         return luaReader;
     }
 
-    private static PrintWriter prepareOutput(File outputFile) {
+    private static PrintWriter prepareOutput(File inputFile, File outputFile) {
         PrintWriter xmlWriter = null;
         try {
             xmlWriter = new PrintWriter(new BufferedWriter(new FileWriter(outputFile)));
@@ -147,13 +82,56 @@ public interface LuaToXML {
             xmlWriter.write(XML_HEADER);
             xmlWriter.write(GMAF_COLLECTION.getOpenTag() + "\n\n");
             xmlWriter.write(GMAF_DATA.getOpenTag() + "\n");
-            xmlWriter.write(GMAF_FILE.getOpenTag() + outputFile.getName() + GMAF_FILE.getCloseTag());
+            xmlWriter.write(GMAF_FILE.getOpenTag() + inputFile.getName() + GMAF_FILE.getCloseTag());
 
         } catch (IOException e) {
             // TODO: handle output exception with user feedback dialog
             log.severe("output error");
         }
         return xmlWriter;
+    }
+
+    // main interface function
+    // reads lua session, writes xml file
+    // returns true upon success, false upon failure
+    boolean exportToXML(File inputFile, File outputFile);
+
+    final class XmlTag {
+        String tagName;
+        String openTag;
+        String closeTag;
+
+        public XmlTag(String tagName) {
+            this.tagName = tagName;
+            this.openTag = "<" + tagName + ">";
+            this.closeTag = "</" + tagName + ">\n";
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            var that = (XmlTag) obj;
+            return Objects.equals(this.tagName, that.tagName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(tagName);
+        }
+
+        @Override
+        public String toString() {
+            return "XmlTag<" + tagName + '>';
+        }
+
+        public String getOpenTag() {
+            return openTag;
+        }
+
+        public String getCloseTag() {
+            return closeTag;
+        }
     }
 
 

@@ -61,7 +61,7 @@ class SessionTest {
 
     @Test
     void exportToXML() throws IOException {
-        File testOutput = new File("testOutput/exportTest1");
+        File testOutput = new File("testOutput/exportTest1.xml");
         Session session = new Session(sessionInfoList.get(0));
         session.exportToXML(testFile, testOutput);
         // check output
@@ -75,7 +75,7 @@ class SessionTest {
         String dataLine = reader.readLine();
         assertEquals("<gmaf-data>", dataLine);
         String fileLine = reader.readLine();
-        assertEquals("<file>" + testOutput.getName() + "</file>", fileLine);
+        assertEquals("<file>" + testFile.getName() + "</file>", fileLine);
     }
 
     @Test
@@ -83,8 +83,6 @@ class SessionTest {
         Calendar testTime = Calendar.getInstance();
         long unixTime = 1688372354L * 1000;
         testTime.setTime(new Date(unixTime));
-        System.out.println("Tag: " + testTime.get(Calendar.DATE) + "."+
-                (testTime.get(Calendar.MONTH)+1) + "." + testTime.get(Calendar.YEAR));
         int date = testTime.get(Calendar.DATE);
         assertEquals(3, date);
         int month = testTime.get(Calendar.MONTH);
