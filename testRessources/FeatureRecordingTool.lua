@@ -2,7 +2,6 @@
 FRT_FeatureRecordings = {
 	["session_2"] = {
 		["characterName"] = "Nepi",
-		["dateTime"] = "10:19, Montag, 3 Juli 2023",
 		["serverName"] = "Sen'jin",
 		["featureTable"] = {
 			{
@@ -74,7 +73,6 @@ FRT_FeatureRecordings = {
 	},
 	["session_4"] = {
 		["characterName"] = "Arvensis",
-		["dateTime"] = "15:12, Montag, 3 Juli 2023",
 		["serverName"] = "Sen'jin",
 		["startTimeStamp"] = 1688389927,
 		["featureTable"] = {
@@ -90,7 +88,6 @@ FRT_FeatureRecordings = {
 	},
 	["session_3"] = {
 		["characterName"] = "Nepi",
-		["dateTime"] = "10:19, Montag, 3 Juli 2023",
 		["serverName"] = "Sen'jin",
 		["featureTable"] = {
 		},
@@ -98,7 +95,6 @@ FRT_FeatureRecordings = {
 	},
 	["session_1"] = {
 		["characterName"] = "Nepi",
-		["dateTime"] = "09:47, Montag, 3 Juli 2023",
 		["serverName"] = "Sen'jin",
 		["startTimeStamp"] = 1688370427,
 		["featureTable"] = {

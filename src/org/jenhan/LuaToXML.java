@@ -1,22 +1,60 @@
 package org.jenhan;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import java.security.InvalidParameterException;
 import java.util.logging.Logger;
 
 public interface LuaToXML {
     Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
+
+
     // org.jenhan.Main interface function
     // reads lua session, writes xml file
     // returns true upon success, false upon failure
     default boolean exportToXML(File inputFile, File outputFile) {
+        boolean success = false;
         LineNumberReader luaReader = prepareInput(inputFile);
         PrintWriter xmlWriter = prepareOutput(outputFile);
-        // TODO: the actual conversion goes here
-        return xmlWriter != null;
+
+        //TODO: implement the actual conversion
+
+        return success;
+    }
+
+    // Utility methods
+    static boolean isAssignment(String line){
+        String[] split = line.split("=");
+        return split.length == 2;
+    }
+
+    static String getLuaFieldValue(String line) {
+        if (isAssignment(line)){
+            String[] split = line.split("=");
+            // right hand side of line = value
+            String valueSide = split[1].trim();
+            // substring to omit trailing comma
+            valueSide = valueSide.substring(0, valueSide.length()-1);
+            // remove quotation marks
+            if (valueSide.startsWith("\"")){
+                valueSide = valueSide.substring(1, valueSide.length()-1);
+            }
+            return valueSide;
+        } else {
+            throw new InvalidParameterException("something went wrong while manipulating lua file strings");
+        }
+    }
+
+    static String getLuaFieldKey(String line) {
+        if (isAssignment(line)){
+            String[] split = line.split("=");
+            // left hand side of line = key
+            String keySide = split[0].trim();
+            // substring to omit quotation marks and brackets
+            return keySide.substring(2, keySide.length()-2);
+        } else {
+            throw new InvalidParameterException("something went wrong while manipulating lua file strings");
+        }
     }
 
     // direct file access functions with exception handling
