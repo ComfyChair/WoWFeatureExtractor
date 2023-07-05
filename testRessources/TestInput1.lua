@@ -4,6 +4,7 @@ FRT_FeatureRecordings = {
 		["characterName"] = "Arvensis",
 		["dateTime"] = "20:13, Dienstag, 4 Juli 2023",
 		["serverName"] = "Sen'jin",
+		["startTimeStamp"] = 1688494496,
 		["featureTable"] = {
 			{
 				["objects"] = {
@@ -384,12 +385,194 @@ FRT_FeatureRecordings = {
 				["type"] = "SPELL_1",
 			}, -- [42]
 		},
-		["startTimeStamp"] = 1688494496,
+	},
+	["session_3"] = {
+		["characterName"] = "Sugi",
+		["dateTime"] = "10:10, Mittwoch, 5 Juli 2023",
+		["serverName"] = "Sen'jin",
+		["featureTable"] = {
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544678,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [1]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544680,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [2]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Hochlanddrache", -- [2]
+				},
+				["timestamp"] = 1688544680,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [3]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544682,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [4]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Die Obsidianenklave", -- [2]
+				},
+				["timestamp"] = 1688544684,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [5]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"", -- [2]
+				},
+				["timestamp"] = 1688544685,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [6]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Die Obsidianenklave", -- [2]
+				},
+				["timestamp"] = 1688544685,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [7]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544687,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [8]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544687,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [9]
+			{
+				["objects"] = {
+					"Bürger von Valdrakken", -- [1]
+					"Ihr winkt Bürger von Valdrakken zu.", -- [2]
+					"Sugi", -- [3]
+					"", -- [4]
+				},
+				["timestamp"] = 1688544690,
+				["description"] = "emote",
+				["type"] = "COMM_1",
+			}, -- [10]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Hochlanddrache", -- [2]
+				},
+				["timestamp"] = 1688544692,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [11]
+			{
+				["objects"] = {
+					"Selbstgespräch!", -- [1]
+					"Sugi-Sen'jin", -- [2]
+					"Sugi-Sen'jin", -- [3]
+				},
+				["timestamp"] = 1688544714,
+				["description"] = "whisper",
+				["type"] = "COMM_2",
+			}, -- [12]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544716,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [13]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"", -- [2]
+				},
+				["timestamp"] = 1688544719,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [14]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Der Sitz der Aspekte", -- [2]
+				},
+				["timestamp"] = 1688544722,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [15]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688544722,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [16]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544727,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [17]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["timestamp"] = 1688544727,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [18]
+			{
+				["objects"] = {
+					"Sugi", -- [1]
+					"Sturmwind", -- [2]
+				},
+				["timestamp"] = 1688544755,
+				["description"] = "entered new area",
+				["type"] = "ZONE_1",
+			}, -- [19]
+		},
+		["startTimeStamp"] = 1688544677,
 	},
 	["session_1"] = {
 		["characterName"] = "Arvensis",
 		["dateTime"] = "20:05, Dienstag, 4 Juli 2023",
 		["serverName"] = "Sen'jin",
+		["startTimeStamp"] = 1688494046,
 		["featureTable"] = {
 			{
 				["objects"] = {
@@ -622,7 +805,6 @@ FRT_FeatureRecordings = {
 				["type"] = "SPELL_1",
 			}, -- [25]
 		},
-		["startTimeStamp"] = 1688494046,
 	},
 }
 FRT_BtnData = {

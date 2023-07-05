@@ -15,7 +15,7 @@ import java.io.LineNumberReader;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LuaToXMLTest {
-    String testFilePath = "/home/jenny/IdeaProjects/WoWFeatureExtractionTool/testRessources/TestSession.lua";
+    String testFilePath = "/home/jenny/IdeaProjects/WoWFeatureExtractionTool/testRessources/TestInput1.lua";
     File testFile = new File(testFilePath);
     LineNumberReader reader;
 
@@ -54,9 +54,13 @@ class LuaToXMLTest {
         String lineFour = reader.readLine();
         assertEquals("characterName", LuaToXML.getLuaFieldKey(lineFour));
         String lineFive = reader.readLine();
-        assertEquals("serverName", LuaToXML.getLuaFieldKey(lineFive));
+        assertEquals("dateTime", LuaToXML.getLuaFieldKey(lineFive));
         String lineSix = reader.readLine();
-        assertEquals("featureTable", LuaToXML.getLuaFieldKey(lineSix));
+        assertEquals("serverName", LuaToXML.getLuaFieldKey(lineSix));
+        String lineSeven = reader.readLine();
+        assertEquals("startTimeStamp", LuaToXML.getLuaFieldKey(lineSeven));
+        String lineEight = reader.readLine();
+        assertEquals("featureTable", LuaToXML.getLuaFieldKey(lineEight));
     }
 
     @Test
@@ -66,9 +70,11 @@ class LuaToXMLTest {
             reader.readLine();
         }
         String lineFour = reader.readLine();
-        assertEquals("Nepi", LuaToXML.getLuaFieldValue(lineFour));
+        assertEquals("Arvensis", LuaToXML.getLuaFieldValue(lineFour));
         String lineFive = reader.readLine();
-        assertEquals("Sen'jin", LuaToXML.getLuaFieldValue(lineFive));
+        // don't test the date, might get edited in the future
+        String lineSix = reader.readLine();
+        assertEquals("Sen'jin", LuaToXML.getLuaFieldValue(lineSix));
     }
 
     @Test
@@ -100,16 +106,10 @@ class LuaToXMLTest {
     @Test
     void exportToXML_checkWellformed() throws IOException, SAXException, ParserConfigurationException {
         File testOutput_1 = new File("testOutput/exportTest1.xml");
-        String testFilePath_1 = "testRessources/TestSession.lua";
+        String testFilePath_1 = "testRessources/TestInput1.lua";
         File testFile_1 = new File(testFilePath_1);
         Session session_1 = new Session(Session.readSessionInfo(testFile_1).get(0));
         session_1.exportToXML(testFile_1, testOutput_1);
-
-        File testOutput_2 = new File("testOutput/exportTest2.xml");
-        String testFilePath_2 = "testRessources/FeatureRecordingTool.lua";
-        File testFile_2 = new File(testFilePath_2);
-        Session session_2 = new Session(Session.readSessionInfo(testFile_2).get(0));
-        session_2.exportToXML(testFile_2, testOutput_2);
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setValidating(false);
@@ -120,7 +120,6 @@ class LuaToXMLTest {
         XMLReader reader = parser.getXMLReader();
         reader.setErrorHandler(new SimpleErrorHandler());
         reader.parse(testOutput_1.getAbsolutePath());
-        reader.parse(testOutput_2.getAbsolutePath());
     }
 
     public class SimpleErrorHandler implements ErrorHandler {

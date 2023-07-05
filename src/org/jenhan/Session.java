@@ -189,7 +189,7 @@ public class Session implements LuaToXML {
         String recordingTime = simpleDateFormat.format(thisFeature.getCalendar().getTime());
         // start writing
         xmlWriter.write("<interaction begin=" + "'" + recordingTime + "'>\n");
-        //writeSimpleTag(xmlWriter,  GMAF_TYPE, 1, thisFeature.getType().name());
+        writeSimpleTag(xmlWriter,  GMAF_TYPE, 1, thisFeature.getType().name());
         writeSimpleTag(xmlWriter, GMAF_DESCRIPTION, 1, thisFeature.getDescription());
         for (Feature.FeatureObject object: thisFeature.getObjectList()
              ) {
