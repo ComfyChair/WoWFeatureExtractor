@@ -2,19 +2,12 @@ package org.jenhan.wowfeatureextractiontool;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.stage.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Gui extends Application {
     MainControl mainControl = MainControl.getInstance();
@@ -23,6 +16,9 @@ public class Gui extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+
+
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -43,29 +39,44 @@ public class Gui extends Application {
     }
 
     public void onInstallAddonClick(ActionEvent actionEvent) {
-        File selectedDir = showDirectoryChooser(primaryStage);
+        File selectedDir = promptForFolder("Select installation directory");
         if (selectedDir != null) {
             System.out.println("Selected dir: " + selectedDir);
             mainControl.installAddon(selectedDir);
         }
     }
 
-    private File showDirectoryChooser(Window window) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select installation directory");
-        return  directoryChooser.showDialog(new Stage(StageStyle.UNIFIED));
-    }
-
     public void onSelectFolderClick(ActionEvent actionEvent) {
-        File selectedDir = showDirectoryChooser(primaryStage);
+        File selectedDir = promptForFolder("Select SavedVariables directory");
         if (selectedDir != null) {
-            mainControl.selectSavedVarFolder(selectedDir);
+            mainControl.selectSavedVarFile(selectedDir);
         }
     }
 
     public void onExportToXmlClick(ActionEvent actionEvent) {
-
+        File selectedDir = promptForFolder("Select export directory");
+        if (selectedDir != null) {
+            mainControl.exportToXML(selectedDir);
+        }
     }
 
+    static File promptForFolder(String message) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle(message);
+        return  directoryChooser.showDialog(getPrimaryStage());
+    }
 
+    public static File promptForFile(String message) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(message);
+        return  fileChooser.showOpenDialog(getPrimaryStage());
+    }
+
+    public static void promptForSession() {
+        //TODO: prompt for session
+    }
+
+    public static void errorMessage(String message) {
+        System.out.println(message);
+    }
 }
