@@ -1,4 +1,4 @@
-package org.jenhan;
+package org.jenhan.wowfeatureextractiontool;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
-    String testFilePath = "testRessources/TestInput1.lua";
+    String testFilePath = "src/test/resources/TestInput1.lua";
     File testFile = new File(testFilePath);
     List<Session.SessionInfo> sessionInfoList;
     List<Session.SessionInfo> expectedInfoList;
@@ -54,7 +54,7 @@ class SessionTest {
 
     @Test
     void exportToXML_TestStartOfDocument() throws IOException {
-        File testOutput = new File("testOutput/exportTest2.xml");
+        File testOutput = new File("src/test/testOutput/exportTest2.xml");
         Session session = new Session(sessionInfoList.get(1));
         session.exportToXML(testFile, testOutput);
         // check header

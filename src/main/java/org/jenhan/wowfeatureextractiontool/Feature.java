@@ -1,4 +1,4 @@
-package org.jenhan;
+package org.jenhan.wowfeatureextractiontool;
 
 import java.util.ArrayList;
 import java.util.Calendar;

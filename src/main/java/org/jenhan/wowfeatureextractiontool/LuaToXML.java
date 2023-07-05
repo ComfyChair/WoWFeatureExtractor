@@ -1,4 +1,4 @@
-package org.jenhan;
+package org.jenhan.wowfeatureextractiontool;
 
 import java.io.*;
 import java.security.InvalidParameterException;

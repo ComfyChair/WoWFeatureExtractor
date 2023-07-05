@@ -1,4 +1,4 @@
-package org.jenhan;
+package org.jenhan.wowfeatureextractiontool;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+
 
 public class Session implements LuaToXML {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);

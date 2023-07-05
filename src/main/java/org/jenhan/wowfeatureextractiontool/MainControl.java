@@ -1,4 +1,8 @@
-package org.jenhan;
+package org.jenhan.wowfeatureextractiontool;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
 import java.io.File;
 import java.util.List;
@@ -13,13 +17,6 @@ public class MainControl {
     // session stuff
     private SessionManager sessionManager;
     List<Session.SessionInfo> sessionInfos;
-
-    private MainControl() {
-    }
-
-    public static MainControl getInstance() {
-        return instance;
-    }
 
     void installAddon() {
         // TODO: implement addon installation procedure
@@ -58,4 +55,6 @@ public class MainControl {
             }
         }
     }
+
+
 }

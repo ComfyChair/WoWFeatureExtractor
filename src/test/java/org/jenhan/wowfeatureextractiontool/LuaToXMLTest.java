@@ -1,4 +1,4 @@
-package org.jenhan;
+package org.jenhan.wowfeatureextractiontool;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ import java.io.LineNumberReader;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LuaToXMLTest {
-    String testFilePath = "/home/jenny/IdeaProjects/WoWFeatureExtractionTool/testRessources/TestInput1.lua";
+    String testFilePath = "src/test/resources/TestInput1.lua";
     File testFile = new File(testFilePath);
     LineNumberReader reader;
 
@@ -105,8 +105,8 @@ class LuaToXMLTest {
 
     @Test
     void exportToXML_checkWellformed() throws IOException, SAXException, ParserConfigurationException {
-        File testOutput_1 = new File("testOutput/exportTest1.xml");
-        String testFilePath_1 = "testRessources/TestInput1.lua";
+        File testOutput_1 = new File("src/test/testOutput/exportTest1.xml");
+        String testFilePath_1 = "src/test/resources/TestInput1.lua";
         File testFile_1 = new File(testFilePath_1);
         Session session_1 = new Session(Session.readSessionInfo(testFile_1).get(0));
         session_1.exportToXML(testFile_1, testOutput_1);
