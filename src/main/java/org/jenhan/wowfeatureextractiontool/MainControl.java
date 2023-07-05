@@ -1,36 +1,43 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainControl {
+    private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     //"eager" initialization, as the control class is needed right away
     private static final MainControl instance = new MainControl();
+    private static final String ADDON_NAME = "FeatureRecordingTool";
     // paths
-    private String pathToAddonFolder;
+    // TODO: persist folder locations
+    private File addonDir;
     private File inputFile;
     private File outputFile;
     // session stuff
     private SessionManager sessionManager;
     List<Session.SessionInfo> sessionInfos;
 
-    void installAddon() {
+    private MainControl() {
+    }
+
+    public static MainControl getInstance() {
+        return instance;
+    }
+
+    // unzips the addon files into the specified folder
+    // receives installation directory from GUI
+    void installAddon(File directory) {
+        log.info("Installation directory: " + directory);
+        this.addonDir = addonDir;
+        // TODO: navigate to SavedVars from Addon folder and set inputFile variable
         // TODO: implement addon installation procedure
     }
 
-    void selectAddonFolder(String path) {
-        // receive installation folder from GUI
-        pathToAddonFolder = path;
-        // TODO: check for validity!
-        // TODO: navigate to SavedVars from Addon folder and set inputFile variable
-    }
-
-    void selectSavedVarFolder(String path) { // receives installation folder from GUI
-        inputFile = new File(path);
+    void selectSavedVarFolder(File directory) { // receives installation folder from GUI
+        String fileName = directory.getName() + "/" + ADDON_NAME + ".lua";
+        // TODO: check for existence of file
+        inputFile =  new File(fileName);
     }
 
     void selectSession(int sessionID) { // receive session selection from GUI
