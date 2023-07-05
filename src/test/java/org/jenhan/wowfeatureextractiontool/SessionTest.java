@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
-    String testFilePath = "src/test/resources/TestInput1.lua";
+    String testFilePath = "src/test/resources/FeatureRecordingTool.lua";
     File testFile = new File(testFilePath);
     List<Session.SessionInfo> sessionInfoList;
     List<Session.SessionInfo> expectedInfoList;

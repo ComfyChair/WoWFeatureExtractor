@@ -2,6 +2,7 @@ package org.jenhan.wowfeatureextractiontool;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.*;
@@ -17,12 +18,9 @@ public class Gui extends Application {
         launch();
     }
 
-
-
-
     @Override
     public void start(Stage primaryStage) throws IOException {
-        setPrimaryStage(primaryStage);
+        Gui.primaryStage = primaryStage;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 480, 120);
         primaryStage.setTitle("WoW Feature Extraction Tool");
@@ -30,14 +28,11 @@ public class Gui extends Application {
         primaryStage.show();
     }
 
-    private void setPrimaryStage(Stage stage) {
-        Gui.primaryStage = stage;
-    }
-
     static public Stage getPrimaryStage() {
         return Gui.primaryStage;
     }
 
+    @FXML
     public void onInstallAddonClick(ActionEvent actionEvent) {
         File selectedDir = promptForFolder("Select installation directory");
         if (selectedDir != null) {
@@ -46,13 +41,15 @@ public class Gui extends Application {
         }
     }
 
-    public void onSelectFolderClick(ActionEvent actionEvent) {
-        File selectedDir = promptForFolder("Select SavedVariables directory");
-        if (selectedDir != null) {
-            mainControl.selectSavedVarFile(selectedDir);
+    @FXML
+    public void onSelectFileClick(ActionEvent actionEvent) {
+        File selectedFile = promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)");
+        if (selectedFile != null) {
+            mainControl.selectSavedVarFile(selectedFile);
         }
     }
 
+    @FXML
     public void onExportToXmlClick(ActionEvent actionEvent) {
         File selectedDir = promptForFolder("Select export directory");
         if (selectedDir != null) {

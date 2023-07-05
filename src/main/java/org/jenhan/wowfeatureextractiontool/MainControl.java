@@ -1,6 +1,7 @@
 package org.jenhan.wowfeatureextractiontool;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ public class MainControl {
     // paths
     // TODO: persist folder locations
     private File addonDir;
+    private File savedVarDir;
     private File inputFile;
     private File outputFile;
     // session stuff
@@ -30,11 +32,24 @@ public class MainControl {
     void installAddon(File directory) {
         log.info("Installation directory: " + directory);
         this.addonDir = directory;
-        // TODO: navigate to SavedVars from Addon folder and set inputFile variable
+        // naviagte to SavedVariables directory
+        Path addonPath = addonDir.toPath().toAbsolutePath();
+        System.out.println("Addon path: " + addonPath);
+        if (addonPath.getNameCount() < 4){
+            // TODO: can't move up, handle error
+        } else {
+            // ../../.. move three up
+            Path grandGrandParent = addonPath.getName(addonPath.getNameCount()-4);
+            System.out.println("Three up: " + grandGrandParent);
+            Path accountPath = grandGrandParent.resolve("WTF").resolve("Account");
+            System.out.println("Account path: " + accountPath);
+        }
+
         // TODO: implement addon installation procedure
     }
 
-    void selectSavedVarFile(File inputFile) { // receives installation folder from GUI
+    // receives installation file location from GUI
+    void selectSavedVarFile(File inputFile) {
         if (inputFile.exists()){
             if (inputFile.isDirectory()){
                 String fileName = inputFile + "/" + ADDON_NAME + ".lua";
@@ -45,6 +60,7 @@ public class MainControl {
                 } // else, go on
             }
             if (inputFile.canRead()){
+                System.out.println("Input file: " + inputFile);
                 this.inputFile =  inputFile;
             } else {
                 Gui.errorMessage("Error: Could not read the file: " + inputFile.getAbsolutePath());

@@ -11,6 +11,6 @@
     </padding>
 
     <Button text="install addon" onAction="#onInstallAddonClick"/>
-    <Button text="selectFolder" onAction="#onSelectFolderClick"/>
+    <Button text="select file" onAction="#onSelectFileClick"/>
     <Button text="export XML" onAction="#onExportToXmlClick"/>
 </HBox>
