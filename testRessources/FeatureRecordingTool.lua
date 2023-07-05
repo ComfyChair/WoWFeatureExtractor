@@ -1,235 +1,628 @@
 
 FRT_FeatureRecordings = {
 	["session_2"] = {
-		["characterName"] = "Nepi",
-		["serverName"] = "Sen'jin",
-		["featureTable"] = {
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"", -- [2]
-				},
-				["timestamp"] = 1688372358,
-				["description"] = "entered new subarea",
-			}, -- [1]
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"Die Teufelsseelenbastion", -- [2]
-				},
-				["timestamp"] = 1688372362,
-				["description"] = "entered new subarea",
-			}, -- [2]
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"", -- [2]
-				},
-				["timestamp"] = 1688372362,
-				["description"] = "entered new subarea",
-			}, -- [3]
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"Die Große Promenade", -- [2]
-				},
-				["timestamp"] = 1688372364,
-				["description"] = "entered new subarea",
-			}, -- [4]
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"", -- [2]
-				},
-				["timestamp"] = 1688372364,
-				["description"] = "entered new subarea",
-			}, -- [5]
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"Die Teufelsseelenbastion", -- [2]
-				},
-				["timestamp"] = 1688372366,
-				["description"] = "entered new subarea",
-			}, -- [6]
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"", -- [2]
-				},
-				["timestamp"] = 1688372367,
-				["description"] = "entered new subarea",
-			}, -- [7]
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"Meredil", -- [2]
-				},
-				["timestamp"] = 1688372369,
-				["description"] = "entered new subarea",
-			}, -- [8]
-		},
-		["startTimeStamp"] = 1688372354,
-	},
-	["session_4"] = {
 		["characterName"] = "Arvensis",
+		["dateTime"] = "20:13, Dienstag, 4 Juli 2023",
 		["serverName"] = "Sen'jin",
-		["startTimeStamp"] = 1688389927,
 		["featureTable"] = {
 			{
 				["objects"] = {
 					"Arvensis", -- [1]
-					"Flammensternposten", -- [2]
+					"Ruhestein", -- [2]
 				},
-				["timestamp"] = 1688389933,
-				["description"] = "entered new subarea",
-			}, -- [1]
-		},
-	},
-	["session_3"] = {
-		["characterName"] = "Nepi",
-		["serverName"] = "Sen'jin",
-		["featureTable"] = {
-		},
-		["startTimeStamp"] = 1688372378,
-	},
-	["session_1"] = {
-		["characterName"] = "Nepi",
-		["serverName"] = "Sen'jin",
-		["startTimeStamp"] = 1688370427,
-		["featureTable"] = {
-			{
-				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
-				},
-				["timestamp"] = 1688370430,
-				["description"] = "started moving",
+				["timestamp"] = 1688494498,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
 			}, -- [1]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
+					"Arvensis", -- [1]
+					"Zum Gerösteten Geißbock", -- [2]
 				},
-				["timestamp"] = 1688370431,
-				["description"] = "stopped moving",
+				["timestamp"] = 1688494531,
+				["description"] = "entered new area",
+				["type"] = "ZONE_1",
 			}, -- [2]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
+					"Arvensis", -- [1]
+					"Zum Gerösteten Geißbock", -- [2]
 				},
-				["timestamp"] = 1688370433,
+				["timestamp"] = 1688494670,
 				["description"] = "started moving",
+				["type"] = "MOV_1",
 			}, -- [3]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
+					"Arvensis", -- [1]
+					"", -- [2]
 				},
-				["timestamp"] = 1688370434,
-				["description"] = "stopped moving",
+				["timestamp"] = 1688494676,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
 			}, -- [4]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
+					"Arvensis", -- [1]
+					"Valdrakken", -- [2]
 				},
-				["timestamp"] = 1688370435,
-				["description"] = "started moving",
+				["timestamp"] = 1688494681,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
 			}, -- [5]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
+					"Arvensis", -- [1]
+					"Hochlanddrache", -- [2]
 				},
-				["timestamp"] = 1688370435,
-				["description"] = "stopped moving",
+				["timestamp"] = 1688494682,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
 			}, -- [6]
 			{
 				["objects"] = {
-					"Feuerjongleur", -- [1]
-					"Ihr winkt Feuerjongleur zu.", -- [2]
-					"Nepi", -- [3]
-					"", -- [4]
+					"Arvensis", -- [1]
+					"Valdrakken", -- [2]
 				},
-				["timestamp"] = 1688370442,
-				["description"] = "emote",
+				["timestamp"] = 1688494684,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
 			}, -- [7]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
+					"Arvensis", -- [1]
+					"Der Sitz der Aspekte", -- [2]
 				},
-				["timestamp"] = 1688370442,
-				["description"] = "started moving",
+				["timestamp"] = 1688494687,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
 			}, -- [8]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"", -- [2]
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
 				},
-				["timestamp"] = 1688370447,
-				["description"] = "entered new subarea",
+				["timestamp"] = 1688494687,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
 			}, -- [9]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Südlicher Pavillon", -- [2]
+					"Arvensis", -- [1]
+					"", -- [2]
 				},
-				["timestamp"] = 1688370447,
-				["description"] = "stopped moving",
+				["timestamp"] = 1688494688,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
 			}, -- [10]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Südlicher Pavillon", -- [2]
+					"Arvensis", -- [1]
+					"Die Smaragdenklave", -- [2]
 				},
-				["timestamp"] = 1688370450,
-				["description"] = "started moving",
+				["timestamp"] = 1688494690,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
 			}, -- [11]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Der Dunkelmond-Jahrmarkt", -- [2]
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
 				},
-				["timestamp"] = 1688370451,
-				["description"] = "entered new subarea",
+				["timestamp"] = 1688494691,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
 			}, -- [12]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Dunkelmond-Insel", -- [2]
+					"Arvensis", -- [1]
+					"", -- [2]
 				},
-				["timestamp"] = 1688370452,
-				["description"] = "stopped moving",
+				["timestamp"] = 1688494694,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
 			}, -- [13]
 			{
 				["objects"] = {
-					"hey", -- [1]
-					"Nepi-Sen'jin", -- [2]
-					"Nepi-Sen'jin", -- [3]
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
 				},
-				["timestamp"] = 1688370460,
-				["description"] = "whisper",
+				["timestamp"] = 1688494696,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
 			}, -- [14]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Tundramammut des Reisenden", -- [2]
+					"Arvensis", -- [1]
+					"Die Bronzeenklave", -- [2]
 				},
-				["timestamp"] = 1688370461,
-				["description"] = "sent spellcast",
+				["timestamp"] = 1688494696,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
 			}, -- [15]
 			{
 				["objects"] = {
-					"Nepi", -- [1]
-					"Arkane Intelligenz", -- [2]
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
 				},
-				["timestamp"] = 1688370465,
-				["description"] = "sent spellcast",
+				["timestamp"] = 1688494700,
+				["description"] = "entered new area",
+				["type"] = "ZONE_1",
 			}, -- [16]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494700,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [17]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Tyrholdreservoir", -- [2]
+				},
+				["timestamp"] = 1688494704,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [18]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494708,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [19]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Wilde Klippen", -- [2]
+				},
+				["timestamp"] = 1688494711,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [20]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"", -- [2]
+				},
+				["timestamp"] = 1688494714,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [21]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Wilde Klippen", -- [2]
+				},
+				["timestamp"] = 1688494715,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [22]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"", -- [2]
+				},
+				["timestamp"] = 1688494716,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [23]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Wilde Klippen", -- [2]
+				},
+				["timestamp"] = 1688494716,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [24]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"", -- [2]
+				},
+				["timestamp"] = 1688494718,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [25]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494731,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [26]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494732,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [27]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494733,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [28]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494733,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [29]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Haustiere beleben", -- [2]
+				},
+				["timestamp"] = 1688494891,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [30]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Hochlanddrache", -- [2]
+				},
+				["timestamp"] = 1688494895,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [31]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494903,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [32]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494904,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [33]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494941,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [34]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494943,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [35]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Thaldraszus", -- [2]
+				},
+				["timestamp"] = 1688494945,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [36]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494948,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [37]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494951,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [38]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Stahlklippenpassage", -- [2]
+				},
+				["timestamp"] = 1688494953,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [39]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494955,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [40]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"", -- [2]
+				},
+				["timestamp"] = 1688494958,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [41]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494961,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [42]
 		},
+		["startTimeStamp"] = 1688494496,
+	},
+	["session_1"] = {
+		["characterName"] = "Arvensis",
+		["dateTime"] = "20:05, Dienstag, 4 Juli 2023",
+		["serverName"] = "Sen'jin",
+		["featureTable"] = {
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494047,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [1]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494051,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [2]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"", -- [2]
+				},
+				["timestamp"] = 1688494052,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [3]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Vorwärtsschub", -- [2]
+				},
+				["timestamp"] = 1688494058,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [4]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Tiefgrottensee", -- [2]
+				},
+				["timestamp"] = 1688494065,
+				["description"] = "entered new subarea",
+				["type"] = "ZONE_2",
+			}, -- [5]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Verstohlenheit", -- [2]
+				},
+				["timestamp"] = 1688494069,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [6]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Sofort wirkendes Gift", -- [2]
+				},
+				["timestamp"] = 1688494074,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [7]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Atrophisches Gift", -- [2]
+				},
+				["timestamp"] = 1688494077,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [8]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494079,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [9]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494101,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [10]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494102,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [11]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494104,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [12]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494104,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [13]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494105,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [14]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Öffnen", -- [2]
+				},
+				["timestamp"] = 1688494106,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [15]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+					"Relikt der Titanen", -- [3]
+					"Tauschfelsbrocken", -- [4]
+					"Vorräte der Dracheninseln", -- [5]
+					"Flugsteine", -- [6]
+					"Lufterfüllter Manatrank", -- [7]
+				},
+				["timestamp"] = 1688494107,
+				["description"] = "looting",
+				["type"] = "OBJ_1",
+			}, -- [16]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494108,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [17]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494112,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [18]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494113,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [19]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494118,
+				["description"] = "stopped moving",
+				["type"] = "MOV_2",
+			}, -- [20]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Hochlanddrache", -- [2]
+				},
+				["timestamp"] = 1688494119,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [21]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Zaralekhöhle", -- [2]
+				},
+				["timestamp"] = 1688494120,
+				["description"] = "started moving",
+				["type"] = "MOV_1",
+			}, -- [22]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Verstohlenheit", -- [2]
+				},
+				["timestamp"] = 1688494122,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [23]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Schicksalswürfel", -- [2]
+				},
+				["timestamp"] = 1688494123,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [24]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Sprinten", -- [2]
+				},
+				["timestamp"] = 1688494134,
+				["description"] = "sent spellcast",
+				["type"] = "SPELL_1",
+			}, -- [25]
+		},
+		["startTimeStamp"] = 1688494046,
 	},
 }
 FRT_BtnData = {

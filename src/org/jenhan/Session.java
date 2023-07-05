@@ -19,18 +19,21 @@ public class Session implements LuaToXML {
     private static final String SERVER_NAME = "serverName";
     private static final String START_TIME = "startTimeStamp";
     private static final String FEATURE_TABLE = "featureTable";
+    // session information record
+    private final SessionInfo sessionInfo;
 
-    // object attribute record
-    private SessionInfo sessionInfo;
-
+    // constructor
     Session(SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
 
+    // returns info for a single session
     SessionInfo getSessionInfo() {
         return sessionInfo;
     }
 
+    // session info data structure
+    // core information as needed for session selection display plus file reading information (startLine)
     record SessionInfo(int sessionID, int startLine,
                        String charName, String serverName, Calendar time) {
     }
@@ -79,6 +82,7 @@ public class Session implements LuaToXML {
 
     }
 
+    // Utility method to convert Unix time in seconds (as in lua field) to Calendar object
     private static Calendar getTimeFromLuaField(String line) {
         Calendar time;
         long unixTime = Long.parseLong(LuaToXML.getLuaFieldValue(line)) * 1000;
@@ -88,6 +92,7 @@ public class Session implements LuaToXML {
         return time;
     }
 
+    // converts lua feature table to GMAF-style xml
     @Override
     public boolean exportToXML(File inputFile, File outputFile) {
         boolean success = false;
@@ -101,18 +106,19 @@ public class Session implements LuaToXML {
             String currentLine;
             while ((currentLine = luaReader.readLine()) != null // security check for end of file
                     && !currentLine.trim().equals("},")){ // end of FeatureTable
-                log.info("Current line: " + currentLine);
+                log.fine("Current line: " + currentLine);
                 if (currentLine.trim().equals("{")){
                     // new interaction feature
-                    log.info("   New feature!");
+                    log.info("   New feature");
                     Feature thisFeature = new Feature();
                     currentLine = luaReader.readLine();
-                    log.info("Current line: " + currentLine);
+                    log.fine("Current line: " + currentLine);
                     while (LuaToXML.isAssignment(currentLine)){
-                        log.info("   Assignment found at line " + luaReader.getLineNumber());
+                        log.fine("   Assignment found at line " + luaReader.getLineNumber());
                         switch (LuaToXML.getLuaFieldKey(currentLine)){
                             case "timestamp" -> thisFeature.setCalendar(getTimeFromLuaField(currentLine));
                             case "description" -> thisFeature.setDescription(LuaToXML.getLuaFieldValue(currentLine));
+                            case "type" -> thisFeature.setType(LuaToXML.getLuaFieldValue(currentLine));
                             case "objects" -> addObjects(luaReader, thisFeature);
                             default -> log.fine("this must be the startTimeStamp tag");
                         }
@@ -121,31 +127,34 @@ public class Session implements LuaToXML {
                     writeInteractionTag(xmlWriter, thisFeature);
                 }
             }
-            //close tags
+            // close tags
             xmlWriter.write(GMAF_DATA.getCloseTag());
             xmlWriter.write(GMAF_COLLECTION.getCloseTag());
-            //flush and close at the end
+            // flush and close files at the end
             xmlWriter.flush();
             xmlWriter.close();
+            luaReader.close();
+            log.info("Closed input and output files");
             return success;
         } catch (IOException e) {
-            //TODO: handle exceptions here
+            // TODO: handle exceptions here
             log.severe("Error while converting");
             return false;
         }
     }
 
+    // adds objects to features
     private void addObjects(LineNumberReader luaReader, Feature thisfeature) throws IOException {
-        log.info("   Adding objects to feature");
+        log.fine("   Adding objects to feature");
         int id = 1;
         String currentLine;
         while ((currentLine = luaReader.readLine()) != null // security check
                 && !currentLine.trim().equals("},")){ // closing brackets of objects table
-            log.info("Current line: " + currentLine);
+            log.fine("Current line: " + currentLine);
             String[] split = currentLine.split("\",");
             // first part of split is object term, omit leading quotation mark
             String term = split[0].trim().substring(1);
-            log.info("Term: " + term);
+            log.fine("Term: " + term);
             if (!term.equals("")){
                 Feature.FeatureObject newObject = new Feature.FeatureObject(id, term);
                 thisfeature.addObject(newObject);
@@ -155,7 +164,7 @@ public class Session implements LuaToXML {
     }
 
     private void writeSimpleTag(PrintWriter xmlWriter, XmlTag tagType, int tabLength, String content) {
-        log.info("Writing " + tagType + " tag");
+        log.fine("Writing " + tagType + " tag");
         for (int i = 0; i < tabLength; i++) {
             xmlWriter.write("\t");
         }
@@ -165,15 +174,16 @@ public class Session implements LuaToXML {
     }
 
     private void writeDate(PrintWriter xmlWriter, Calendar time) {
-        log.info("Writing date");
+        log.fine("Writing date");
         String pattern = "dd.MM.yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String recordingDate = simpleDateFormat.format(time.getTime());
         xmlWriter.write(GMAF_DATE.getOpenTag() + recordingDate + GMAF_DATE.getCloseTag());
     }
 
+    // writes the current interaction feature to the xml file
     private void writeInteractionTag(PrintWriter xmlWriter, Feature thisFeature) {
-        log.info("Writing interaction tag");
+        log.fine("Writing interaction tag");
         // get human-readable time format
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         String recordingTime = simpleDateFormat.format(thisFeature.getCalendar().getTime());
@@ -198,10 +208,10 @@ public class Session implements LuaToXML {
         log.info("Skipping to feature table");
         String nextLine;
         while (!found && (nextLine = luaReader.readLine()) != null){
-            log.info("Current line: " + nextLine);
+            log.fine("Current line: " + nextLine);
             if (LuaToXML.isAssignment(nextLine) && LuaToXML.getLuaFieldKey(nextLine).equals(FEATURE_TABLE)){
                 int lineNumber = luaReader.getLineNumber();
-                log.info("Found feature table at line " + lineNumber);
+                log.fine("Found feature table at line " + lineNumber);
                 found = true;
             }
         }

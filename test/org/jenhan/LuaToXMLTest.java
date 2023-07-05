@@ -3,7 +3,11 @@ package org.jenhan;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.*;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -11,7 +15,7 @@ import java.io.LineNumberReader;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LuaToXMLTest {
-    String testFilePath = "/home/jenny/IdeaProjects/WoWFeatureExtractionTool/testRessources/FeatureRecordingTool.lua";
+    String testFilePath = "/home/jenny/IdeaProjects/WoWFeatureExtractionTool/testRessources/TestSession.lua";
     File testFile = new File(testFilePath);
     LineNumberReader reader;
 
@@ -94,7 +98,43 @@ class LuaToXMLTest {
     }
 
     @Test
-    void exportToXML() {
+    void exportToXML_checkWellformed() throws IOException, SAXException, ParserConfigurationException {
+        File testOutput_1 = new File("testOutput/exportTest1.xml");
+        String testFilePath_1 = "testRessources/TestSession.lua";
+        File testFile_1 = new File(testFilePath_1);
+        Session session_1 = new Session(Session.readSessionInfo(testFile_1).get(0));
+        session_1.exportToXML(testFile_1, testOutput_1);
+
+        File testOutput_2 = new File("testOutput/exportTest2.xml");
+        String testFilePath_2 = "testRessources/FeatureRecordingTool.lua";
+        File testFile_2 = new File(testFilePath_2);
+        Session session_2 = new Session(Session.readSessionInfo(testFile_2).get(0));
+        session_2.exportToXML(testFile_2, testOutput_2);
+
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setValidating(false);
+        factory.setNamespaceAware(true);
+
+        SAXParser parser = factory.newSAXParser();
+
+        XMLReader reader = parser.getXMLReader();
+        reader.setErrorHandler(new SimpleErrorHandler());
+        reader.parse(testOutput_1.getAbsolutePath());
+        reader.parse(testOutput_2.getAbsolutePath());
+    }
+
+    public class SimpleErrorHandler implements ErrorHandler {
+        public void warning(SAXParseException e) {
+            System.out.println(e.getMessage());
+        }
+
+        public void error(SAXParseException e) {
+            System.out.println(e.getMessage());
+        }
+
+        public void fatalError(SAXParseException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }
