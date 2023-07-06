@@ -32,95 +32,121 @@ public class MainControl {
     private SessionManager sessionManager;
     List<Session.SessionInfo> sessionInfos;
 
-    // called on button click
-    // unzips the addon files into the specified folder
-    // receives installation directory from GUI
+    // unzips the addon files into the specified folder, receives installation directory from GUI (called on button click)
     @FXML
     void installAddon(ActionEvent actionEvent) {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File destinationDir = Gui.promptForFolder("Select installation directory", prefs.get(ADDON_DIR_PREF, null));
-        if (destinationDir != null) {
-            log.fine("Selected dir: " + destinationDir);
-            // check for writing privileges
-            if (!destinationDir.canWrite()){
-                Gui.errorMessage("No writing access to this directory, choose another one");
-                return;
-            }
-            if (!destinationDir.getName().endsWith("AddOns")){
-                boolean confirmation = Gui.confirm("Are you sure you want to install in this directory?" +
-                        " It does not appear to be a WoW Addon folder: " + destinationDir);
-                if (!confirmation) return;
-            }
-            System.out.println("Carrying on");
+        if (isValidDirectory(destinationDir)) {
             this.addonDir = destinationDir;
             prefs.put(ADDON_DIR_PREF, addonDir.getPath());
             // unzip addon files
-            try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath());) {
-                Enumeration<? extends ZipEntry> entries = zipFile.entries();
-                while (entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    File entryDestination = new File(destinationDir,  entry.getName());
-                    if (entry.isDirectory()) {
-                        entryDestination.mkdirs();
-                    } else {
-                        entryDestination.getParentFile().mkdirs();
-                        OutputStream outputStream = new FileOutputStream(entryDestination);
-                        zipFile.getInputStream(entry).transferTo(outputStream);
-                    }
-                }
-                log.info("Unzipped addon files");
-            } catch (IOException e) {
-                Gui.errorMessage("Error while unzipping addon files");
+            unzipAddon(destinationDir);
+            locateSavedVariablesDir();
+        }
+    }
+
+    // checks for valid installation directory
+    private boolean isValidDirectory(File destinationDir) {
+        if (destinationDir == null) return false; // user canceled selection, do nothing
+        log.fine("Selected dir: " + destinationDir);
+        // check for writing privileges
+        if (!destinationDir.canWrite()){
+            Gui.errorMessage("No writing access to this directory, choose another one");
+            return false;
+        }
+        // check for expected directory name
+        if (!destinationDir.getName().endsWith("AddOns")){
+            boolean confirmation = Gui.confirm("Are you sure you want to install in this directory?" +
+                    " It does not appear to be a WoW Addon folder: " + destinationDir);
+            if (!confirmation){
+                System.out.println("Don't install");
+                return false;
             }
-            deductSavedVariablesDir();
+        }
+        return true;
+    }
+
+    // unzips addon files to installation directory
+    private static void unzipAddon(File destinationDir) {
+        try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath());) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                File entryDestination = new File(destinationDir,  entry.getName());
+                if (entry.isDirectory()) {
+                    entryDestination.mkdirs();
+                } else {
+                    entryDestination.getParentFile().mkdirs();
+                    OutputStream outputStream = new FileOutputStream(entryDestination);
+                    zipFile.getInputStream(entry).transferTo(outputStream);
+                }
+            }
+            log.info("Unzipped addon files");
+        } catch (IOException e) {
+            Gui.errorMessage("Error while unzipping addon files");
         }
     }
 
     // deducts the SavedVariables directory from the installation path
-    private void deductSavedVariablesDir() {
-        // form Addons directory, move up to "_retail_" directory
+    private void locateSavedVariablesDir() {
+        // from Addons directory, move up to "_retail_" directory
         Path addonPath = addonDir.toPath().toAbsolutePath();
-        System.out.println("Addon path: " + addonPath + ", name cont: " + addonPath.getNameCount());
-        if (addonPath.getNameCount() < 4){
-            // TODO: can't move up, handle error or stay silent?
-            System.out.println("Can't move up the file tree from: " + addonPath);
+        if (addonPath.getNameCount() < 2){ // can we move two directories up?
+            Gui.notice("Can't locate your SavedVariables folder. Please select the input file manually.");
         } else {
-            // ../.. move two up
-            Path twoUp = addonPath.getRoot()
-                    .resolve(addonPath.subpath(0, addonPath.getNameCount()-2));
-            System.out.println("Two up: " + twoUp);
-            Path accountPath = twoUp.resolve("WTF").resolve("Account");
-            System.out.println("Account path: " + accountPath);
-            // look for uppercase folder
-            PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**[A-Z]");
-            List<Path> accountsFound = new ArrayList<>();
-            try {
-                Files.walkFileTree(accountPath, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult preVisitDirectory(Path path,
-                                                     BasicFileAttributes attrs) throws IOException {
-                        if (matcher.matches(path)) {
-                            log.info("Found match:" + path);
-                            accountsFound.add(path);
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
-            } catch (IOException e) {
-                Gui.errorMessage("Something went wrong while looking for the SavedVariables folder");
-            }
-            if (accountsFound.size() == 1){ // in case of multiple accounts, don't bother, let the user decide later on which one to choose
-                savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
-                System.out.println("Saved vars dir deducted: " + savedVarsDir);
-                Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-                prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
-                System.out.println("Saved vars pref: " + savedVarsDir.toString());
-                String inputFilePath = savedVarsDir.toString() + File.separator + ADDON_NAME + ".lua";
-                inputFile = new File(inputFilePath);
-                prefs.put(INPUT_FILE_PREF, inputFilePath.toString());
-                System.out.println("input file pref: " + inputFilePath.toString());
+            Path accountPath = getWTFAccountDir(addonPath);
+            if (accountPath != null){
+                // Account-wide Folders are in UPPERCASE -> look for them
+                List<Path> accountsFound = getUppercaseFolders(accountPath);
+                if (accountsFound.size() == 1){ // one account on this installation
+                    savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
+                    Gui.notice("Saved vars directory located: " + savedVarsDir);
+                    Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
+                    prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
+                    String inputFilePath = savedVarsDir.toString() + File.separator + ADDON_NAME + ".lua";
+                    inputFile = new File(inputFilePath);
+                    prefs.put(INPUT_FILE_PREF, inputFilePath.toString());
+                } else {
+                    Gui.notice("You seem to have multiple WoW accounts. Please select the input file manually.");
+                }
             }
         }
+    }
+    // moves from Addons folder to ../../WTF/Account folder
+    private static Path getWTFAccountDir(Path addonPath) {
+        // ../.. first, move two directories up
+        Path twoUp = addonPath.getRoot()
+                .resolve(addonPath.subpath(0, addonPath.getNameCount()-2));
+        // then, move down to ./WTF/Account
+        Path accountPath = twoUp.resolve("WTF").resolve("Account");
+        if (accountPath.toFile().exists()){
+            return accountPath;
+        } else {
+            Gui.notice("Can't locate your SavedVariables folder. Please select the input file manually.");
+            return null;
+        }
+    }
+    // looks for folders that are named after account names (in uppercase) in WTF/Account folder
+    private static List<Path> getUppercaseFolders(Path accountPath) {
+        List<Path> accountsFound = new ArrayList<>();
+        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**[A-Z]");
+        try {
+            Files.walkFileTree(accountPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(Path path,
+                                                 BasicFileAttributes attrs) throws IOException {
+                    if (matcher.matches(path)) {
+                        log.info("Found match:" + path);
+                        accountsFound.add(path);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            Gui.errorMessage("Something went wrong while looking for the SavedVariables folder");
+        }
+        return accountsFound;
     }
 
     // response from GUI class for session selection prompt
@@ -129,8 +155,7 @@ public class MainControl {
         sessionManager.exportToXML(inputFile, outputFile, sessionID);
     }
 
-    // called on button click
-    // receives input file path from GUI
+    // receives input file path from GUI (called on button click)
     @FXML
     void selectFile(ActionEvent actionEvent) {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
@@ -139,10 +164,8 @@ public class MainControl {
         if (selectedFile != null) {
             if (selectedFile.exists()){
                 if (selectedFile.canRead()){
-                    System.out.println("Input file: " + selectedFile);
                     this.inputFile =  selectedFile;
                     prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
-                    System.out.println("Put in prefs: " + selectedFile.getPath());
                 } else {
                     Gui.errorMessage("Error: Could not read the file: " + selectedFile.getPath());
                 }
@@ -150,13 +173,12 @@ public class MainControl {
         }
     }
 
-    // called on button click
+    // exports the .lua file to .xml format (called on button click)
     @FXML
     void exportToXML(ActionEvent actionEvent) {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File selectedDir = Gui.promptForFolder("Select export directory", prefs.get(OUTPUT_DIR_PREF, null));
         if (selectedDir != null) {
-            System.out.println("Selected export folder: " + selectedDir);
             prefs.put(OUTPUT_DIR_PREF, selectedDir.getPath());
             Path outPathComplete = selectedDir.toPath().resolve("out.xml");
             outputFile = outPathComplete.toFile();

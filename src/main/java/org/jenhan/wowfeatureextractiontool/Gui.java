@@ -9,6 +9,7 @@ import javafx.stage.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 public class Gui extends Application {
     private static Stage primaryStage;
@@ -68,11 +69,30 @@ public class Gui extends Application {
         dialog.showAndWait();
     }
     public static boolean confirm(String message) {
-        System.out.println(message);
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Confirmation needed");
+        dialog.setContentText(message);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            return true;
+        }
+        return false;
+    }
+    public static boolean notice(String message) {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Notice");
+        dialog.setContentText(message);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
         return true;
     }
     public static boolean success(String message) {
-        System.out.println(message);
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Success");
+        dialog.setContentText(message);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
         return true;
     }
 }
