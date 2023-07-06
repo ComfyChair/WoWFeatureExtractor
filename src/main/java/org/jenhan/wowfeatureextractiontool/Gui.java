@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class Gui extends Application {
-    MainControl mainControl = MainControl.getInstance();
     private static Stage primaryStage;
 
     public static void main(String[] args) {
@@ -22,7 +21,7 @@ public class Gui extends Application {
     public void start(Stage primaryStage) throws IOException {
         Gui.primaryStage = primaryStage;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 480, 120);
+        Scene scene = new Scene(fxmlLoader.load(), 360, 240);
         primaryStage.setTitle("WoW Feature Extraction Tool");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -30,31 +29,6 @@ public class Gui extends Application {
 
     static public Stage getPrimaryStage() {
         return Gui.primaryStage;
-    }
-
-    @FXML
-    public void onInstallAddonClick(ActionEvent actionEvent) {
-        File selectedDir = promptForFolder("Select installation directory");
-        if (selectedDir != null) {
-            System.out.println("Selected dir: " + selectedDir);
-            mainControl.installAddon(selectedDir);
-        }
-    }
-
-    @FXML
-    public void onSelectFileClick(ActionEvent actionEvent) {
-        File selectedFile = promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)");
-        if (selectedFile != null) {
-            mainControl.selectSavedVarFile(selectedFile);
-        }
-    }
-
-    @FXML
-    public void onExportToXmlClick(ActionEvent actionEvent) {
-        File selectedDir = promptForFolder("Select export directory");
-        if (selectedDir != null) {
-            mainControl.exportToXML(selectedDir);
-        }
     }
 
     static File promptForFolder(String message) {

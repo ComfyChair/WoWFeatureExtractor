@@ -1,15 +1,24 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import java.io.File;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+
+import java.io.*;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class MainControl {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     //"eager" initialization, as the control class is needed right away
-    private static final MainControl instance = new MainControl();
     private static final String ADDON_NAME = "FeatureRecordingTool";
+    private static final File ADDON_ZIP = new File("src/main/resources/org/jenhan/wowfeatureextractiontool/WoWAddon.zip");
     // paths
     // TODO: persist folder locations
     private File addonDir;
@@ -20,32 +29,60 @@ public class MainControl {
     private SessionManager sessionManager;
     List<Session.SessionInfo> sessionInfos;
 
-    private MainControl() {
-    }
-
-    public static MainControl getInstance() {
-        return instance;
-    }
-
     // unzips the addon files into the specified folder
     // receives installation directory from GUI
-    void installAddon(File directory) {
-        log.info("Installation directory: " + directory);
-        this.addonDir = directory;
-        // naviagte to SavedVariables directory
+    @FXML
+    public void installAddon(ActionEvent actionEvent) {
+        File destinationDir = Gui.promptForFolder("Select installation directory");
+        if (destinationDir != null) {
+            log.fine("Selected dir: " + destinationDir);
+            // check for writing privileges
+            if (!destinationDir.canWrite()){
+                Gui.errorMessage("No writing access to this directory, choose another one");
+                return;
+            }
+            this.addonDir = destinationDir;
+            // unzip addon files
+            try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath());) {
+                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    File entryDestination = new File(destinationDir,  entry.getName());
+                    if (entry.isDirectory()) {
+                        entryDestination.mkdirs();
+                    } else {
+                        entryDestination.getParentFile().mkdirs();
+                        OutputStream outputStream = new FileOutputStream(entryDestination);
+                        zipFile.getInputStream(entry).transferTo(outputStream);
+                    }
+                }
+                log.info("Unzipped addon files");
+            } catch (IOException e) {
+                Gui.errorMessage("Error while unzipping addon files");
+            }
+            // deductSavedVariablesDir();
+        }
+    }
+
+    private void deductSavedVariablesDir() {
+        // form Addons directory, move up to "_retail_" directory
         Path addonPath = addonDir.toPath().toAbsolutePath();
         System.out.println("Addon path: " + addonPath);
         if (addonPath.getNameCount() < 4){
-            // TODO: can't move up, handle error
+            // TODO: can't move up, handle error or stay silent?
+            System.out.println("Can't move up the file tree from: " + addonPath);
         } else {
             // ../../.. move three up
-            Path grandGrandParent = addonPath.getName(addonPath.getNameCount()-4);
-            System.out.println("Three up: " + grandGrandParent);
-            Path accountPath = grandGrandParent.resolve("WTF").resolve("Account");
+            Path threeUp = addonPath.getName(addonPath.getNameCount()-4).toAbsolutePath();
+            System.out.println("Three up: " + threeUp);
+            Path accountPath = threeUp.resolve("WTF").resolve("Account");
             System.out.println("Account path: " + accountPath);
+            // TODO: deduct account folder (only one in CAPS)
+            // look for uppercase folder
+            String pattern = "[A-Z]";
+            PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+            //Stream<Path> accountwideSavedVarsDir = Files.find(accountPath, 1, )
         }
-
-        // TODO: implement addon installation procedure
     }
 
     // receives installation file location from GUI
@@ -99,6 +136,24 @@ public class MainControl {
                 sessionManager.exportToXML(inputFile, outputFile, 0);
             }
 
+    }
+
+
+
+    @FXML
+    public void onSelectFileClick(ActionEvent actionEvent) {
+        File selectedFile = Gui.promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)");
+        if (selectedFile != null) {
+            selectSavedVarFile(selectedFile);
+        }
+    }
+
+    @FXML
+    public void onExportToXmlClick(ActionEvent actionEvent) {
+        File selectedDir = Gui.promptForFolder("Select export directory");
+        if (selectedDir != null) {
+            exportToXML(selectedDir);
+        }
     }
 
 
