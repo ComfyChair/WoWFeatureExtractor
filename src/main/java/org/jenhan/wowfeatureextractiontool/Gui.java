@@ -3,6 +3,7 @@ package org.jenhan.wowfeatureextractiontool;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
@@ -70,33 +71,27 @@ public class Gui extends Application {
     }
 
     public static void errorMessage(String message) {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Error");
-        dialog.setContentText(message);
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        dialog.showAndWait();
+        Alert alertMessage = new Alert(Alert.AlertType.ERROR);
+        alertMessage.setContentText(message);
+        alertMessage.showAndWait();
     }
 
     public static boolean confirm(String message) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Confirmation needed");
-        dialog.setContentText(message);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
-        Optional<ButtonType> result = dialog.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.YES;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 
     public static void notice(String message) {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Notice");
-        dialog.setContentText(message);
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        dialog.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public static void success(String message) {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Success");
+        Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+        dialog.setTitle("Success!");
         dialog.setContentText(message);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
