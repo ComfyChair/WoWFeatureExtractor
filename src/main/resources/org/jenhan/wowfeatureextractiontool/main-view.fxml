@@ -27,7 +27,7 @@
          </font>
       </Button>
 
-       <Button onAction="#onSelectFileClick"
+       <Button onAction="#selectFile"
                prefHeight="80.0"
                prefWidth="80.0"
                text="select file"
@@ -38,7 +38,7 @@
          </font>
       </Button>
 
-       <Button onAction="#onExportToXmlClick"
+       <Button onAction="#exportToXML"
                prefHeight="80.0"
                prefWidth="80.0"
                text="export XML"
