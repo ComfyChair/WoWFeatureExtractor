@@ -18,8 +18,6 @@ public class Gui extends Application {
         launch();
     }
 
-
-
     @Override
     public void start(Stage primaryStage) throws IOException {
         Gui.primaryStage = primaryStage;
@@ -60,7 +58,6 @@ public class Gui extends Application {
         //TODO: prompt for session
     }
 
-    //TODO: create dialogs instead of console messages
     public static void errorMessage(String message) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Error");

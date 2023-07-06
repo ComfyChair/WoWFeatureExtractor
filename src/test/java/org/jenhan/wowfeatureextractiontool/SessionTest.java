@@ -56,6 +56,7 @@ class SessionTest {
     void exportToXML_TestStartOfDocument() throws IOException {
         File testOutput = new File("src/test/testOutput/exportTest2.xml");
         Session session = new Session(sessionInfoList.get(1));
+        System.out.println("Session Info: " + sessionInfoList.get(1));
         session.exportToXML(testFile, testOutput);
         // check header
         BufferedReader reader = new BufferedReader(new FileReader(testOutput));

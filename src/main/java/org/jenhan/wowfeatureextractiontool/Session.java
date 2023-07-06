@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-
 public class Session implements LuaToXML {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     /* constants */
@@ -39,26 +38,29 @@ public class Session implements LuaToXML {
                        String charName, String serverName, Calendar time) {
     }
 
-    // Utility method for displaying session info to the user prior to conversion
+    // reads session info from a recorded .lua file, so that it can be shown to the user in a session selection dialog
     static List<SessionInfo> readSessionInfo(File luaFile) {
         int sessionID = 0;
         LineNumberReader luaReader = LuaToXML.getReader(luaFile);
+        log.fine("Got reader for file " + luaFile);
         List<Session.SessionInfo> sessionList = new ArrayList<>();
         String line;
         try {
             while (((line = luaReader.readLine()) != null)) { // null marks the end of the stream
+                log.fine("Reading a line of" + luaFile);
                 line = line.trim();
                 if (line.startsWith(SESSION_START)) {
+                    log.fine("Found session start line" + luaFile);
                     // memorize start line number
                     int startLine = luaReader.getLineNumber(); // points to first entry, not to the ["session_X"] line
-                    log.finer("found session, line number: " + startLine);
+                    log.fine("found session, line number: " + startLine);
                     String charName = null;
                     String serverName = null;
                     Calendar startTime = null;
                     // read session lines until all info fields are populated
                     while ((charName == null) || (serverName == null) || (startTime == null)) {
                         line = luaReader.readLine();
-                        log.finer("Read line: " + line);
+                        log.fine("Read line: " + line);
                         if (LuaToXML.isAssignment(line)) {
                             String fieldKey = LuaToXML.getLuaFieldKey(line);
                             log.fine("is assignment with key: " + fieldKey);
@@ -70,17 +72,20 @@ public class Session implements LuaToXML {
                             }
                         }
                     }
+                    // compile information into SessionInfo record and add to List
                     SessionInfo newSessionInfo = new SessionInfo(sessionID, startLine, charName, serverName, startTime);
                     sessionList.add(newSessionInfo);
                     log.fine("Added session: " + newSessionInfo);
                 }
             }
         } catch (IOException e) {
-            //TODO: handle IOException
-            throw new RuntimeException(e);
+            log.severe("IOException while reading session info of file: " + luaFile
+                    + "\n" + e);
+            if (Gui.getPrimaryStage() != null){ // check to prevent errors when testing without gui
+                Gui.errorMessage("Could not extract session information");
+            }
         }
         return sessionList;
-
     }
 
     // Utility method to convert Unix time in seconds (as in lua field) to Calendar object
@@ -138,8 +143,11 @@ public class Session implements LuaToXML {
             log.info("Closed input and output files");
             return success;
         } catch (IOException e) {
-            // TODO: handle exceptions here
-            log.severe("Error while converting");
+            String message = "Error while converting";
+            log.severe(message+ "\n" + e);
+            if (Gui.getPrimaryStage() != null){ // check to prevent errors when testing without gui
+                Gui.errorMessage("Error while converting " + inputFile + " to " + outputFile);
+            }
             return false;
         }
     }
@@ -164,6 +172,7 @@ public class Session implements LuaToXML {
         }
     }
 
+    //TODO: switch xml file creation to java library to make any changes more easily manageable
     private void writeSimpleTag(PrintWriter xmlWriter, XmlTag tagType, int tabLength, String content) {
         log.fine("Writing " + tagType + " tag");
         for (int i = 0; i < tabLength; i++) {
@@ -204,6 +213,7 @@ public class Session implements LuaToXML {
         xmlWriter.write("</interaction>\n");
     }
 
+    //TODO: make skipping more robust: just scan for beginning of a line
     private static void skipToFeatureTable(LineNumberReader luaReader) throws IOException {
         boolean found = false;
         log.info("Skipping to feature table");

@@ -108,7 +108,9 @@ class LuaToXMLTest {
         File testOutput_1 = new File("src/test/testOutput/exportTest1.xml");
         String testFilePath_1 = "src/test/resources/FeatureRecordingTool.lua";
         File testFile_1 = new File(testFilePath_1);
+        System.out.println("Test file: " + testFile_1);
         Session session_1 = new Session(Session.readSessionInfo(testFile_1).get(0));
+        System.out.println("Read session info of " + testFile_1);
         session_1.exportToXML(testFile_1, testOutput_1);
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
