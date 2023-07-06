@@ -1,5 +1,6 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import java.io.*;
@@ -49,15 +50,15 @@ public class MainControl {
         if (destinationDir == null) return false; // user canceled selection, do nothing
         log.fine("Selected dir: " + destinationDir);
         // check for writing privileges
-        if (!destinationDir.canWrite()){
+        if (!destinationDir.canWrite()) {
             Gui.errorMessage("No writing access to this directory, choose another one");
             return false;
         }
         // check for expected directory name
-        if (!destinationDir.getName().endsWith("AddOns")){
+        if (!destinationDir.getName().endsWith("AddOns")) {
             boolean confirmation = Gui.confirm("Are you sure you want to install in this directory?" +
                     " It does not appear to be a WoW Addon folder: " + destinationDir);
-            if (!confirmation){
+            if (!confirmation) {
                 System.out.println("Don't install");
                 return false;
             }
@@ -71,7 +72,7 @@ public class MainControl {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-                File entryDestination = new File(destinationDir,  entry.getName());
+                File entryDestination = new File(destinationDir, entry.getName());
                 if (entry.isDirectory()) {
                     entryDestination.mkdirs();
                 } else {
@@ -90,14 +91,14 @@ public class MainControl {
     private void locateSavedVariablesDir() {
         // from Addons directory, move up to "_retail_" directory
         Path addonPath = addonDir.toPath().toAbsolutePath();
-        if (addonPath.getNameCount() < 2){ // can we move two directories up?
+        if (addonPath.getNameCount() < 2) { // can we move two directories up?
             Gui.notice("Can't locate your SavedVariables folder. Please select the input file manually.");
         } else {
             Path accountPath = getWTFAccountDir(addonPath);
-            if (accountPath != null){
+            if (accountPath != null) {
                 // Account-wide Folders are in UPPERCASE -> look for them
                 List<Path> accountsFound = getUppercaseFolders(accountPath);
-                if (accountsFound.size() == 1){ // one account on this installation
+                if (accountsFound.size() == 1) { // one account on this installation
                     Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
                     Gui.notice("Saved vars directory located: " + savedVarsDir);
                     Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
@@ -111,20 +112,22 @@ public class MainControl {
             }
         }
     }
+
     // moves from Addons folder to ../../WTF/Account folder
     private static Path getWTFAccountDir(Path addonPath) {
         // ../.. first, move two directories up
         Path twoUp = addonPath.getRoot()
-                .resolve(addonPath.subpath(0, addonPath.getNameCount()-2));
+                .resolve(addonPath.subpath(0, addonPath.getNameCount() - 2));
         // then, move down to ./WTF/Account
         Path accountPath = twoUp.resolve("WTF").resolve("Account");
-        if (accountPath.toFile().exists()){
+        if (accountPath.toFile().exists()) {
             return accountPath;
         } else {
             Gui.notice("Can't locate your SavedVariables folder. Please select the input file manually.");
             return null;
         }
     }
+
     // looks for folders that are named after account names (in uppercase) in WTF/Account folder
     private static List<Path> getUppercaseFolders(Path accountPath) {
         List<Path> accountsFound = new ArrayList<>();
@@ -133,7 +136,7 @@ public class MainControl {
             Files.walkFileTree(accountPath, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path path,
-                                                 BasicFileAttributes attrs) {
+                                                         BasicFileAttributes attrs) {
                     if (matcher.matches(path)) {
                         log.info("Found match:" + path);
                         accountsFound.add(path);
@@ -148,7 +151,9 @@ public class MainControl {
     }
 
     // response from GUI class for session selection prompt
-    void selectSession(int sessionID) { // receive session selection from GUI
+    @FXML
+    void selectSession(ActionEvent event) { // receive session selection from GUI
+        int sessionID = 12;
         sessionManager = SessionManager.getInstance();
         sessionManager.exportToXML(inputFile, outputFile, sessionID);
     }
@@ -160,9 +165,9 @@ public class MainControl {
         File selectedFile = Gui.promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)",
                 prefs.get(INPUT_FILE_PREF, null));
         if (selectedFile != null) {
-            if (selectedFile.exists()){
-                if (selectedFile.canRead()){
-                    this.inputFile =  selectedFile;
+            if (selectedFile.exists()) {
+                if (selectedFile.canRead()) {
+                    this.inputFile = selectedFile;
                     prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
                 } else {
                     Gui.errorMessage("Error: Could not read the file: " + selectedFile.getPath());
@@ -174,36 +179,61 @@ public class MainControl {
     // exports the .lua file to .xml format (called on button click)
     @FXML
     void exportToXML() {
-        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-        File selectedDir = Gui.promptForFolder("Select export directory", prefs.get(OUTPUT_DIR_PREF, null));
-        if (selectedDir != null) {
-            prefs.put(OUTPUT_DIR_PREF, selectedDir.getPath());
-            Path outPathComplete = selectedDir.toPath().resolve("out.xml");
-            outputFile = outPathComplete.toFile();
-            log.info("Output file will be saved to: " + outputFile.getAbsolutePath());
-            if (inputFile == null) {
-                inputFile = Gui.promptForFile("Please select the input file", prefs.get(OUTPUT_DIR_PREF, null));
-                if(inputFile == null){
-                    Gui.errorMessage("There is no valid input file");
-                    return;
-                }
-                if(!inputFile.canRead()){
-                    Gui.errorMessage("Can not read file: " + inputFile.getAbsolutePath());
-                    return;
-                }
-            }
-            sessionManager = SessionManager.getInstance();
-            sessionInfos = sessionManager.getSessionList(inputFile);
-            if (sessionInfos.isEmpty()) { // no session recorded
-                Gui.errorMessage("There was no recording found in the input file");
-            } else if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
-                Gui.promptForSession();
-            } else { // only 1 session -> export without further ado
-                sessionManager.exportToXML(inputFile, outputFile, 0);
-                Gui.success("File was successfully converted");
-            }
+        boolean hasOutputDirectory = selectOutputDirectory();
+        if (!hasOutputDirectory) return; // user canceled
+        boolean hasInputFile = inputFile != null;
+        if (!hasInputFile) {
+            hasInputFile = getInputFile();
         }
+        if (!hasInputFile) return; // user canceled
+        int sessionID = getSessionID();
+
+            sessionManager.exportToXML(inputFile, outputFile, sessionID);
+            Gui.success("File was successfully converted");
+
     }
 
+    private int getSessionID() {
+        sessionManager = SessionManager.getInstance();
+        sessionInfos = sessionManager.getSessionList(inputFile);
+        int sessionID = -1;
+        if (sessionInfos.isEmpty()) { // no session recorded
+            Gui.errorMessage("There was no recording found in the input file");
+        } else {
+            if (sessionInfos.size() == 1) { // only one session
+                sessionID = 0;
+            }
+            if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
+                sessionID = Gui.promptForSession();
+            }
+        }
+        return sessionID;
+    }
 
+    private boolean getInputFile() {
+        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
+        inputFile = Gui.promptForFile("Please select the input file", prefs.get(OUTPUT_DIR_PREF, null));
+        if (inputFile == null) {
+            Gui.errorMessage("There is no valid input file");
+            return false;
+        }
+        if (!inputFile.canRead()) {
+            Gui.errorMessage("Can not read file: " + inputFile.getAbsolutePath());
+            return false;
+        }
+        return true;
+    }
+
+    private boolean selectOutputDirectory() {
+        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
+        File selectedDir = Gui.promptForFolder("Select export directory", prefs.get(OUTPUT_DIR_PREF, null));
+        if (selectedDir == null) {
+            return false;
+        }
+        prefs.put(OUTPUT_DIR_PREF, selectedDir.getPath());
+        Path outPathComplete = selectedDir.toPath().resolve("out.xml");
+        outputFile = outPathComplete.toFile();
+        log.info("Output file will be saved to: " + outputFile.getAbsolutePath());
+        return true;
+    }
 }

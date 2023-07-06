@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.stage.*;
 
 import java.io.File;
@@ -34,11 +35,11 @@ public class Gui extends Application {
 
     static File promptForFolder(String message, String prefFolder) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        if (prefFolder != null){
+        if (prefFolder != null) {
             directoryChooser.setInitialDirectory(new File(prefFolder));
         }
         directoryChooser.setTitle(message);
-        return  directoryChooser.showDialog(getPrimaryStage());
+        return directoryChooser.showDialog(getPrimaryStage());
     }
 
     public static File promptForFile(String message, String prefFile) {
@@ -47,15 +48,32 @@ public class Gui extends Application {
         // only allow .lua files
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Lua Files", "*.lua"));
         // set previously chosen file as default (if there is any)
-        if (prefFile != null){
+        if (prefFile != null) {
             fileChooser.setInitialDirectory(new File(prefFile).getParentFile());
         }
-        return  fileChooser.showOpenDialog(getPrimaryStage());
+        return fileChooser.showOpenDialog(getPrimaryStage());
     }
 
-    public static void promptForSession() {
+    // opens a dialog to select a recorded session
+    // returns the session id or -1 in case of failure
+    public static int promptForSession() {
         System.out.println("Session selection necessary");
-        //TODO: prompt for session
+        FXMLLoader dialogLoader = new FXMLLoader(Gui.class.getResource("select-session-view.fxml"));
+        System.out.println("Loader created");
+        Dialog<Integer> sessionSelectionDialog = new Dialog<>();
+        try {
+            sessionSelectionDialog.setDialogPane(new FXMLLoader(
+                    Gui.class.getResource("select-session-view.fxml")).load());
+            Optional<Integer> result = sessionSelectionDialog.showAndWait();
+            if (result.isPresent()){
+                return result.get();
+            } else {
+                return -1;
+            }
+        } catch (IOException e) {
+            Gui.errorMessage("Error in session selection dialog");
+            return -1;
+        }
     }
 
     public static void errorMessage(String message) {
@@ -65,6 +83,7 @@ public class Gui extends Application {
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
     }
+
     public static boolean confirm(String message) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Confirmation needed");
@@ -73,6 +92,7 @@ public class Gui extends Application {
         Optional<ButtonType> result = dialog.showAndWait();
         return result.isPresent() && result.get() == ButtonType.YES;
     }
+
     public static void notice(String message) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Notice");
@@ -80,6 +100,7 @@ public class Gui extends Application {
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
     }
+
     public static void success(String message) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Success");

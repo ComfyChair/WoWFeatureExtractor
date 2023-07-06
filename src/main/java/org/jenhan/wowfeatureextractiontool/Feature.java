@@ -38,9 +38,6 @@ public class Feature {
             this.standardDescription = description;
         }
 
-        public String getStandardDescription() {
-            return standardDescription;
-        }
     }
 
     public String getDescription() {
