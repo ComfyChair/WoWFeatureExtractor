@@ -18,11 +18,11 @@ public class SessionManager {
         return instance;
     }
 
-    List<Session.SessionInfo> getSessionList(File luaFile){
+    List<SessionInfo> getSessionList(File luaFile){
         // get session information from file (static call, thus handled by interface class)
-        List<Session.SessionInfo> sessionInfos = Session.readSessionInfo(luaFile);
+        List<SessionInfo> sessionInfos = Session.readSessionInfo(luaFile);
         // create org.jenhan.Session objects from session info
-        for (Session.SessionInfo sessionInfo: sessionInfos
+        for (SessionInfo sessionInfo: sessionInfos
              ) {
             Session newSession = new Session(sessionInfo);
             sessionList.add(newSession);

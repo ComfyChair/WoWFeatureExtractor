@@ -2,19 +2,14 @@ package org.jenhan.wowfeatureextractiontool;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.*;
 import javafx.stage.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
-import static org.jenhan.wowfeatureextractiontool.Session.*;
+import java.util.*;
 
 public class Gui extends Application {
     private static Stage primaryStage;
@@ -60,16 +55,48 @@ public class Gui extends Application {
 
     // opens a dialog to select a recorded session
     // returns the session id or -1 in case of failure
-    public static int promptForSession(List<SessionInfo> sessionInfoList) {
-        System.out.println("Session selection necessary");
-        ChoiceDialog<SessionInfo> sessionChoiceDialog = new ChoiceDialog<>(sessionInfoList.get(0), sessionInfoList);
-        sessionChoiceDialog.setTitle("Sessions");
-        sessionChoiceDialog.setHeaderText("Select session ");
-        Optional<SessionInfo> result = sessionChoiceDialog.showAndWait();
-        // return session id or -1 when canceled
-        return result.map(SessionInfo::sessionID).orElse(-1);
+    public static int promptForSession() {
+        Dialog<ButtonType> sessionSelectionDialog = getSessionSelectionDialog();
+        if (sessionSelectionDialog != null){
+            System.out.println("Session selection dialog created");
+            int result = -1;
+            // show dialog and wait for results
+            System.out.println("Show dialog");
+            Optional<ButtonType> response = sessionSelectionDialog.showAndWait();
+            if (response.isPresent() && response.get() == ButtonType.OK) {
+                //TODO: get session from response
+            }
+            // return session id or -1 when canceled
+            return result;
+        } else {
+            return -1;
+        }
     }
 
+    private static Dialog<ButtonType> getSessionSelectionDialog() {
+        FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("session-selection-view.fxml"));
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(primaryStage);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        try {
+            Parent dialogContent = loader.load();
+            System.out.println("Content loaded");
+            SessionSelectionController controller = loader.getController();
+            System.out.println("About to populate table");
+            controller.populateTable();
+            System.out.println("Setting content");
+            dialog.getDialogPane().setContent(dialogContent);
+        } catch (IOException e) {
+            errorMessage("Error in session selection dialog creation");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+        return dialog;
+    }
+
+
+    // user feedback dialogs
     public static void errorMessage(String message) {
         Alert alertMessage = new Alert(Alert.AlertType.ERROR);
         alertMessage.setContentText(message);

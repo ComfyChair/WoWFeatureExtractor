@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class SessionTest {
     String testFilePath = "src/test/resources/FeatureRecordingTool.lua";
     File testFile = new File(testFilePath);
-    List<Session.SessionInfo> sessionInfoList;
-    List<Session.SessionInfo> expectedInfoList;
+    List<SessionInfo> sessionInfoList;
+    List<SessionInfo> expectedInfoList;
 
     @BeforeEach
     void setUp() {
@@ -23,15 +23,15 @@ class SessionTest {
         expectedInfoList = new ArrayList<>();
         Calendar startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688494496000L));
-        expectedInfoList.add(new Session.SessionInfo(0, 3, "Arvensis", "Sen'jin",
+        expectedInfoList.add(new SessionInfo(0, 3, "Arvensis", "Sen'jin",
                 startTime));
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688544677000L));
-        expectedInfoList.add(new Session.SessionInfo(0, 389, "Sugi", "Sen'jin",
+        expectedInfoList.add(new SessionInfo(0, 389, "Sugi", "Sen'jin",
                 startTime));
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688494046000L));
-        expectedInfoList.add(new Session.SessionInfo(0, 571, "Arvensis", "Sen'jin",
+        expectedInfoList.add(new SessionInfo(0, 571, "Arvensis", "Sen'jin",
                 startTime));
     }
 

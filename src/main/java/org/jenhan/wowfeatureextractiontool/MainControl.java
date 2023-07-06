@@ -1,8 +1,9 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import javafx.event.ActionEvent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableView;
+import javafx.scene.control.ButtonType;
 
 import java.io.*;
 import java.nio.file.*;
@@ -18,21 +19,25 @@ import java.util.prefs.*;
 public class MainControl {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private static final String ADDON_NAME = "FeatureRecordingTool";
-    private static final File ADDON_ZIP = new File("src/main/resources/org/jenhan/wowfeatureextractiontool/WoWAddon.zip");
+    private static final File ADDON_ZIP =
+            new File("src/main/resources/org/jenhan/wowfeatureextractiontool/WoWAddon.zip");
     // preferences
     private static final String ADDON_DIR_PREF = "addon_dir_pref";
     private static final String SAVED_VAR_DIR_PREF = "saved_vars_dir_pref";
     private static final String INPUT_FILE_PREF = "input_file_pref";
     private static final String OUTPUT_DIR_PREF = "output_dir_pref";
+    public ButtonType selectButtonType;
     // paths
     private File addonDir;
     private File inputFile;
     private File outputFile;
     // session stuff
     private SessionManager sessionManager;
-    List<Session.SessionInfo> sessionInfos;
 
-    // unzips the addon files into the specified folder, receives installation directory from GUI (called on button click)
+    private static ObservableList<SessionInfo> sessionInfos;
+
+    // unzips the addon files into the specified folder,
+    // receives installation directory from GUI (called on button click)
     @FXML
     void installAddon() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
@@ -172,14 +177,15 @@ public class MainControl {
     // exports the .lua file to .xml format (called on button click)
     @FXML
     void exportToXML() {
-        boolean hasOutputDirectory = selectOutputDirectory();
+        boolean hasOutputDirectory = promptForOutputDirectory();
         if (!hasOutputDirectory) return; // user canceled
         boolean hasInputFile = inputFile != null;
         if (!hasInputFile) {
-            hasInputFile = getInputFile();
+            hasInputFile = promptForInputFile();
         }
         if (!hasInputFile) return; // user canceled
-        int sessionID = getSessionID();
+        sessionManager = SessionManager.getInstance();
+        int sessionID = getSessionID(sessionManager);
         if (sessionID >= 0){
             sessionManager.exportToXML(inputFile, outputFile, sessionID);
             Gui.success("File was successfully converted");
@@ -188,24 +194,26 @@ public class MainControl {
         }
     }
 
-    private int getSessionID() {
-        sessionManager = SessionManager.getInstance();
-        sessionInfos = sessionManager.getSessionList(inputFile);
+    private int getSessionID(SessionManager sessionManager) {
+        sessionInfos = FXCollections.observableList(sessionManager.getSessionList(inputFile));
+        System.out.println("Got session infos");
         int sessionID = -1;
         if (sessionInfos.isEmpty()) { // no session recorded
             Gui.errorMessage("There was no recording found in the input file");
         } else {
+            System.out.println("There are " + sessionInfos.size() + " recorded sessions in this file.");
             if (sessionInfos.size() == 1) { // only one session
                 sessionID = 0;
             }
             if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
-                sessionID = Gui.promptForSession(sessionInfos);
+                System.out.println("Prompting for session");
+                sessionID = Gui.promptForSession();
             }
         }
         return sessionID;
     }
 
-    private boolean getInputFile() {
+    private boolean promptForInputFile() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         inputFile = Gui.promptForFile("Please select the input file", prefs.get(OUTPUT_DIR_PREF, null));
         if (inputFile == null) {
@@ -219,7 +227,7 @@ public class MainControl {
         return true;
     }
 
-    private boolean selectOutputDirectory() {
+    private boolean promptForOutputDirectory() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File selectedDir = Gui.promptForFolder("Select export directory", prefs.get(OUTPUT_DIR_PREF, null));
         if (selectedDir == null) {
@@ -230,5 +238,9 @@ public class MainControl {
         outputFile = outPathComplete.toFile();
         log.info("Output file will be saved to: " + outputFile.getAbsolutePath());
         return true;
+    }
+
+    static ObservableList<SessionInfo> getSessionInfos() {
+        return sessionInfos;
     }
 }

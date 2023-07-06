@@ -32,18 +32,12 @@ public class Session implements LuaToXML {
         return sessionInfo;
     }
 
-    // session info data structure
-    // core information as needed for session selection display plus file reading information (startLine)
-    record SessionInfo(int sessionID, int startLine,
-                       String charName, String serverName, Calendar time) {
-    }
-
     // reads session info from a recorded .lua file, so that it can be shown to the user in a session selection dialog
     static List<SessionInfo> readSessionInfo(File luaFile) {
         int sessionID = 0;
         LineNumberReader luaReader = LuaToXML.getReader(luaFile);
         log.fine("Got reader for file " + luaFile);
-        List<Session.SessionInfo> sessionList = new ArrayList<>();
+        List<SessionInfo> sessionList = new ArrayList<>();
         String line;
         try {
             while (((line = luaReader.readLine()) != null)) { // null marks the end of the stream
@@ -105,7 +99,7 @@ public class Session implements LuaToXML {
         LineNumberReader luaReader = LuaToXML.getReader(inputFile);
         PrintWriter xmlWriter = LuaToXML.getWriter(inputFile, outputFile);
         try {
-            writeDate(xmlWriter, sessionInfo.time);
+            writeDate(xmlWriter, sessionInfo.dateTimeProperty().get().getDateString());
             skipToStartLine(luaReader);
             skipToFeatureTable(luaReader);
             // now start with the actual data
@@ -183,12 +177,9 @@ public class Session implements LuaToXML {
         xmlWriter.write(tagType.getCloseTag());
     }
 
-    private void writeDate(PrintWriter xmlWriter, Calendar time) {
+    private void writeDate(PrintWriter xmlWriter, String dateString) {
         log.fine("Writing date");
-        String pattern = "dd.MM.yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        String recordingDate = simpleDateFormat.format(time.getTime());
-        xmlWriter.write(GMAF_DATE.getOpenTag() + recordingDate + GMAF_DATE.getCloseTag());
+        xmlWriter.write(GMAF_DATE.getOpenTag() + dateString + GMAF_DATE.getCloseTag());
     }
 
     // writes the current interaction feature to the xml file
@@ -230,7 +221,7 @@ public class Session implements LuaToXML {
 
     private void skipToStartLine(LineNumberReader luaReader) throws IOException {
         log.info("Skipping to start line");
-        for (int i = 0; i < this.sessionInfo.startLine; i++) {
+        for (int i = 0; i < this.sessionInfo.startLineProperty().get(); i++) {
             luaReader.readLine();
         }
     }
