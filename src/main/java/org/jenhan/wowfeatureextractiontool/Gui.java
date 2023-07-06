@@ -17,6 +17,8 @@ public class Gui extends Application {
         launch();
     }
 
+
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         Gui.primaryStage = primaryStage;
@@ -31,8 +33,11 @@ public class Gui extends Application {
         return Gui.primaryStage;
     }
 
-    static File promptForFolder(String message) {
+    static File promptForFolder(String message, String prefFolder) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
+        if (prefFolder != null){
+            directoryChooser.setInitialDirectory(new File(prefFolder));
+        }
         directoryChooser.setTitle(message);
         return  directoryChooser.showDialog(getPrimaryStage());
     }
@@ -47,7 +52,12 @@ public class Gui extends Application {
         //TODO: prompt for session
     }
 
+    //TODO: create dialogs instead of console messages
     public static void errorMessage(String message) {
         System.out.println(message);
+    }
+    public static boolean confirm(String message) {
+        System.out.println(message);
+        return true;
     }
 }
