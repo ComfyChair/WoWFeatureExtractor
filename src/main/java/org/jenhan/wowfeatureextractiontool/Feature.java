@@ -59,7 +59,7 @@ public class Feature {
         this.calendar = calendar;
     }
 
-    public FeatureType getType() {
+    FeatureType getType() {
         return type;
     }
 
@@ -75,11 +75,11 @@ public class Feature {
         }
     }
 
-    public List<FeatureObject> getObjectList() {
+    List<FeatureObject> getObjectList() {
         return objectList;
     }
 
-    public void addObject(FeatureObject object) {
+    void addObject(FeatureObject object) {
         this.objectList.add(object);
     }
 

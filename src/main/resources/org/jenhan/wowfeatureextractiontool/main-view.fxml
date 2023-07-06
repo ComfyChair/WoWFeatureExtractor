@@ -12,42 +12,40 @@
       xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
       fx:controller="org.jenhan.wowfeatureextractiontool.MainControl">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <children>
-       <Button onAction="#installAddon"
-               prefHeight="80.0"
-               prefWidth="80.0"
-               text="install addon"
-               textAlignment="CENTER"
-               wrapText="true">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
+    <Button onAction="#installAddon"
+            prefHeight="80.0"
+            prefWidth="80.0"
+            text="install addon"
+            textAlignment="CENTER"
+            wrapText="true">
+        <font>
+         <Font size="16.0"/>
+        </font>
+    </Button>
 
-       <Button onAction="#selectFile"
-               prefHeight="80.0"
-               prefWidth="80.0"
-               text="select file"
-               textAlignment="CENTER"
-               wrapText="true">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
+    <Button onAction="#selectFile"
+            prefHeight="80.0"
+            prefWidth="80.0"
+            text="select file"
+            textAlignment="CENTER"
+            wrapText="true">
+        <font>
+         <Font size="16.0"/>
+        </font>
+    </Button>
 
-       <Button onAction="#exportToXML"
-               prefHeight="80.0"
-               prefWidth="80.0"
-               text="export XML"
-               textAlignment="CENTER"
-               wrapText="true">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
+    <Button onAction="#exportToXML"
+            prefHeight="80.0"
+            prefWidth="80.0"
+            text="export XML"
+            textAlignment="CENTER"
+            wrapText="true">
+        <font>
+         <Font size="16.0"/>
+        </font>
+    </Button>
 
-   </children>
 </HBox>

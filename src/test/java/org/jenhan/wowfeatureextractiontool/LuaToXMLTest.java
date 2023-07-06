@@ -71,7 +71,7 @@ class LuaToXMLTest {
         }
         String lineFour = reader.readLine();
         assertEquals("Arvensis", LuaToXML.getLuaFieldValue(lineFour));
-        String lineFive = reader.readLine();
+        reader.readLine();
         // don't test the date, might get edited in the future
         String lineSix = reader.readLine();
         assertEquals("Sen'jin", LuaToXML.getLuaFieldValue(lineSix));
@@ -124,7 +124,7 @@ class LuaToXMLTest {
         reader.parse(testOutput_1.getAbsolutePath());
     }
 
-    public class SimpleErrorHandler implements ErrorHandler {
+    public static class SimpleErrorHandler implements ErrorHandler {
         public void warning(SAXParseException e) {
             System.out.println(e.getMessage());
         }

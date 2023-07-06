@@ -85,10 +85,6 @@ class SessionTest {
         return line.startsWith("<" + tagString) && line.endsWith(">");
     }
 
-    private boolean isCloseTag(String line, String tagString) {
-        return line.equals("</" + tagString + ">");
-    }
-
     @Test
     void timeConversionTest(){
         Calendar testTime = Calendar.getInstance();

@@ -1,6 +1,5 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import java.io.*;
@@ -25,7 +24,6 @@ public class MainControl {
     private static final String OUTPUT_DIR_PREF = "output_dir_pref";
     // paths
     private File addonDir;
-    private Path savedVarsDir;
     private File inputFile;
     private File outputFile;
     // session stuff
@@ -34,7 +32,7 @@ public class MainControl {
 
     // unzips the addon files into the specified folder, receives installation directory from GUI (called on button click)
     @FXML
-    void installAddon(ActionEvent actionEvent) {
+    void installAddon() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File destinationDir = Gui.promptForFolder("Select installation directory", prefs.get(ADDON_DIR_PREF, null));
         if (isValidDirectory(destinationDir)) {
@@ -69,7 +67,7 @@ public class MainControl {
 
     // unzips addon files to installation directory
     private static void unzipAddon(File destinationDir) {
-        try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath());) {
+        try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath())) {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
@@ -100,13 +98,13 @@ public class MainControl {
                 // Account-wide Folders are in UPPERCASE -> look for them
                 List<Path> accountsFound = getUppercaseFolders(accountPath);
                 if (accountsFound.size() == 1){ // one account on this installation
-                    savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
+                    Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
                     Gui.notice("Saved vars directory located: " + savedVarsDir);
                     Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
                     prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
-                    String inputFilePath = savedVarsDir.toString() + File.separator + ADDON_NAME + ".lua";
+                    String inputFilePath = savedVarsDir + File.separator + ADDON_NAME + ".lua";
                     inputFile = new File(inputFilePath);
-                    prefs.put(INPUT_FILE_PREF, inputFilePath.toString());
+                    prefs.put(INPUT_FILE_PREF, inputFilePath);
                 } else {
                     Gui.notice("You seem to have multiple WoW accounts. Please select the input file manually.");
                 }
@@ -132,10 +130,10 @@ public class MainControl {
         List<Path> accountsFound = new ArrayList<>();
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**[A-Z]");
         try {
-            Files.walkFileTree(accountPath, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(accountPath, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path path,
-                                                 BasicFileAttributes attrs) throws IOException {
+                                                 BasicFileAttributes attrs) {
                     if (matcher.matches(path)) {
                         log.info("Found match:" + path);
                         accountsFound.add(path);
@@ -157,7 +155,7 @@ public class MainControl {
 
     // receives input file path from GUI (called on button click)
     @FXML
-    void selectFile(ActionEvent actionEvent) {
+    void selectFile() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File selectedFile = Gui.promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)",
                 prefs.get(INPUT_FILE_PREF, null));
@@ -175,7 +173,7 @@ public class MainControl {
 
     // exports the .lua file to .xml format (called on button click)
     @FXML
-    void exportToXML(ActionEvent actionEvent) {
+    void exportToXML() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File selectedDir = Gui.promptForFolder("Select export directory", prefs.get(OUTPUT_DIR_PREF, null));
         if (selectedDir != null) {

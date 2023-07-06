@@ -71,25 +71,20 @@ public class Gui extends Application {
         dialog.setContentText(message);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
         Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            return true;
-        }
-        return false;
+        return result.isPresent() && result.get() == ButtonType.YES;
     }
-    public static boolean notice(String message) {
+    public static void notice(String message) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Notice");
         dialog.setContentText(message);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
-        return true;
     }
-    public static boolean success(String message) {
+    public static void success(String message) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Success");
         dialog.setContentText(message);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
-        return true;
     }
 }
