@@ -2,6 +2,7 @@ package org.jenhan.wowfeatureextractiontool;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableView;
 
 import java.io.*;
 import java.nio.file.*;
@@ -150,14 +151,6 @@ public class MainControl {
         return accountsFound;
     }
 
-    // response from GUI class for session selection prompt
-    @FXML
-    void selectSession(ActionEvent event) { // receive session selection from GUI
-        int sessionID = 12;
-        sessionManager = SessionManager.getInstance();
-        sessionManager.exportToXML(inputFile, outputFile, sessionID);
-    }
-
     // receives input file path from GUI (called on button click)
     @FXML
     void selectFile() {
@@ -187,10 +180,12 @@ public class MainControl {
         }
         if (!hasInputFile) return; // user canceled
         int sessionID = getSessionID();
-
+        if (sessionID >= 0){
             sessionManager.exportToXML(inputFile, outputFile, sessionID);
             Gui.success("File was successfully converted");
-
+        } else {
+            Gui.errorMessage("no valid session selected");
+        }
     }
 
     private int getSessionID() {
@@ -204,7 +199,7 @@ public class MainControl {
                 sessionID = 0;
             }
             if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
-                sessionID = Gui.promptForSession();
+                sessionID = Gui.promptForSession(sessionInfos);
             }
         }
         return sessionID;

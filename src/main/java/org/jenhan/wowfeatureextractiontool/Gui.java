@@ -4,13 +4,16 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.stage.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+
+import static org.jenhan.wowfeatureextractiontool.Session.*;
 
 public class Gui extends Application {
     private static Stage primaryStage;
@@ -56,24 +59,14 @@ public class Gui extends Application {
 
     // opens a dialog to select a recorded session
     // returns the session id or -1 in case of failure
-    public static int promptForSession() {
+    public static int promptForSession(List<SessionInfo> sessionInfoList) {
         System.out.println("Session selection necessary");
-        FXMLLoader dialogLoader = new FXMLLoader(Gui.class.getResource("select-session-view.fxml"));
-        System.out.println("Loader created");
-        Dialog<Integer> sessionSelectionDialog = new Dialog<>();
-        try {
-            sessionSelectionDialog.setDialogPane(new FXMLLoader(
-                    Gui.class.getResource("select-session-view.fxml")).load());
-            Optional<Integer> result = sessionSelectionDialog.showAndWait();
-            if (result.isPresent()){
-                return result.get();
-            } else {
-                return -1;
-            }
-        } catch (IOException e) {
-            Gui.errorMessage("Error in session selection dialog");
-            return -1;
-        }
+        ChoiceDialog<SessionInfo> sessionChoiceDialog = new ChoiceDialog<>(sessionInfoList.get(0), sessionInfoList);
+        sessionChoiceDialog.setTitle("Sessions");
+        sessionChoiceDialog.setHeaderText("Select session ");
+        Optional<SessionInfo> result = sessionChoiceDialog.showAndWait();
+        // return session id or -1 when canceled
+        return result.map(SessionInfo::sessionID).orElse(-1);
     }
 
     public static void errorMessage(String message) {
