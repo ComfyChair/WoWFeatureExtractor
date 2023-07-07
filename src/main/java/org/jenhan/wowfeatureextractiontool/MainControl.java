@@ -8,9 +8,7 @@ import javafx.scene.control.ButtonType;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -177,6 +175,7 @@ public class MainControl {
     // exports the .lua file to .xml format (called on button click)
     @FXML
     void exportToXML() {
+        //TODO: Allow specifying a file name
         boolean hasOutputDirectory = promptForOutputDirectory();
         if (!hasOutputDirectory) return; // user canceled
         boolean hasInputFile = inputFile != null;
@@ -185,32 +184,33 @@ public class MainControl {
         }
         if (!hasInputFile) return; // user canceled
         sessionManager = SessionManager.getInstance();
-        int sessionID = getSessionID(sessionManager);
-        if (sessionID >= 0){
-            sessionManager.exportToXML(inputFile, outputFile, sessionID);
-            Gui.success("File was successfully converted");
+        List<Integer> sessionIDs = getSessionID(sessionManager);
+        if (sessionIDs.size() > 0){
+            sessionManager.exportToXML(inputFile, outputFile, sessionIDs);
+            Gui.success("Converted  " + sessionIDs.size() + " sessions to xml");
         } else {
-            Gui.errorMessage("no valid session selected");
+            Gui.notice("no session selected");
         }
     }
 
-    private int getSessionID(SessionManager sessionManager) {
+    private List<Integer> getSessionID(SessionManager sessionManager) {
         sessionInfos = FXCollections.observableList(sessionManager.getSessionList(inputFile));
         System.out.println("Got session infos");
-        int sessionID = -1;
+        List<Integer> sessionIDs = new ArrayList<>();
         if (sessionInfos.isEmpty()) { // no session recorded
             Gui.errorMessage("There was no recording found in the input file");
         } else {
             System.out.println("There are " + sessionInfos.size() + " recorded sessions in this file.");
             if (sessionInfos.size() == 1) { // only one session
-                sessionID = 0;
+                sessionIDs.add(0);
             }
             if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
                 System.out.println("Prompting for session");
-                sessionID = Gui.promptForSession();
+                sessionIDs.addAll(Gui.promptForSession());
             }
         }
-        return sessionID;
+        System.out.println("Returning " + sessionIDs.size() + " session id(s): " + Arrays.toString(sessionIDs.toArray()));
+        return sessionIDs;
     }
 
     private boolean promptForInputFile() {

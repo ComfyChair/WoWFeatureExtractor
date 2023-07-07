@@ -6,12 +6,13 @@
 
 
 <?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.collections.FXCollections?>
 <Pane maxHeight="-Infinity" maxWidth="-Infinity"
       minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="400.0" prefWidth="600.0"
+      prefWidth="600.0"
       xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.jenhan.wowfeatureextractiontool.SessionSelectionController">
-       <TableView fx:id="sessionInfoTable" prefHeight="400.0" prefWidth="640.0">
+       <TableView fx:id="sessionInfoTable" prefWidth="600.0">
            <columns>
                <TableColumn fx:id="date" prefWidth="75.0" text="Date" >
                    <cellValueFactory><PropertyValueFactory property="date" />

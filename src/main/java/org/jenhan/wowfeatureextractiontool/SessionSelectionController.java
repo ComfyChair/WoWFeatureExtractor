@@ -1,8 +1,11 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+
+import java.util.List;
 
 public class SessionSelectionController {
     // session selection
@@ -16,8 +19,16 @@ public class SessionSelectionController {
     TableColumn<SessionInfo, String> charName;
     @FXML
     TableColumn<SessionInfo, String> serverName;
+    @FXML
+    ObservableList<SessionInfo> sessionList;
 
-    public void populateTable() {
-        sessionInfoTable.setItems(MainControl.getSessionInfos());
+    @FXML
+    void populateTable() {
+        sessionList = MainControl.getSessionInfos();
+        sessionInfoTable.setItems(sessionList);
+    }
+
+    List<SessionInfo> getSelected(){
+        return sessionInfoTable.getSelectionModel().getSelectedItems();
     }
 }

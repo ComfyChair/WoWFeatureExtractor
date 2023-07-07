@@ -21,7 +21,7 @@ public class SessionManager {
     List<SessionInfo> getSessionList(File luaFile){
         // get session information from file (static call, thus handled by interface class)
         List<SessionInfo> sessionInfos = Session.readSessionInfo(luaFile);
-        // create org.jenhan.Session objects from session info
+        // create Session objects from session info
         for (SessionInfo sessionInfo: sessionInfos
              ) {
             Session newSession = new Session(sessionInfo);
@@ -30,8 +30,16 @@ public class SessionManager {
         return sessionInfos;
     }
 
-    void exportToXML(File inPath, File outPath, int sessionID){
-        sessionList.get(sessionID).exportToXML(inPath, outPath);
+    void exportToXML(File inPath, File outPath, List<Integer> sessionIDs){
+        if (sessionIDs.size() == 1){ // single session, no additional identifier for output
+            sessionList.get(sessionIDs.get(0)).exportToXML(inPath, outPath);
+        } else { // multiple session, append session id to file name
+            for (Integer sessionID: sessionIDs
+            ) {
+                outPath = new File(outPath + "_" + sessionID);
+                sessionList.get(sessionID).exportToXML(inPath, outPath);
+            }
+        }
     }
 
 }

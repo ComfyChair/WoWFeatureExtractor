@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 public class Session implements LuaToXML {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     /* constants */
-    private static final String SESSION_START = "[\"session_";
+    private static final String SESSION_FIELD_START = "[\"session_";
+    private static final String SESSION_FIELD_END = "\"] = {";
     private static final String CHAR_NAME = "characterName";
     private static final String SERVER_NAME = "serverName";
     private static final String START_TIME = "startTimeStamp";
@@ -34,17 +35,18 @@ public class Session implements LuaToXML {
 
     // reads session info from a recorded .lua file, so that it can be shown to the user in a session selection dialog
     static List<SessionInfo> readSessionInfo(File luaFile) {
-        int sessionID = 0;
         LineNumberReader luaReader = LuaToXML.getReader(luaFile);
         log.fine("Got reader for file " + luaFile);
         List<SessionInfo> sessionList = new ArrayList<>();
         String line;
+        int sessionID = -1;
         try {
             while (((line = luaReader.readLine()) != null)) { // null marks the end of the stream
                 log.fine("Reading a line of" + luaFile);
                 line = line.trim();
-                if (line.startsWith(SESSION_START)) {
+                if (line.startsWith(SESSION_FIELD_START)) {
                     log.fine("Found session start line" + luaFile);
+                    sessionID++;
                     // memorize start line number
                     int startLine = luaReader.getLineNumber(); // points to first entry, not to the ["session_X"] line
                     log.fine("found session, line number: " + startLine);
@@ -109,7 +111,7 @@ public class Session implements LuaToXML {
                 log.fine("Current line: " + currentLine);
                 if (currentLine.trim().equals("{")){
                     // new interaction feature
-                    log.info("   New feature");
+                    log.fine("   New feature");
                     Feature thisFeature = new Feature();
                     currentLine = luaReader.readLine();
                     log.fine("Current line: " + currentLine);
@@ -134,7 +136,7 @@ public class Session implements LuaToXML {
             xmlWriter.flush();
             xmlWriter.close();
             luaReader.close();
-            log.info("Closed input and output files");
+            log.fine("Closed input and output files");
             return success;
         } catch (IOException e) {
             String message = "Error while converting";
@@ -207,7 +209,7 @@ public class Session implements LuaToXML {
     //TODO: make skipping more robust: just scan for beginning of a line
     private static void skipToFeatureTable(LineNumberReader luaReader) throws IOException {
         boolean found = false;
-        log.info("Skipping to feature table");
+        log.fine("Skipping to feature table");
         String nextLine;
         while (!found && (nextLine = luaReader.readLine()) != null){
             log.fine("Current line: " + nextLine);
@@ -220,7 +222,7 @@ public class Session implements LuaToXML {
     }
 
     private void skipToStartLine(LineNumberReader luaReader) throws IOException {
-        log.info("Skipping to start line");
+        log.fine("Skipping to start line");
         for (int i = 0; i < this.sessionInfo.startLineProperty().get(); i++) {
             luaReader.readLine();
         }

@@ -1,6 +1,7 @@
 package org.jenhan.wowfeatureextractiontool;
 
 import javafx.application.Application;
+import javafx.beans.value.ObservableIntegerValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -54,47 +55,39 @@ public class Gui extends Application {
     }
 
     // opens a dialog to select a recorded session
-    // returns the session id or -1 in case of failure
-    public static int promptForSession() {
-        Dialog<ButtonType> sessionSelectionDialog = getSessionSelectionDialog();
-        if (sessionSelectionDialog != null){
-            System.out.println("Session selection dialog created");
-            int result = -1;
-            // show dialog and wait for results
-            System.out.println("Show dialog");
-            Optional<ButtonType> response = sessionSelectionDialog.showAndWait();
-            if (response.isPresent() && response.get() == ButtonType.OK) {
-                //TODO: get session from response
-            }
-            // return session id or -1 when canceled
-            return result;
-        } else {
-            return -1;
-        }
-    }
-
-    private static Dialog<ButtonType> getSessionSelectionDialog() {
+    // returns a list of the selected session ids
+    public static List<Integer> promptForSession() {
+        // create dialog with content from fxml
         FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("session-selection-view.fxml"));
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.initOwner(primaryStage);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        Dialog<ButtonType> sessionSelectionDialog = new Dialog<>();
+        sessionSelectionDialog.initOwner(primaryStage);
+        sessionSelectionDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        Parent dialogContent;
         try {
-            Parent dialogContent = loader.load();
-            //System.out.println("Content loaded");
-            SessionSelectionController controller = loader.getController();
-            //System.out.println("About to populate table");
-            controller.populateTable();
-            //System.out.println("Setting content");
-            dialog.getDialogPane().setContent(dialogContent);
+            dialogContent = loader.load();
         } catch (IOException e) {
             errorMessage("Error in session selection dialog creation");
             System.out.println(e.getMessage());
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
-        return dialog;
+        // populate session table in dialog content
+        SessionSelectionController controller = loader.getController();
+        controller.populateTable();
+        sessionSelectionDialog.getDialogPane().setContent(dialogContent);
+        List<Integer> result = new ArrayList<>(); // default for: failure or no selection
+        // show dialog and wait for results
+        Optional<ButtonType> response = sessionSelectionDialog.showAndWait();
+        if (response.isPresent() && response.get() == ButtonType.OK) {
+            result = controller.getSelected().stream()
+                    .map(SessionInfo::sessionIDProperty)
+                    .map(ObservableIntegerValue::get)
+                    .toList();
+        }
+        System.out.println("selected " + result.size() + " sessions with id: " + Arrays.toString(result.toArray()));
+        // return session id or -1 when canceled
+        return result;
     }
-
 
     // user feedback dialogs
     public static void errorMessage(String message) {
