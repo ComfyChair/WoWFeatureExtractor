@@ -1,6 +1,7 @@
 package org.jenhan.wowfeatureextractiontool;
 
 import javafx.beans.property.*;
+import javafx.fxml.FXML;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,11 +11,18 @@ import java.util.Objects;
 // session info data structure
 // core information as needed for session selection display plus file reading information (startLine)
 public class SessionInfo {
+    @FXML
     private final IntegerProperty sessionID = new SimpleIntegerProperty();
+    @FXML
     private final IntegerProperty startLine = new SimpleIntegerProperty();
+    @FXML
     private final StringProperty charName = new SimpleStringProperty();
+    @FXML
     private final StringProperty serverName = new SimpleStringProperty();
-    private final ObjectProperty<DateTimeFormatted> dateTime = new SimpleObjectProperty<>();
+    @FXML
+    private final ObjectProperty<DateFormatted> date = new SimpleObjectProperty<>();
+    @FXML
+    private final ObjectProperty<TimeFormatted> time = new SimpleObjectProperty<>();
 
     SessionInfo(int sessionID, int startLine,
                 String charName, String serverName, Calendar calendar) {
@@ -22,7 +30,8 @@ public class SessionInfo {
         this.startLine.setValue(startLine);
         this.charName.setValue(charName);
         this.serverName.setValue(serverName);
-        this.dateTime.setValue(new DateTimeFormatted(calendar.getTime()));
+        this.date.setValue(new DateFormatted(calendar.getTime()));
+        this.time.setValue(new TimeFormatted(calendar.getTime()));
     }
 
     public IntegerProperty sessionIDProperty() {
@@ -37,8 +46,11 @@ public class SessionInfo {
         return serverName;
     }
 
-    public ObjectProperty<DateTimeFormatted> dateTimeProperty() {
-        return dateTime;
+    public ObjectProperty<DateFormatted> dateProperty() {
+        return date;
+    }
+    public ObjectProperty<TimeFormatted> timeProperty() {
+        return time;
     }
 
     IntegerProperty startLineProperty() {
@@ -54,12 +66,12 @@ public class SessionInfo {
                 && this.startLine.get() == that.startLine.get()
                 && this.charName.get().equals(that.charName.get())
                 && this.serverName.get().equals(that.serverName.get())
-                && this.dateTime.get().getDateString().equals(that.dateTime.get().getDateString());
+                && this.time.get().toString().equals(that.time.get().toString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sessionID.get(), startLine.get(), charName.get(), serverName.get(), dateTime.get());
+        return Objects.hash(sessionID.get(), startLine.get(), charName.get(), serverName.get(), time.get());
     }
 
     @Override
@@ -69,19 +81,15 @@ public class SessionInfo {
                 ", startLine=" + startLine +
                 ", charName=" + charName +
                 ", serverName=" + serverName +
-                ", dateTime=" + dateTime +
+                ", dateTime=" + time +
                 '}';
     }
 
-    public static class DateTimeFormatted extends Date {
-        Date dateTime;
+    public static class DateFormatted extends Date {
+        Date date;
 
-        public DateTimeFormatted(Date date) {
-            dateTime = date;
-        }
-
-        String getDateString(){
-            return new SimpleDateFormat("dd.MM.yyyy").format(dateTime);
+        public DateFormatted(Date date) {
+            this.date = date;
         }
 
         @Override
@@ -89,18 +97,45 @@ public class SessionInfo {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
-            DateTimeFormatted that = (DateTimeFormatted) o;
-            return Objects.equals(dateTime, that.dateTime);
+            DateFormatted that = (DateFormatted) o;
+            return Objects.equals(date, that.date);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), dateTime);
+            return Objects.hash(super.hashCode(), date);
         }
 
         @Override
         public String toString() {
-            return new SimpleDateFormat("dd/MM/yyyy  HH:mm:ss").format(dateTime);
+            return new SimpleDateFormat("dd.MM.yyyy").format(date);
+        }
+    }
+
+    public static class TimeFormatted extends Date {
+        Date date;
+
+        public TimeFormatted(Date date) {
+            this.date = date;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            TimeFormatted that = (TimeFormatted) o;
+            return Objects.equals(date, that.date);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), date);
+        }
+
+        @Override
+        public String toString() {
+            return new SimpleDateFormat("HH:mm:ss").format(date);
         }
     }
 

@@ -80,11 +80,11 @@ public class Gui extends Application {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         try {
             Parent dialogContent = loader.load();
-            System.out.println("Content loaded");
+            //System.out.println("Content loaded");
             SessionSelectionController controller = loader.getController();
-            System.out.println("About to populate table");
+            //System.out.println("About to populate table");
             controller.populateTable();
-            System.out.println("Setting content");
+            //System.out.println("Setting content");
             dialog.getDialogPane().setContent(dialogContent);
         } catch (IOException e) {
             errorMessage("Error in session selection dialog creation");

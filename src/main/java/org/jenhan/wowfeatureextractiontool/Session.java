@@ -99,7 +99,7 @@ public class Session implements LuaToXML {
         LineNumberReader luaReader = LuaToXML.getReader(inputFile);
         PrintWriter xmlWriter = LuaToXML.getWriter(inputFile, outputFile);
         try {
-            writeDate(xmlWriter, sessionInfo.dateTimeProperty().get().getDateString());
+            writeDate(xmlWriter, sessionInfo.timeProperty().get().toString());
             skipToStartLine(luaReader);
             skipToFeatureTable(luaReader);
             // now start with the actual data
