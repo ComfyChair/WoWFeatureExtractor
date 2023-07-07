@@ -2,6 +2,7 @@ package org.jenhan.wowfeatureextractiontool;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -26,6 +27,7 @@ public class SessionSelectionController {
     void populateTable() {
         sessionList = MainControl.getSessionInfos();
         sessionInfoTable.setItems(sessionList);
+        sessionInfoTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     List<SessionInfo> getSelected(){
