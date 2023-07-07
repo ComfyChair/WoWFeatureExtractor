@@ -5,28 +5,24 @@ import javafx.beans.value.ObservableIntegerValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.stage.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Gui extends Application {
     private static Stage primaryStage;
 
     public static void main(String[] args) {
         launch();
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        Gui.primaryStage = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 360, 240);
-        primaryStage.setTitle("WoW Feature Extraction Tool");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     static public Stage getPrimaryStage() {
@@ -59,9 +55,10 @@ public class Gui extends Application {
     public static List<Integer> promptForSession() {
         // create dialog with content from fxml
         FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("session-selection-view.fxml"));
-        Dialog<ButtonType> sessionSelectionDialog = new Dialog<>();
-        sessionSelectionDialog.initOwner(primaryStage);
-        sessionSelectionDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(primaryStage);
+        dialog.setTitle("Session selection");
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         Parent dialogContent;
         try {
             dialogContent = loader.load();
@@ -74,10 +71,10 @@ public class Gui extends Application {
         // populate session table in dialog content
         SessionSelectionController controller = loader.getController();
         controller.populateTable();
-        sessionSelectionDialog.getDialogPane().setContent(dialogContent);
+        dialog.getDialogPane().setContent(dialogContent);
         List<Integer> result = new ArrayList<>(); // default for: failure or no selection
         // show dialog and wait for results
-        Optional<ButtonType> response = sessionSelectionDialog.showAndWait();
+        Optional<ButtonType> response = dialog.showAndWait();
         if (response.isPresent() && response.get() == ButtonType.OK) {
             result = controller.getSelected().stream()
                     .map(SessionInfo::sessionIDProperty)
@@ -109,9 +106,19 @@ public class Gui extends Application {
 
     public static void success(String message) {
         Alert dialog = new Alert(Alert.AlertType.INFORMATION);
-        dialog.setTitle("Success!");
+        dialog.setTitle("Success");
         dialog.setContentText(message);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        Gui.primaryStage = primaryStage;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 360, 240);
+        primaryStage.setTitle("WoW Feature Extraction Tool");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }

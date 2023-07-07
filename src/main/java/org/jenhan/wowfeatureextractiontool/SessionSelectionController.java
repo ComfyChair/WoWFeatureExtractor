@@ -30,7 +30,7 @@ public class SessionSelectionController {
         sessionInfoTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    List<SessionInfo> getSelected(){
+    List<SessionInfo> getSelected() {
         return sessionInfoTable.getSelectionModel().getSelectedItems();
     }
 }

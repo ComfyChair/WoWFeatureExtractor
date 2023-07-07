@@ -14,32 +14,6 @@ public class Feature {
     String description;
     List<FeatureObject> objectList = new ArrayList<>();
 
-    record FeatureObject(int id, String term){}
-    enum FeatureType{
-        MOV_1("started moving"),
-        MOV_2("stopped moving"),
-        ZONE_1("entered new area"),
-        ZONE_2("entered new subarea"),
-        ZONE_3("entered indoor area"),
-        OBJ_1("looting"),
-        OBJ_2("opened mailbox"),
-        NPC_1("quest npc"),
-        NPC_2("flight master"),
-        COMM_1("emote"),
-        COMM_2("whisper"),
-        COMM_3("party chat"),
-        GRP_1("grouping: group composition update"),
-        SPELL_1("sent spellcast"),
-        UNKNOWN("unknown type");
-
-        private final String standardDescription;
-
-        FeatureType(String description){
-            this.standardDescription = description;
-        }
-
-    }
-
     public String getDescription() {
         return description;
     }
@@ -66,8 +40,8 @@ public class Feature {
                 this.type = type;
             }
         }
-        if (this.type == null){
-            log.logp(Level.WARNING,"Feature", "setType", "Unknown feature type: " + typeString);
+        if (this.type == null) {
+            log.logp(Level.WARNING, "Feature", "setType", "Unknown feature type: " + typeString);
             this.type = FeatureType.UNKNOWN;
         }
     }
@@ -78,6 +52,34 @@ public class Feature {
 
     void addObject(FeatureObject object) {
         this.objectList.add(object);
+    }
+
+    enum FeatureType {
+        MOV_1("started moving"),
+        MOV_2("stopped moving"),
+        ZONE_1("entered new area"),
+        ZONE_2("entered new subarea"),
+        ZONE_3("entered indoor area"),
+        OBJ_1("looting"),
+        OBJ_2("opened mailbox"),
+        NPC_1("quest npc"),
+        NPC_2("flight master"),
+        COMM_1("emote"),
+        COMM_2("whisper"),
+        COMM_3("party chat"),
+        GRP_1("grouping: group composition update"),
+        SPELL_1("sent spellcast"),
+        UNKNOWN("unknown type");
+
+        private final String standardDescription;
+
+        FeatureType(String description) {
+            this.standardDescription = description;
+        }
+
+    }
+
+    record FeatureObject(int id, String term) {
     }
 
 }

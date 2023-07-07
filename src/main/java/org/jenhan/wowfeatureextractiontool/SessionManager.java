@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SessionManager {
-    private static SessionManager instance;
-    private final List<Session> sessionList = new ArrayList<>();
     private static final String OUTFILE_NAME = "WoW_Features";
     private static final String OUTFILE_EXTENSION = ".xml";
+    private static SessionManager instance;
+    private final List<Session> sessionList = new ArrayList<>();
 
     private SessionManager() {
     }

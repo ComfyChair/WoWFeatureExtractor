@@ -15,7 +15,6 @@ public class Session implements LuaToXML {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     /* constants */
     private static final String SESSION_FIELD_START = "[\"session_";
-    private static final String SESSION_FIELD_END = "\"] = {";
     private static final String CHAR_NAME = "characterName";
     private static final String SERVER_NAME = "serverName";
     private static final String START_TIME = "startTimeStamp";
@@ -26,11 +25,6 @@ public class Session implements LuaToXML {
     // constructor
     Session(SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
-    }
-
-    // returns info for a single session
-    SessionInfo getSessionInfo() {
-        return sessionInfo;
     }
 
     // reads session info from a recorded .lua file, so that it can be shown to the user in a session selection dialog
@@ -77,7 +71,7 @@ public class Session implements LuaToXML {
         } catch (IOException e) {
             log.severe("IOException while reading session info of file: " + luaFile
                     + "\n" + e);
-            if (Gui.getPrimaryStage() != null){ // check to prevent errors when testing without gui
+            if (Gui.getPrimaryStage() != null) { // check to prevent errors when testing without gui
                 Gui.errorMessage("Could not extract session information");
             }
         }
@@ -94,6 +88,26 @@ public class Session implements LuaToXML {
         return time;
     }
 
+    //TODO: make skipping more robust: just scan for beginning of a line
+    private static void skipToFeatureTable(LineNumberReader luaReader) throws IOException {
+        boolean found = false;
+        log.fine("Skipping to feature table");
+        String nextLine;
+        while (!found && (nextLine = luaReader.readLine()) != null) {
+            log.fine("Current line: " + nextLine);
+            if (LuaToXML.isAssignment(nextLine) && LuaToXML.getLuaFieldKey(nextLine).equals(FEATURE_TABLE)) {
+                int lineNumber = luaReader.getLineNumber();
+                log.fine("Found feature table at line " + lineNumber);
+                found = true;
+            }
+        }
+    }
+
+    // returns info for a single session
+    SessionInfo getSessionInfo() {
+        return sessionInfo;
+    }
+
     // converts lua feature table to GMAF-style xml
     @Override
     public boolean exportToXML(File inputFile, File outputFile) {
@@ -107,17 +121,17 @@ public class Session implements LuaToXML {
             // now start with the actual data
             String currentLine;
             while ((currentLine = luaReader.readLine()) != null // security check for end of file
-                    && !currentLine.trim().equals("},")){ // end of FeatureTable
+                    && !currentLine.trim().equals("},")) { // end of FeatureTable
                 log.fine("Current line: " + currentLine);
-                if (currentLine.trim().equals("{")){
+                if (currentLine.trim().equals("{")) {
                     // new interaction feature
                     log.fine("   New feature");
                     Feature thisFeature = new Feature();
                     currentLine = luaReader.readLine();
                     log.fine("Current line: " + currentLine);
-                    while (LuaToXML.isAssignment(currentLine)){
+                    while (LuaToXML.isAssignment(currentLine)) {
                         log.fine("   Assignment found at line " + luaReader.getLineNumber());
-                        switch (LuaToXML.getLuaFieldKey(currentLine)){
+                        switch (LuaToXML.getLuaFieldKey(currentLine)) {
                             case "timestamp" -> thisFeature.setCalendar(getTimeFromLuaField(currentLine));
                             case "description" -> thisFeature.setDescription(LuaToXML.getLuaFieldValue(currentLine));
                             case "type" -> thisFeature.setType(LuaToXML.getLuaFieldValue(currentLine));
@@ -140,8 +154,8 @@ public class Session implements LuaToXML {
             return success;
         } catch (IOException e) {
             String message = "Error while converting";
-            log.severe(message+ "\n" + e);
-            if (Gui.getPrimaryStage() != null){ // check to prevent errors when testing without gui
+            log.severe(message + "\n" + e);
+            if (Gui.getPrimaryStage() != null) { // check to prevent errors when testing without gui
                 Gui.errorMessage("Error while converting " + inputFile + " to " + outputFile);
             }
             return false;
@@ -154,13 +168,13 @@ public class Session implements LuaToXML {
         int id = 1;
         String currentLine;
         while ((currentLine = luaReader.readLine()) != null // security check
-                && !currentLine.trim().equals("},")){ // closing brackets of objects table
+                && !currentLine.trim().equals("},")) { // closing brackets of objects table
             log.fine("Current line: " + currentLine);
             String[] split = currentLine.split("\",");
             // first part of split is object term, omit leading quotation mark
             String term = split[0].trim().substring(1);
             log.fine("Term: " + term);
-            if (!term.equals("")){
+            if (!term.equals("")) {
                 Feature.FeatureObject newObject = new Feature.FeatureObject(id, term);
                 thisfeature.addObject(newObject);
                 id++;
@@ -192,10 +206,10 @@ public class Session implements LuaToXML {
         String recordingTime = simpleDateFormat.format(thisFeature.getCalendar().getTime());
         // start writing
         xmlWriter.write("<interaction begin=" + "'" + recordingTime + "'>\n");
-        writeSimpleTag(xmlWriter,  GMAF_TYPE, 1, thisFeature.getType().name());
+        writeSimpleTag(xmlWriter, GMAF_TYPE, 1, thisFeature.getType().name());
         writeSimpleTag(xmlWriter, GMAF_DESCRIPTION, 1, thisFeature.getDescription());
-        for (Feature.FeatureObject object: thisFeature.getObjectList()
-             ) {
+        for (Feature.FeatureObject object : thisFeature.getObjectList()
+        ) {
             xmlWriter.write("\t" + GMAF_OBJECT.getOpenTag() + "\n");
             writeSimpleTag(xmlWriter, GMAF_ID, 2, String.valueOf(object.id()));
             writeSimpleTag(xmlWriter, GMAF_TERM, 2, object.term());
@@ -204,21 +218,6 @@ public class Session implements LuaToXML {
         }
         // close interaction feature tag
         xmlWriter.write("</interaction>\n");
-    }
-
-    //TODO: make skipping more robust: just scan for beginning of a line
-    private static void skipToFeatureTable(LineNumberReader luaReader) throws IOException {
-        boolean found = false;
-        log.fine("Skipping to feature table");
-        String nextLine;
-        while (!found && (nextLine = luaReader.readLine()) != null){
-            log.fine("Current line: " + nextLine);
-            if (LuaToXML.isAssignment(nextLine) && LuaToXML.getLuaFieldKey(nextLine).equals(FEATURE_TABLE)){
-                int lineNumber = luaReader.getLineNumber();
-                log.fine("Found feature table at line " + lineNumber);
-                found = true;
-            }
-        }
     }
 
     private void skipToStartLine(LineNumberReader luaReader) throws IOException {

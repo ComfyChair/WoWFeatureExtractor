@@ -49,6 +49,7 @@ public class SessionInfo {
     public ObjectProperty<DateFormatted> dateProperty() {
         return date;
     }
+
     public ObjectProperty<TimeFormatted> timeProperty() {
         return time;
     }
