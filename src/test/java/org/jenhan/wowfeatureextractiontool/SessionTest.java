@@ -27,11 +27,11 @@ class SessionTest {
                 startTime));
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688544677000L));
-        expectedInfoList.add(new SessionInfo(0, 389, "Sugi", "Sen'jin",
+        expectedInfoList.add(new SessionInfo(1, 389, "Sugi", "Sen'jin",
                 startTime));
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688494046000L));
-        expectedInfoList.add(new SessionInfo(0, 571, "Arvensis", "Sen'jin",
+        expectedInfoList.add(new SessionInfo(2, 571, "Arvensis", "Sen'jin",
                 startTime));
     }
 

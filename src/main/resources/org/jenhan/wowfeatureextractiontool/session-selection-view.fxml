@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
 
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.collections.FXCollections?>
 <Pane maxHeight="-Infinity" maxWidth="-Infinity"
       minHeight="-Infinity" minWidth="-Infinity"
       prefWidth="600.0"

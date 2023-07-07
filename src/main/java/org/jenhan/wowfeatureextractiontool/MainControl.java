@@ -185,31 +185,25 @@ public class MainControl {
         if (!hasInputFile) return; // user canceled
         sessionManager = SessionManager.getInstance();
         List<Integer> sessionIDs = getSessionID(sessionManager);
-        if (sessionIDs.size() > 0){
+        if (sessionIDs.size() > 0) {
             sessionManager.exportToXML(inputFile, outputFile, sessionIDs);
             Gui.success("Converted  " + sessionIDs.size() + " sessions to xml");
-        } else {
-            Gui.notice("no session selected");
         }
     }
 
     private List<Integer> getSessionID(SessionManager sessionManager) {
         sessionInfos = FXCollections.observableList(sessionManager.getSessionList(inputFile));
-        System.out.println("Got session infos");
         List<Integer> sessionIDs = new ArrayList<>();
         if (sessionInfos.isEmpty()) { // no session recorded
             Gui.errorMessage("There was no recording found in the input file");
         } else {
-            System.out.println("There are " + sessionInfos.size() + " recorded sessions in this file.");
             if (sessionInfos.size() == 1) { // only one session
                 sessionIDs.add(0);
             }
             if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
-                System.out.println("Prompting for session");
                 sessionIDs.addAll(Gui.promptForSession());
             }
         }
-        System.out.println("Returning " + sessionIDs.size() + " session id(s): " + Arrays.toString(sessionIDs.toArray()));
         return sessionIDs;
     }
 
@@ -234,9 +228,8 @@ public class MainControl {
             return false;
         }
         prefs.put(OUTPUT_DIR_PREF, selectedDir.getPath());
-        Path outPathComplete = selectedDir.toPath().resolve("out.xml");
-        outputFile = outPathComplete.toFile();
-        log.info("Output file will be saved to: " + outputFile.getAbsolutePath());
+        outputFile = selectedDir.toPath().toFile();
+        log.info("Output file will be saved to: " + outputFile.getAbsolutePath() + ".xml");
         return true;
     }
 

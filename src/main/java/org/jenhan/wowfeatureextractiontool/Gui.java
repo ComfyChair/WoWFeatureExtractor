@@ -55,7 +55,7 @@ public class Gui extends Application {
     }
 
     // opens a dialog to select a recorded session
-    // returns a list of the selected session ids
+    // returns a list of the selected session ids (empty if canceled)
     public static List<Integer> promptForSession() {
         // create dialog with content from fxml
         FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("session-selection-view.fxml"));
@@ -84,8 +84,6 @@ public class Gui extends Application {
                     .map(ObservableIntegerValue::get)
                     .toList();
         }
-        System.out.println("selected " + result.size() + " sessions with id: " + Arrays.toString(result.toArray()));
-        // return session id or -1 when canceled
         return result;
     }
 

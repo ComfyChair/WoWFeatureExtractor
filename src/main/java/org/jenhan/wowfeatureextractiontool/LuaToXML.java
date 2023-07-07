@@ -68,8 +68,9 @@ public interface LuaToXML {
         try {
             luaReader = new LineNumberReader(new FileReader(inputFile));
         } catch (FileNotFoundException e) {
-            // TODO: handle input exception with user feedback dialog
+            Gui.errorMessage("Something went wrong while preparing the input file");
             log.severe("Could not read file");
+            e.printStackTrace();
         }
         return luaReader;
     }
@@ -85,8 +86,9 @@ public interface LuaToXML {
             xmlWriter.write(GMAF_FILE.getOpenTag() + inputFile.getName() + GMAF_FILE.getCloseTag());
 
         } catch (IOException e) {
-            // TODO: handle output exception with user feedback dialog
+            Gui.errorMessage("Something went wrong while preparing the output file");
             log.severe("output error");
+            e.printStackTrace();
         }
         return xmlWriter;
     }
