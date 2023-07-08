@@ -2,12 +2,19 @@ package org.jenhan.wowfeatureextractiontool;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,8 +61,9 @@ class SessionTest {
 
     @Test
     void exportToXML_TestStartOfDocument() throws IOException {
-        File testOutput = new File("src/test/testOutput/exportTest2.xml");
+        File testOutput = prettyPrintXML(new File("src/test/testOutput/exportTest2.xml"));
         Session session = new Session(sessionInfoList.get(1));
+        System.out.println("Testing start of document: " + testOutput.getPath());
         System.out.println("Session Info: " + sessionInfoList.get(1));
         session.exportToXML(testFile, testOutput);
         // check header
@@ -89,5 +97,22 @@ class SessionTest {
         assertEquals(3, date);
         int month = testTime.get(Calendar.MONTH);
         assertEquals(6, month); // JAN = 0
+    }
+
+    public static File prettyPrintXML(File xmlFile) {
+        try {
+            File outFile = new File(xmlFile.getPath().replace(".xml", "_pretty.xml"));
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            FileInputStream inputStream = new FileInputStream(xmlFile);
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            StreamSource src = new StreamSource(inputStream);
+            StreamResult result = new StreamResult(new BufferedOutputStream(new FileOutputStream(outFile)));
+            transformer.transform(src, result);
+            return outFile;
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurs when pretty-printing xml:\n" + xmlFile, e);
+        }
     }
 }
