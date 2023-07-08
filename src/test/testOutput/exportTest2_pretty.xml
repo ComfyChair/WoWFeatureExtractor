@@ -2,5 +2,245 @@
     <gmaf-data>
         <file>exportTest2.xml</file>
         <date>05.07.2023</date>
+        <interaction begin="10:11:18">
+            <type>MOV_1</type>
+            <description>started moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:20">
+            <type>MOV_2</type>
+            <description>stopped moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:20">
+            <type>SPELL_1</type>
+            <description>sent spellcast</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Hochlanddrache</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:22">
+            <type>MOV_1</type>
+            <description>started moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:24">
+            <type>ZONE_2</type>
+            <description>entered new subarea</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Die Obsidianenklave</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:25">
+            <type>ZONE_2</type>
+            <description>entered new subarea</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term/>
+            </object>
+        </interaction>
+        <interaction begin="10:11:25">
+            <type>ZONE_2</type>
+            <description>entered new subarea</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Die Obsidianenklave</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:27">
+            <type>MOV_1</type>
+            <description>started moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:27">
+            <type>MOV_2</type>
+            <description>stopped moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:30">
+            <type>COMM_1</type>
+            <description>emote</description>
+            <object>
+                <id>1</id>
+                <term>Bürger von Valdrakken</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Ihr winkt Bürger von Valdrakken zu.</term>
+            </object>
+            <object>
+                <id>3</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>4</id>
+                <term/>
+            </object>
+        </interaction>
+        <interaction begin="10:11:32">
+            <type>SPELL_1</type>
+            <description>sent spellcast</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Hochlanddrache</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:54">
+            <type>COMM_2</type>
+            <description>whisper</description>
+            <object>
+                <id>1</id>
+                <term>Selbstgespräch!</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Sugi-Sen'jin</term>
+            </object>
+            <object>
+                <id>3</id>
+                <term>Sugi-Sen'jin</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:56">
+            <type>MOV_1</type>
+            <description>started moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:11:59">
+            <type>ZONE_2</type>
+            <description>entered new subarea</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term/>
+            </object>
+        </interaction>
+        <interaction begin="10:12:02">
+            <type>ZONE_2</type>
+            <description>entered new subarea</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Der Sitz der Aspekte</term>
+            </object>
+        </interaction>
+        <interaction begin="10:12:02">
+            <type>SPELL_1</type>
+            <description>sent spellcast</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Vorwärtsschub</term>
+            </object>
+        </interaction>
+        <interaction begin="10:12:07">
+            <type>MOV_1</type>
+            <description>started moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:12:07">
+            <type>MOV_2</type>
+            <description>stopped moving</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Valdrakken</term>
+            </object>
+        </interaction>
+        <interaction begin="10:12:35">
+            <type>ZONE_1</type>
+            <description>entered new area</description>
+            <object>
+                <id>1</id>
+                <term>Sugi</term>
+            </object>
+            <object>
+                <id>2</id>
+                <term>Sturmwind</term>
+            </object>
+        </interaction>
     </gmaf-data>
 </gmaf-collection>
