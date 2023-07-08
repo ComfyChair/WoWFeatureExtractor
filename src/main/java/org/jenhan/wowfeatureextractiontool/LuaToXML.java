@@ -99,13 +99,9 @@ public interface LuaToXML {
         XMLEventWriter xmlWriter = null;
         try {
             xmlWriter = xmlOutputFactory.createXMLEventWriter(new BufferedWriter(new FileWriter(outputFile)));
-        } catch (IOException e) {
+        } catch (IOException | XMLStreamException e) {
             Gui.errorMessage("Something went wrong while preparing the output file");
-            log.severe("IO Exception: Error while preparing output stream");
-            e.printStackTrace();
-        } catch (XMLStreamException e) {
-            Gui.errorMessage("Something went wrong while preparing the output file");
-            log.severe("XMLStream: Error while preparing output stream");
+            log.severe("Error while preparing output stream");
             e.printStackTrace();
         }
         return xmlWriter;
@@ -118,32 +114,24 @@ public interface LuaToXML {
         boolean success = false;
         LineNumberReader luaReader = prepareInput(inputFile, sessionInfo.startLineProperty().get());
         XMLEventWriter xmlEventWriter = prepareOutput(outputFile);
-        XMLEventFactory eventFactory =
-                XMLEventFactory.newInstance();
+        XMLEventFactory eventFactory = XMLEventFactory.newInstance();
         // start writing
-        XMLEvent startDocument = eventFactory.createStartDocument(ENCODING);
         try {
-            xmlEventWriter.add(startDocument);
-            xmlEventWriter.add(eventFactory.createCharacters("\n"));
+            xmlEventWriter.add(eventFactory.createStartDocument(ENCODING));
             // start writing content
             xmlEventWriter.add(eventFactory.createStartElement("", "", GMAF_COLLECTION));
-            xmlEventWriter.add(eventFactory.createCharacters("\n"));
             xmlEventWriter.add(eventFactory.createStartElement("", "", GMAF_DATA));
-            xmlEventWriter.add(eventFactory.createCharacters("\n"));
             // write file name
             xmlEventWriter.add(eventFactory.createStartElement("", "", FILE));
-            xmlEventWriter.add(eventFactory.createCharacters(inputFile.getName()));
+            xmlEventWriter.add(eventFactory.createCharacters(outputFile.getName()));
             xmlEventWriter.add(eventFactory.createEndElement("", "", FILE));
-            xmlEventWriter.add(eventFactory.createCharacters("\n"));
             // write date
             xmlEventWriter.add(eventFactory.createStartElement("", "", DATE));
             xmlEventWriter.add(eventFactory.createCharacters(sessionInfo.dateProperty().get().toString()));
             xmlEventWriter.add(eventFactory.createEndElement("", "", DATE));
-            xmlEventWriter.add(eventFactory.createCharacters("\n"));
             // start writing interaction features
             // close tags
             xmlEventWriter.add(eventFactory.createEndElement("", "", GMAF_DATA));
-            xmlEventWriter.add(eventFactory.createCharacters("\n"));
             xmlEventWriter.add(eventFactory.createEndElement("", "", GMAF_COLLECTION));
             // write to file and close
             xmlEventWriter.flush();

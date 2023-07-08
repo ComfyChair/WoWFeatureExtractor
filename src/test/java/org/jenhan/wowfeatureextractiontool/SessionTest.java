@@ -3,7 +3,6 @@ package org.jenhan.wowfeatureextractiontool;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,8 +10,6 @@ import java.util.List;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -61,22 +58,23 @@ class SessionTest {
 
     @Test
     void exportToXML_TestStartOfDocument() throws IOException {
-        File testOutput = prettyPrintXML(new File("src/test/testOutput/exportTest2.xml"));
+        File testOutput = new File("src/test/testOutput/exportTest2.xml");
         Session session = new Session(sessionInfoList.get(1));
         System.out.println("Testing start of document: " + testOutput.getPath());
         System.out.println("Session Info: " + sessionInfoList.get(1));
         session.exportToXML(testFile, testOutput);
+        File outputPretty = prettyPrintXML(new File("src/test/testOutput/exportTest2.xml"));
         // check header
-        BufferedReader reader = new BufferedReader(new FileReader(testOutput));
-        String headerLine = reader.readLine();
-        assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?>", headerLine);
-        String collectionLine = reader.readLine();
-        assertEquals("<gmaf-collection>", collectionLine);
-        String dataLine = reader.readLine();
+        BufferedReader reader = new BufferedReader(new FileReader(outputPretty));
+        String headerLine = reader.readLine().trim();
+        String[] split = headerLine.split("><");
+        assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?", split[0].toLowerCase());
+        assertEquals("gmaf-collection>", split[1]);
+        String dataLine = reader.readLine().trim();
         assertEquals("<gmaf-data>", dataLine);
-        String fileLine = reader.readLine();
-        assertEquals("<file>" + testFile.getName() + "</file>", fileLine);
-        String dateLine = reader.readLine();
+        String fileLine = reader.readLine().trim();
+        assertEquals("<file>" + testOutput.getName() + "</file>", fileLine);
+        String dateLine = reader.readLine().trim();
         assertTrue(isSimpleTag(dateLine, "date"));
     }
 
@@ -105,7 +103,6 @@ class SessionTest {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             FileInputStream inputStream = new FileInputStream(xmlFile);
             Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             StreamSource src = new StreamSource(inputStream);
             StreamResult result = new StreamResult(new BufferedOutputStream(new FileOutputStream(outFile)));
