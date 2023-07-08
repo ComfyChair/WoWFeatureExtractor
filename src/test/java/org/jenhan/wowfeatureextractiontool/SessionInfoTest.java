@@ -2,6 +2,7 @@ package org.jenhan.wowfeatureextractiontool;
 
 import org.junit.jupiter.api.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -10,10 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class SessionInfoTest {
     int expectedID, expectedLine;
     String expectedCharName, expectedServer, expectedDate, expectedTime;
+    Calendar testCalendar;
     SessionInfo validInfo;
 
     { // init test data for all
-        Calendar testCalendar = Calendar.getInstance();
+        testCalendar = Calendar.getInstance();
         Date testDate = new Date(1688494496000L);
         testCalendar.setTime(testDate);
         expectedDate = new SessionInfo.DateFormatted(testDate).toString();
@@ -34,14 +36,11 @@ class SessionInfoTest {
     @Test
     void charNameProperty() {
         assertEquals(expectedCharName, validInfo.charNameProperty().get());
-
     }
 
     @Test
     void serverNameProperty() {
         assertEquals(expectedServer, validInfo.serverNameProperty().get());
-        assertEquals(expectedDate, validInfo.dateProperty().get().toString());
-
     }
 
     @Test
@@ -61,6 +60,7 @@ class SessionInfoTest {
 
     @Test
     void testEquals() {
+        assertEquals(validInfo, new SessionInfo(expectedID, expectedLine, expectedCharName, expectedServer, testCalendar));
     }
 
     @Test
@@ -69,5 +69,15 @@ class SessionInfoTest {
 
     @Test
     void testToString() {
+        String expectedString = "SessionInfo{" +
+                "sessionID=" + expectedID +
+                ", startLine=" + expectedLine +
+                ", charName=" + expectedCharName +
+                ", serverName=" + expectedServer +
+                ", date=" + expectedDate +
+                ", time=" + expectedTime +
+                '}';
+        assertEquals(expectedString, validInfo.toString());
     }
+
 }

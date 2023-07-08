@@ -78,11 +78,12 @@ public class SessionInfo {
     @Override
     public String toString() {
         return "SessionInfo{" +
-                "sessionID=" + sessionID +
-                ", startLine=" + startLine +
-                ", charName=" + charName +
-                ", serverName=" + serverName +
-                ", dateTime=" + time +
+                "sessionID=" + sessionID.get() +
+                ", startLine=" + startLine.get() +
+                ", charName=" + charName.get() +
+                ", serverName=" + serverName.get() +
+                ", date=" + date.get() +
+                ", time=" + time.get() +
                 '}';
     }
 

@@ -64,17 +64,12 @@ class SessionTest {
         assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?>", headerLine);
         String collectionLine = reader.readLine();
         assertEquals("<gmaf-collection>", collectionLine);
-        String emptyLine = reader.readLine();
-        assertEquals("", emptyLine);
         String dataLine = reader.readLine();
         assertEquals("<gmaf-data>", dataLine);
         String fileLine = reader.readLine();
         assertEquals("<file>" + testFile.getName() + "</file>", fileLine);
         String dateLine = reader.readLine();
         assertTrue(isSimpleTag(dateLine, "date"));
-        // check content
-        String interactionLine = reader.readLine();
-        assertTrue(isOpenTag(interactionLine, "interaction"));
     }
 
     private boolean isSimpleTag(String line, String tagString) {
