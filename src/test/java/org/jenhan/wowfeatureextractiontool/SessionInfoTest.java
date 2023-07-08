@@ -1,8 +1,9 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
+import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 import org.junit.jupiter.api.Test;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,14 +19,14 @@ class SessionInfoTest {
         testCalendar = Calendar.getInstance();
         Date testDate = new Date(1688494496000L);
         testCalendar.setTime(testDate);
-        expectedDate = new SessionInfo.DateFormatted(testDate).toString();
-        expectedTime = new SessionInfo.TimeFormatted(testDate).toString();
+        expectedDate = new DateFormatted(testDate).toString();
+        expectedTime = new TimeFormatted(testDate).toString();
         expectedID = 0;
         expectedLine = 1;
         expectedCharName = "TestChar";
         expectedServer = "TestServer";
-        validInfo = new SessionInfo(expectedID, expectedLine, expectedCharName, expectedServer,
-                testCalendar);
+        validInfo = new SessionInfo(expectedID, expectedLine);
+        validInfo.setContentProperties(expectedCharName, expectedServer, testCalendar, 0);
     }
 
     @Test
@@ -60,7 +61,9 @@ class SessionInfoTest {
 
     @Test
     void testEquals() {
-        assertEquals(validInfo, new SessionInfo(expectedID, expectedLine, expectedCharName, expectedServer, testCalendar));
+        SessionInfo newSessionInfo = new SessionInfo(expectedID, expectedLine);
+        newSessionInfo.setContentProperties(expectedCharName, expectedServer, testCalendar, 0);
+        assertEquals(validInfo, newSessionInfo);
     }
 
     @Test

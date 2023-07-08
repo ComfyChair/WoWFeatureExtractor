@@ -8,4 +8,6 @@ module org.jenhan.wowfeatureextractiontool {
 
     opens org.jenhan.wowfeatureextractiontool to javafx.fxml;
     exports org.jenhan.wowfeatureextractiontool;
+    exports org.jenhan.wowfeatureextractiontool.Utilities;
+    opens org.jenhan.wowfeatureextractiontool.Utilities to javafx.fxml;
 }

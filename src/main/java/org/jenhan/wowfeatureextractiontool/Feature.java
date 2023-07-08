@@ -1,7 +1,9 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
+
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,25 +11,25 @@ import java.util.logging.Logger;
 // data structure for writing feature data
 public class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    Calendar calendar;
-    FeatureType type;
-    String description;
-    List<FeatureObject> objectList = new ArrayList<>();
+    private TimeFormatted beginTime = null;
+    private FeatureType type = null;
+    private String description = null;
+    private final List<FeatureObject> objectList = new ArrayList<>();
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    void setDescription(String description) {
         this.description = description;
     }
 
-    public Calendar getCalendar() {
-        return calendar;
+    TimeFormatted getBeginTime() {
+        return beginTime;
     }
 
-    public void setCalendar(Calendar calendar) { // takes time in seconds, stores Unix time (=in milliseconds)
-        this.calendar = calendar;
+    void setBeginTime(Date beginDate) {
+        this.beginTime = new TimeFormatted(beginDate);
     }
 
     FeatureType getType() {
@@ -44,6 +46,10 @@ public class Feature {
             log.logp(Level.WARNING, "Feature", "setType", "Unknown feature type: " + typeString);
             this.type = FeatureType.UNKNOWN;
         }
+    }
+
+    boolean isComplete(){
+        return beginTime != null && type != null && description != null;
     }
 
     List<FeatureObject> getObjectList() {

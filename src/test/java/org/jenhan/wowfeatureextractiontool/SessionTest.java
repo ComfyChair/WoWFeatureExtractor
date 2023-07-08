@@ -27,16 +27,19 @@ class SessionTest {
         expectedInfoList = new ArrayList<>();
         Calendar startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688494496000L));
-        expectedInfoList.add(new SessionInfo(0, 3, "Arvensis", "Sen'jin",
-                startTime));
+        SessionInfo expectedSession1 = new SessionInfo(0, 3);
+        expectedSession1.setContentProperties("Arvensis", "Sen'jin", startTime, 8);
+        expectedInfoList.add(expectedSession1);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688544677000L));
-        expectedInfoList.add(new SessionInfo(1, 389, "Sugi", "Sen'jin",
-                startTime));
+        SessionInfo expectedSession2 = new SessionInfo(1, 389);
+        expectedSession2.setContentProperties("Sugi", "Sen'jin", startTime, 393);
+        expectedInfoList.add(expectedSession2);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688494046000L));
-        expectedInfoList.add(new SessionInfo(2, 571, "Arvensis", "Sen'jin",
-                startTime));
+        SessionInfo expectedSession3 = new SessionInfo(2, 571);
+        expectedSession3.setContentProperties("Arvensis", "Sen'jin", startTime, 576);
+        expectedInfoList.add(expectedSession3);
     }
 
     @Test

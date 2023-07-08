@@ -2,10 +2,10 @@ package org.jenhan.wowfeatureextractiontool;
 
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
+import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
+import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 // session info data structure
@@ -16,6 +16,8 @@ public class SessionInfo {
     @FXML
     private final IntegerProperty startLine = new SimpleIntegerProperty();
     @FXML
+    private final IntegerProperty startFeatureTable = new SimpleIntegerProperty();
+    @FXML
     private final StringProperty charName = new SimpleStringProperty();
     @FXML
     private final StringProperty serverName = new SimpleStringProperty();
@@ -24,14 +26,17 @@ public class SessionInfo {
     @FXML
     private final ObjectProperty<TimeFormatted> time = new SimpleObjectProperty<>();
 
-    SessionInfo(int sessionID, int startLine,
-                String charName, String serverName, Calendar calendar) {
+    SessionInfo(int sessionID, int startLine) {
         this.sessionID.setValue(sessionID);
         this.startLine.setValue(startLine);
+    }
+
+    void setContentProperties(String charName, String serverName, Calendar calendar, int startFeatureTable){
         this.charName.setValue(charName);
         this.serverName.setValue(serverName);
         this.date.setValue(new DateFormatted(calendar.getTime()));
         this.time.setValue(new TimeFormatted(calendar.getTime()));
+        this.startFeatureTable.setValue(startFeatureTable);
     }
 
     public IntegerProperty sessionIDProperty() {
@@ -56,6 +61,9 @@ public class SessionInfo {
 
     IntegerProperty startLineProperty() {
         return startLine;
+    }
+    IntegerProperty startFeatureTableProperty() {
+        return startFeatureTable;
     }
 
     @Override
@@ -85,60 +93,6 @@ public class SessionInfo {
                 ", date=" + date.get() +
                 ", time=" + time.get() +
                 '}';
-    }
-
-    public static class DateFormatted extends Date {
-        Date date;
-
-        public DateFormatted(Date date) {
-            this.date = date;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
-            DateFormatted that = (DateFormatted) o;
-            return Objects.equals(date, that.date);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(super.hashCode(), date);
-        }
-
-        @Override
-        public String toString() {
-            return new SimpleDateFormat("dd.MM.yyyy").format(date);
-        }
-    }
-
-    public static class TimeFormatted extends Date {
-        Date date;
-
-        public TimeFormatted(Date date) {
-            this.date = date;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            if (!super.equals(o)) return false;
-            TimeFormatted that = (TimeFormatted) o;
-            return Objects.equals(date, that.date);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(super.hashCode(), date);
-        }
-
-        @Override
-        public String toString() {
-            return new SimpleDateFormat("HH:mm:ss").format(date);
-        }
     }
 
 }

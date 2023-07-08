@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
 
 import java.util.List;
 
@@ -13,9 +14,9 @@ public class SessionSelectionController {
     @FXML
     TableView<SessionInfo> sessionInfoTable;
     @FXML
-    TableColumn<SessionInfo, SessionInfo.DateFormatted> date;
+    TableColumn<SessionInfo, DateFormatted> date;
     @FXML
-    TableColumn<SessionInfo, SessionInfo.DateFormatted> time;
+    TableColumn<SessionInfo, DateFormatted> time;
     @FXML
     TableColumn<SessionInfo, String> charName;
     @FXML
