@@ -5,11 +5,6 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -230,6 +225,7 @@ class LuaToXMLConverter {
                 writeSimpleStartTag(OBJECT, 1);
                 writeSimpleElement(ID, String.valueOf(featureObject.id()), 2);
                 writeSimpleElement(TERM, featureObject.term(), 2);
+                writeSimpleElement(PROBABILITY, "1", 2); // sets probability always to 1
                 writeEndTag(OBJECT, 1);
             }
         }
