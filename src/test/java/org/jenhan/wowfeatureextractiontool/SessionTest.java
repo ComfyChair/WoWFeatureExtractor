@@ -7,11 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,13 +61,12 @@ class SessionTest {
         System.out.println("Testing start of document: " + testOutput.getPath());
         System.out.println("Session Info: " + sessionInfoList.get(1));
         session.exportToXML(testFile, testOutput);
-        File outputPretty = LuaToXML.prettyPrintXML(new File("src/test/testOutput/exportTest2.xml"));
         // check header
-        BufferedReader reader = new BufferedReader(new FileReader(outputPretty));
+        BufferedReader reader = new BufferedReader(new FileReader(testOutput));
         String headerLine = reader.readLine().trim();
-        String[] split = headerLine.split("><");
-        assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?", split[0].toLowerCase());
-        assertEquals("gmaf-collection>", split[1]);
+        assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?>", headerLine.toLowerCase());
+        String collectionLine = reader.readLine().trim();
+        assertEquals("<gmaf-collection>", collectionLine);
         String dataLine = reader.readLine().trim();
         assertEquals("<gmaf-data>", dataLine);
         String fileLine = reader.readLine().trim();

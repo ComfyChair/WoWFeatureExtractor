@@ -1,20 +1,14 @@
 package org.jenhan.wowfeatureextractiontool;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class Session implements LuaToXML {
+public class Session {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     // session information record
     private final SessionInfo sessionInfo;
+    private final LuaToXMLConverter converter = new LuaToXMLConverter();
 
     // constructor
     Session(SessionInfo sessionInfo) {
@@ -23,7 +17,7 @@ public class Session implements LuaToXML {
 
     // reads session info from a recorded .lua file, so that it can be shown to the user in a session selection dialog
     static List<SessionInfo> readSessionInfo(File luaFile) {
-        return LuaToXML.readSessionInfo(luaFile);
+        return LuaToXMLConverter.readSessionInfo(luaFile);
     }
 
     // returns info for a single session
@@ -34,7 +28,7 @@ public class Session implements LuaToXML {
     // converts lua feature table to GMAF-style xml
     boolean exportToXML(File inputFile, File outputFile) {
         // pass to default interface method
-        return exportToXML(inputFile, sessionInfo, outputFile);
+        return converter.exportToXML(inputFile, sessionInfo, outputFile);
     }
 
 }

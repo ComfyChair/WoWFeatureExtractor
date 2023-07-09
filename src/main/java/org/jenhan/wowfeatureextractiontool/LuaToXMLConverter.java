@@ -18,32 +18,36 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-public interface LuaToXML {
-    Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    // XML Fields
-    String ENCODING = "utf-8";
-    String GMAF_COLLECTION = "gmaf-collection";
-    String GMAF_DATA = "gmaf-data";
-    String FILE = "file";
-    String DATE = "date";
-    String INTERACTION = "interaction";
-    String BEGIN = "begin";
-    String TYPE = "type";
-    String DESCRIPTION = "description";
-    String OBJECT = "object";
-    String ID = "id";
-    String TERM = "term";
-    String PROBABILITY = "probability";
-    // Lua table fields
-    String SESSION_FIELD_START = "[\"session_";
-    String CHAR_NAME = "characterName";
-    String SERVER_NAME = "serverName";
-    String START_TIME = "startTimeStamp";
-    String FEATURE_TABLE = "featureTable";
-    String FEATURE_TIMESTAMP = "timestamp";
-    String OBJECTS = "objects";
+class LuaToXMLConverter {
+    private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private XMLEventWriter eventWriter;
+    private XMLEventFactory eventFactory;
+    private LineNumberReader luaReader = null;
+    private XMLEvent newLine, tab;
+    /** XML Fields **/
+    private final static String ENCODING = "utf-8";
+    private final static String GMAF_COLLECTION = "gmaf-collection";
+    private final static String GMAF_DATA = "gmaf-data";
+    private final static String FILE = "file";
+    private final static String DATE = "date";
+    private final static String INTERACTION = "interaction";
+    private final static String BEGIN = "begin";
+    private final static String TYPE = "type";
+    private final static String DESCRIPTION = "description";
+    private final static String OBJECT = "object";
+    private final static String ID = "id";
+    private final static String TERM = "term";
+    private final static String PROBABILITY = "probability";
+    /** Lua table fields **/
+    private final static String SESSION_FIELD_START = "[\"session_";
+    private final static String CHAR_NAME = "characterName";
+    private final static String SERVER_NAME = "serverName";
+    private final static String START_TIME = "startTimeStamp";
+    private final static String FEATURE_TABLE = "featureTable";
+    private final static String FEATURE_TIMESTAMP = "timestamp";
+    private final static String OBJECT_LIST = "objects";
 
-    // reader part: prepares input file stream and skips to the selected session
+    /** reader part: prepares input file stream and skips to the selected session **/
     private static LineNumberReader prepareInput(File inputFile, int startLine) {
         LineNumberReader luaReader = null;
         try {
@@ -63,8 +67,8 @@ public interface LuaToXML {
         return luaReader;
     }
 
-    // writer part: prepares output stream
-    private static XMLEventWriter prepareOutput(File outputFile) {
+    /** writer part: prepares output stream **/
+    private XMLEventWriter prepareOutput(File outputFile) {
         XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
         XMLEventWriter xmlWriter = null;
         try {
@@ -102,11 +106,11 @@ public interface LuaToXML {
                         line = luaReader.readLine();
                         log.fine("Read line: " + line);
                         if (isAssignment(line)) {
-                            String fieldKey = LuaToXML.getLuaFieldKey(line);
+                            String fieldKey = LuaToXMLConverter.getLuaFieldKey(line);
                             log.fine("is assignment with key: " + fieldKey);
                             switch (fieldKey) {
-                                case CHAR_NAME -> charName = LuaToXML.getLuaFieldValue(line);
-                                case SERVER_NAME -> serverName = LuaToXML.getLuaFieldValue(line);
+                                case CHAR_NAME -> charName = LuaToXMLConverter.getLuaFieldValue(line);
+                                case SERVER_NAME -> serverName = LuaToXMLConverter.getLuaFieldValue(line);
                                 case START_TIME -> startTime = getCalendarFromLuaField(line);
                                 case FEATURE_TABLE -> startFeatureTable = luaReader.getLineNumber();
                                 default -> log.finer("line not relevant");
@@ -130,25 +134,26 @@ public interface LuaToXML {
     }
 
     // reads one lua session, writes xml file
-    default boolean exportToXML(File inputFile, SessionInfo sessionInfo, File outputFile) {
+    boolean exportToXML(File inputFile, SessionInfo sessionInfo, File outputFile) {
         boolean success = false;
-        LineNumberReader luaReader = prepareInput(inputFile, sessionInfo.startFeatureTableProperty().get());
-        XMLEventWriter xmlEventWriter = prepareOutput(outputFile);
-        XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+        this.luaReader = prepareInput(inputFile, sessionInfo.startFeatureTableProperty().get());
+        this.eventWriter = prepareOutput(outputFile);
+        this.eventFactory = XMLEventFactory.newInstance();
+        newLine = eventFactory.createCharacters("\n");
+        tab = eventFactory.createCharacters("\t");
         // start writing
         try {
-            // declaration
-            xmlEventWriter.add(eventFactory.createStartDocument(ENCODING));
-            // general information
-            xmlEventWriter.add(eventFactory.createStartElement("", "", GMAF_COLLECTION));
-            xmlEventWriter.add(eventFactory.createStartElement("", "", GMAF_DATA));
-            writeSimpleElement(eventFactory, xmlEventWriter, FILE, outputFile.getName());
-            writeSimpleElement(eventFactory, xmlEventWriter, DATE, sessionInfo.dateProperty().get().toString());
+            writeStartOfDocument();
+            writeSimpleElement(FILE, outputFile.getName(), 0);
+            writeSimpleElement(DATE, sessionInfo.dateProperty().get().toString(), 0);
             // now, write actual content (interaction features)
-            writeContent(luaReader, eventFactory, xmlEventWriter);
-            // write to file and close (open tags get closed by XMLEventWriter)
-            xmlEventWriter.flush();
-            xmlEventWriter.close();
+            writeContent();
+            // close tags
+            writeEndTag(GMAF_DATA, 0);
+            writeEndTag(GMAF_COLLECTION, 0);
+            // write to file and close
+            eventWriter.flush();
+            eventWriter.close();
             return success;
         } catch (XMLStreamException | IOException e) {
             // TODO: improve exception handling?
@@ -158,8 +163,8 @@ public interface LuaToXML {
             log.severe("LuaToXML: Error while writing file");
             try {
                 // try to write as much as possible
-                xmlEventWriter.flush();
-                xmlEventWriter.close();
+                eventWriter.flush();
+                eventWriter.close();
             } catch (XMLStreamException ex) {
                 throw new RuntimeException(ex);
             }
@@ -168,18 +173,29 @@ public interface LuaToXML {
         }
     }
 
+    private void writeStartOfDocument() throws XMLStreamException {
+        // declaration
+        eventWriter.add(eventFactory.createStartDocument(ENCODING));
+        eventWriter.add(newLine);
+        // general information
+        eventWriter.add(eventFactory.createStartElement("", "", GMAF_COLLECTION));
+        eventWriter.add(newLine);
+        eventWriter.add(eventFactory.createStartElement("", "", GMAF_DATA));
+        eventWriter.add(newLine);
+    }
+
     // writes the interaction feature part of the xml file
-    private void writeContent(LineNumberReader luaReader, XMLEventFactory eventFactory, XMLEventWriter xmlEventWriter) throws IOException, XMLStreamException {
+    private void writeContent() throws IOException, XMLStreamException {
         String currentLine = luaReader.readLine();
         log.info("LuaToXML read Line: " + currentLine);
         while (currentLine != null) {
             if (isNextFeature(currentLine)) {
-                currentLine = writeFeature(luaReader, eventFactory, xmlEventWriter, currentLine);
+                currentLine = writeFeature(currentLine);
             }
             if (isEndOfTable(currentLine)) {
                 // close open tags
-                xmlEventWriter.add(eventFactory.createEndElement("", "", GMAF_DATA));
-                xmlEventWriter.add(eventFactory.createEndElement("", "", GMAF_COLLECTION));
+                eventWriter.add(eventFactory.createEndElement("", "", GMAF_DATA));
+                eventWriter.add(eventFactory.createEndElement("", "", GMAF_COLLECTION));
                 return;
             }
             currentLine = luaReader.readLine();
@@ -187,7 +203,7 @@ public interface LuaToXML {
     }
 
     // writes a single feature to the xml file
-    private String writeFeature(LineNumberReader luaReader, XMLEventFactory eventFactory, XMLEventWriter xmlEventWriter, String line) throws IOException, XMLStreamException {
+    private String writeFeature(String line) throws IOException, XMLStreamException {
         log.info("Found next feature");
         // create feature object and fill with attributes
         Feature interaction = new Feature();
@@ -198,33 +214,32 @@ public interface LuaToXML {
                     case FEATURE_TIMESTAMP -> interaction.setBeginTime(getDateFromLuaField(line));
                     case DESCRIPTION -> interaction.setDescription(getLuaFieldValue(line));
                     case TYPE -> interaction.setType(getLuaFieldValue(line));
-                    case OBJECTS -> readFeatureObjects(luaReader, interaction);
+                    case OBJECT_LIST -> readFeatureObjects(interaction);
                 }
             }
             line = luaReader.readLine();
         }
         // start writing interaction feature
-        xmlEventWriter.add(eventFactory.createStartElement("", "", INTERACTION));
-        xmlEventWriter.add(eventFactory.createAttribute(BEGIN, interaction.getBeginTime().toString()));
-        writeSimpleElement(eventFactory, xmlEventWriter, TYPE, interaction.getType().toString());
-        writeSimpleElement(eventFactory, xmlEventWriter, DESCRIPTION, interaction.getDescription());
+        writeStartTagWithAttribute(INTERACTION, 0, BEGIN, interaction.getBeginTime().toString());
+        writeSimpleElement(TYPE, interaction.getType().toString(), 1);
+        writeSimpleElement(DESCRIPTION, interaction.getDescription(), 1);
         // iterate over contained objects
         if (interaction.getObjectList().size() > 0) {
             for (Feature.FeatureObject featureObject : interaction.getObjectList()
             ) {
-                xmlEventWriter.add(eventFactory.createStartElement("", "", OBJECT));
-                writeSimpleElement(eventFactory, xmlEventWriter, ID, String.valueOf(featureObject.id()));
-                writeSimpleElement(eventFactory, xmlEventWriter, TERM, featureObject.term());
-                xmlEventWriter.add(eventFactory.createEndElement("", "", OBJECT));
+                writeSimpleStartTag(OBJECT, 1);
+                writeSimpleElement(ID, String.valueOf(featureObject.id()), 2);
+                writeSimpleElement(TERM, featureObject.term(), 2);
+                writeEndTag(OBJECT, 1);
             }
         }
         //close interaction tag
-        xmlEventWriter.add(eventFactory.createEndElement("", "", INTERACTION));
+        writeEndTag(INTERACTION, 0);
         return line;
     }
 
     // reads feature objects from lua file
-    private void readFeatureObjects(LineNumberReader luaReader, Feature feature) throws IOException {
+    private void readFeatureObjects(Feature feature) throws IOException {
         String line = luaReader.readLine();
         int id = 1;
         while (!isEndOfTable(line)) {
@@ -241,11 +256,39 @@ public interface LuaToXML {
     /********************/
 
     // writes a simple xml element consisting of start tag, content, and end tag
-    private static void writeSimpleElement(XMLEventFactory eventFactory, XMLEventWriter xmlEventWriter,
-                                           String tag, String content) throws XMLStreamException {
-        xmlEventWriter.add(eventFactory.createStartElement("", "", tag));
-        xmlEventWriter.add(eventFactory.createCharacters(content));
-        xmlEventWriter.add(eventFactory.createEndElement("", "", tag));
+    private void writeSimpleElement(String name, String content, int indentationLevel) throws XMLStreamException {
+        for (int i = 0; i < indentationLevel; i++) {
+            eventWriter.add(tab);
+        }
+        eventWriter.add(eventFactory.createStartElement("", "", name));
+        eventWriter.add(eventFactory.createCharacters(content));
+        eventWriter.add(eventFactory.createEndElement("", "", name));
+        eventWriter.add(newLine);
+    }
+
+    private void writeSimpleStartTag(String name, int indentationLevel) throws XMLStreamException {
+        for (int i = 0; i < indentationLevel; i++) {
+            eventWriter.add(tab);
+        }
+        eventWriter.add(eventFactory.createStartElement("", "", name));
+        eventWriter.add(newLine);
+    }
+
+    private void writeStartTagWithAttribute(String name, int indentationLevel, String attName, String attValue) throws XMLStreamException {
+        for (int i = 0; i < indentationLevel; i++) {
+            eventWriter.add(tab);
+        }
+        eventWriter.add(eventFactory.createStartElement("", "", name));
+        eventWriter.add(eventFactory.createAttribute(attName, attValue));
+        eventWriter.add(newLine);
+    }
+
+    private void writeEndTag(String name, int indentationLevel) throws XMLStreamException {
+        for (int i = 0; i < indentationLevel; i++) {
+            eventWriter.add(tab);
+        }
+        eventWriter.add(eventFactory.createEndElement("", "", name));
+        eventWriter.add(newLine);
     }
 
     static boolean isAssignment(String line) {
@@ -304,31 +347,15 @@ public interface LuaToXML {
     // converts Unix time in seconds (as String from lua field) to Calendar object
     private static Calendar getCalendarFromLuaField(String line) {
         Calendar time;
-        long unixTime = Long.parseLong(LuaToXML.getLuaFieldValue(line)) * 1000;
+        long unixTime = Long.parseLong(LuaToXMLConverter.getLuaFieldValue(line)) * 1000;
         // convert UNIX time to Calendar
         time = Calendar.getInstance();
         time.setTime(new Date(unixTime));
         return time;
     }
 
-    private static Date getDateFromLuaField(String line) {
-        long unixTime = Long.parseLong(LuaToXML.getLuaFieldValue(line)) * 1000;
+    private Date getDateFromLuaField(String line) {
+        long unixTime = Long.parseLong(LuaToXMLConverter.getLuaFieldValue(line)) * 1000;
         return new Date(unixTime);
-    }
-
-    static File prettyPrintXML(File xmlFile) {
-        try {
-            File outFile = new File(xmlFile.getPath().replace(".xml", "_pretty.xml"));
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            FileInputStream inputStream = new FileInputStream(xmlFile);
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            StreamSource src = new StreamSource(inputStream);
-            StreamResult result = new StreamResult(new BufferedOutputStream(new FileOutputStream(outFile)));
-            transformer.transform(src, result);
-            return outFile;
-        } catch (Exception e) {
-            throw new RuntimeException("Error occurs when pretty-printing xml:\n" + xmlFile, e);
-        }
     }
 }
