@@ -17,7 +17,7 @@ public class Session {
 
     // reads session info from a recorded .lua file, so that it can be shown to the user in a session selection dialog
     static List<SessionInfo> readSessionInfo(File luaFile) {
-        return LuaToXMLConverter.readSessionInfo(luaFile);
+        return LuaReader.readSessionInfo(luaFile);
     }
 
     // returns info for a single session
