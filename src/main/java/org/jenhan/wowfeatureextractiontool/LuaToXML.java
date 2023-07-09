@@ -4,6 +4,12 @@ import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -308,5 +314,21 @@ public interface LuaToXML {
     private static Date getDateFromLuaField(String line) {
         long unixTime = Long.parseLong(LuaToXML.getLuaFieldValue(line)) * 1000;
         return new Date(unixTime);
+    }
+
+    static File prettyPrintXML(File xmlFile) {
+        try {
+            File outFile = new File(xmlFile.getPath().replace(".xml", "_pretty.xml"));
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            FileInputStream inputStream = new FileInputStream(xmlFile);
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            StreamSource src = new StreamSource(inputStream);
+            StreamResult result = new StreamResult(new BufferedOutputStream(new FileOutputStream(outFile)));
+            transformer.transform(src, result);
+            return outFile;
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurs when pretty-printing xml:\n" + xmlFile, e);
+        }
     }
 }

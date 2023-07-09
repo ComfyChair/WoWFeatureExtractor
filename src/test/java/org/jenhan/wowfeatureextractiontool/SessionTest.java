@@ -66,7 +66,7 @@ class SessionTest {
         System.out.println("Testing start of document: " + testOutput.getPath());
         System.out.println("Session Info: " + sessionInfoList.get(1));
         session.exportToXML(testFile, testOutput);
-        File outputPretty = prettyPrintXML(new File("src/test/testOutput/exportTest2.xml"));
+        File outputPretty = LuaToXML.prettyPrintXML(new File("src/test/testOutput/exportTest2.xml"));
         // check header
         BufferedReader reader = new BufferedReader(new FileReader(outputPretty));
         String headerLine = reader.readLine().trim();
@@ -100,19 +100,5 @@ class SessionTest {
         assertEquals(6, month); // JAN = 0
     }
 
-    public static File prettyPrintXML(File xmlFile) {
-        try {
-            File outFile = new File(xmlFile.getPath().replace(".xml", "_pretty.xml"));
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            FileInputStream inputStream = new FileInputStream(xmlFile);
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            StreamSource src = new StreamSource(inputStream);
-            StreamResult result = new StreamResult(new BufferedOutputStream(new FileOutputStream(outFile)));
-            transformer.transform(src, result);
-            return outFile;
-        } catch (Exception e) {
-            throw new RuntimeException("Error occurs when pretty-printing xml:\n" + xmlFile, e);
-        }
-    }
+
 }

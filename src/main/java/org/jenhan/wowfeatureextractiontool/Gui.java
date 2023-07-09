@@ -1,6 +1,7 @@
 package org.jenhan.wowfeatureextractiontool;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableIntegerValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,10 +11,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +26,18 @@ public class Gui extends Application {
     private static Stage primaryStage;
 
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(Gui::showError);
         launch();
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws IOException {
+        Gui.primaryStage = primaryStage;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 360, 240);
+        primaryStage.setTitle("WoW Feature Extraction Tool");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     static public Stage getPrimaryStage() {
@@ -112,13 +127,30 @@ public class Gui extends Application {
         dialog.showAndWait();
     }
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
-        Gui.primaryStage = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 360, 240);
-        primaryStage.setTitle("WoW Feature Extraction Tool");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    // Exception handling
+    private static void showError(Thread thread, Throwable e) {
+        System.err.println("***Default exception handler***");
+        if (Platform.isFxApplicationThread()) {
+            showErrorDialog(e);
+        } else {
+            System.err.println("An unexpected error occurred in "+e);
+
+        }
+    }
+
+    private static void showErrorDialog(Throwable e) {
+        StringWriter errorMsg = new StringWriter();
+        e.printStackTrace(new PrintWriter(errorMsg));
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        FXMLLoader loader = new FXMLLoader(Gui.class.getResource("Error.fxml"));
+        try {
+            Parent root = loader.load();
+            ((ErrorController)loader.getController()).setErrorText(errorMsg.toString());
+            dialog.setScene(new Scene(root, 250, 400));
+            dialog.show();
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
     }
 }

@@ -34,6 +34,8 @@ public class MainControl {
     private File inputFile;
     private File outputFile;
 
+    //TODO: Add preference menu for pretty-printing?
+
     // unzips addon files to installation directory
     private static void unzipAddon(File destinationDir) {
         try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath())) {
