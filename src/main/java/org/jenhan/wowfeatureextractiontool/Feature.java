@@ -1,5 +1,9 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 
 import java.util.ArrayList;
@@ -7,7 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.*;
+
+
 
 // data structure for writing feature data
 @XmlRootElement(name = LuaToXML.INTERACTION)

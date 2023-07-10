@@ -1,21 +1,27 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
 import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 
-import javax.xml.bind.annotation.*;
-
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
+
 
 @XmlRootElement(name = LuaToXML.GMAF_DATA)
 @XmlType(propOrder = {LuaToXML.FILE, LuaToXML.DATE, LuaToXML.INTERACTION })
 public class Session {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private String fileName;
+    private final String fileName;
     private final List<Feature> featureList = new ArrayList<>();
     // session info displayed in session picker as properties (necessary for javafx)
     @FXML
