@@ -5,17 +5,18 @@ import javafx.fxml.FXML;
 import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
 import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 
+import javax.xml.bind.annotation.*;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 
+@XmlRootElement(name = LuaToXML.GMAF_DATA)
+@XmlType(propOrder = {LuaToXML.FILE, LuaToXML.DATE, LuaToXML.INTERACTION })
 public class Session {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
-    private List<Feature> featureList = new ArrayList<>();
+    private String fileName;
+    private final List<Feature> featureList = new ArrayList<>();
     // session info displayed in session picker as properties (necessary for javafx)
     @FXML
     private final IntegerProperty sessionID = new SimpleIntegerProperty();
@@ -29,19 +30,20 @@ public class Session {
     private final ObjectProperty<TimeFormatted> startTime = new SimpleObjectProperty<>();
 
     // constructor
-    Session(int sessionID)
+    Session(int sessionID, String fileName)
     {
         this.sessionID.setValue(sessionID);
+        this.fileName = fileName;
     }
 
     // converts lua feature table to GMAF-style xml
     boolean exportToXML(File outputFile) {
-        LuaToXMLConverter converter = new LuaToXMLConverter(this);
+        Converter converter = new Converter(this);
         // pass to default interface method
         return converter.exportToXML(outputFile);
     }
 
-    // these getters have to be public so that Javafx can access them
+    // these getters are for Javafx and have to remain public
     public IntegerProperty sessionIDProperty() {
         return sessionID;
     }
@@ -57,7 +59,16 @@ public class Session {
     public ObjectProperty<TimeFormatted> startTimeProperty() {
         return startTime;
     }
-
+    // these getters are for jaxb bindings
+    @XmlElement(name = LuaToXML.DATE)
+    public String getDate() {
+        return date.get().toString();
+    }
+    @XmlElement(name = LuaToXML.FILE)
+    public String getFileName() {
+        return fileName;
+    }
+    @XmlElements(@XmlElement(name = LuaToXML.INTERACTION))
     List<Feature> getFeatureList() {
         return featureList;
     }

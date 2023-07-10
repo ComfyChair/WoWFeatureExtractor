@@ -86,22 +86,22 @@ class SessionTest {
     void setShortTestExpected(){
         Calendar startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688840368000L));
-        Session expectedSession1 = new Session(0);
+        Session expectedSession1 = new Session(0, testFile.getName());
         setContentProperties(expectedSession1,"Antigone", "Sen'jin", startTime);
         expectedList.add(expectedSession1);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688891052000L));
-        Session expectedSession2 = new Session(1);
+        Session expectedSession2 = new Session(1, testFile.getName());
         setContentProperties(expectedSession2, "Spice", "Sen'jin", startTime);
         expectedList.add(expectedSession2);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688840385000L));
-        Session expectedSession3 = new Session(2);
+        Session expectedSession3 = new Session(2, testFile.getName());
         setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
         expectedList.add(expectedSession3);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688840200000L));
-        Session expectedSession4 = new Session(2);
+        Session expectedSession4 = new Session(2, testFile.getName());
         setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
         expectedList.add(expectedSession4);
     }

@@ -5,6 +5,9 @@ module org.jenhan.wowfeatureextractiontool {
     requires java.logging;
     requires java.xml;
     requires java.prefs;
+    requires org.glassfish.jaxb.core;
+    requires org.glassfish.jaxb.runtime;
+    requires java.xml.bind;
 
     opens org.jenhan.wowfeatureextractiontool to javafx.fxml;
     exports org.jenhan.wowfeatureextractiontool;

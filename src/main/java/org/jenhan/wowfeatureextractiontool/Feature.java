@@ -7,8 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.*;
 
 // data structure for writing feature data
+@XmlRootElement(name = LuaToXML.INTERACTION)
+@XmlType(propOrder = {LuaToXML.TYPE, LuaToXML.DESCRIPTION, LuaToXML.OBJECT })
 public class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private TimeFormatted beginTime = null;
@@ -16,6 +19,7 @@ public class Feature {
     private String description = null;
     private final List<FeatureObject> objectList = new ArrayList<>();
 
+    @XmlElement(name = LuaToXML.DESCRIPTION)
     String getDescription() {
         return description;
     }
@@ -32,6 +36,7 @@ public class Feature {
         this.beginTime = new TimeFormatted(beginDate);
     }
 
+    @XmlElement(name = LuaToXML.TYPE)
     FeatureType getType() {
         return type;
     }
@@ -52,6 +57,7 @@ public class Feature {
         return beginTime != null && type != null && description != null;
     }
 
+    @XmlElements(@XmlElement(name = LuaToXML.OBJECT))
     List<FeatureObject> getObjectList() {
         return objectList;
     }
@@ -85,7 +91,21 @@ public class Feature {
 
     }
 
-    record FeatureObject(int id, String term) {
+    @XmlRootElement(name = LuaToXML.OBJECT)
+    @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY })
+    record FeatureObject(int id, String term, double probalility) {
+        @XmlElement(name = LuaToXML.ID)
+        int getId(){
+            return id;
+        }
+        @XmlElement(name = LuaToXML.TERM)
+        String getTerm(){
+            return term;
+        }
+        @XmlElement(name = LuaToXML.PROBABILITY)
+        double getProbability(){
+            return probalility;
+        }
     }
 
     @Override
