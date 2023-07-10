@@ -7,8 +7,8 @@ module org.jenhan.wowfeatureextractiontool {
     requires jakarta.activation;
     requires jakarta.xml.bind;
 
-    opens org.jenhan.wowfeatureextractiontool to javafx.fxml;
+    opens org.jenhan.wowfeatureextractiontool to javafx.fxml, jakarta.xml.bind;
     exports org.jenhan.wowfeatureextractiontool;
     exports org.jenhan.wowfeatureextractiontool.Utilities;
-    opens org.jenhan.wowfeatureextractiontool.Utilities to javafx.fxml;
+    opens org.jenhan.wowfeatureextractiontool.Utilities to jakarta.xml.bind, javafx.fxml;
 }

@@ -13,6 +13,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jenhan.wowfeatureextractiontool.Utilities.ErrorController;
 
 import java.io.File;
 import java.io.IOException;

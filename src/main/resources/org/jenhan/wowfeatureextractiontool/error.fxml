@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jenhan.wowfeatureextractiontool.ErrorController">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jenhan.wowfeatureextractiontool.Utilities.ErrorController">
     <center>
         <ScrollPane>
             <content>

@@ -9,20 +9,22 @@ import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-
 // data structure for writing feature data
 @XmlRootElement(name = LuaToXML.INTERACTION)
-@XmlType(propOrder = {LuaToXML.TYPE, LuaToXML.DESCRIPTION, LuaToXML.OBJECT })
+@XmlType(propOrder = {LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
 public class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private final List<FeatureObject> objectList = new ArrayList<>();
     private TimeFormatted beginTime = null;
     private FeatureType type = null;
     private String description = null;
-    private final List<FeatureObject> objectList = new ArrayList<>();
+
+    Feature(){}
 
     @XmlElement(name = LuaToXML.DESCRIPTION)
     String getDescription() {
@@ -58,7 +60,7 @@ public class Feature {
         }
     }
 
-    boolean isComplete(){
+    boolean isComplete() {
         return beginTime != null && type != null && description != null;
     }
 
@@ -69,6 +71,16 @@ public class Feature {
 
     void addObject(FeatureObject object) {
         this.objectList.add(object);
+    }
+
+    @Override
+    public String toString() {
+        return "Feature{" +
+                "beginTime=" + beginTime +
+                ", type=" + type +
+                ", description='" + description + '\'' +
+                ", objectList=" + objectList +
+                '}';
     }
 
     enum FeatureType {
@@ -97,29 +109,69 @@ public class Feature {
     }
 
     @XmlRootElement(name = LuaToXML.OBJECT)
-    @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY })
-    record FeatureObject(int id, String term, double probalility) {
+        @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY})
+        static class FeatureObject {
+        private int id;
+        private String term;
+        private double probability;
+
+        FeatureObject(){}
+
+        FeatureObject(int id, String term, double probalility) {
+            this.id = id;
+            this.term = term;
+            this.probability = probalility;
+        }
+
         @XmlElement(name = LuaToXML.ID)
-        int getId(){
+            int getId() {
+                return id;
+            }
+
+            @XmlElement(name = LuaToXML.TERM)
+            String getTerm() {
+                return term;
+            }
+
+            @XmlElement(name = LuaToXML.PROBABILITY)
+            double getProbability() {
+                return probability;
+            }
+
+        public int id() {
             return id;
         }
-        @XmlElement(name = LuaToXML.TERM)
-        String getTerm(){
+
+        public String term() {
             return term;
         }
-        @XmlElement(name = LuaToXML.PROBABILITY)
-        double getProbability(){
-            return probalility;
-        }
-    }
 
-    @Override
-    public String toString() {
-        return "Feature{" +
-                "beginTime=" + beginTime +
-                ", type=" + type +
-                ", description='" + description + '\'' +
-                ", objectList=" + objectList +
-                '}';
-    }
+        public double probalility() {
+            return probability;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            var that = (FeatureObject) obj;
+            return this.id == that.id &&
+                    Objects.equals(this.term, that.term) &&
+                    Double.doubleToLongBits(this.probability) == Double.doubleToLongBits(that.probability);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, term, probability);
+        }
+
+        @Override
+        public String toString() {
+            return "FeatureObject[" +
+                    "id=" + id + ", " +
+                    "term=" + term + ", " +
+                    "probalility=" + probability + ']';
+        }
+
+        }
 }

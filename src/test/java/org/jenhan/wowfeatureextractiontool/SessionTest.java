@@ -13,6 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
+    final static String DECLARATION = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
     String testFilePath = "src/test/resources/ShortSessionsTest.lua";
     File testFile = new File(testFilePath);
     List<Session> sessionList;
@@ -50,13 +51,13 @@ class SessionTest {
         // check header
         BufferedReader reader = new BufferedReader(new FileReader(testOutput));
         String headerLine = reader.readLine().trim();
-        assertEquals("<?xml version=\"1.0\" encoding=\"utf-8\"?>", headerLine.toLowerCase());
+        assertEquals(LuaToXML.DECLARATION, headerLine.toLowerCase());
         String collectionLine = reader.readLine().trim();
         assertEquals("<gmaf-collection>", collectionLine);
         String dataLine = reader.readLine().trim();
         assertEquals("<gmaf-data>", dataLine);
         String fileLine = reader.readLine().trim();
-        assertEquals("<file>" + testOutput.getName() + "</file>", fileLine);
+        assertEquals("<file>" + testFile.getName() + "</file>", fileLine);
         String dateLine = reader.readLine().trim();
         assertTrue(isSimpleTag(dateLine, "date"));
     }
@@ -86,22 +87,22 @@ class SessionTest {
     void setShortTestExpected(){
         Calendar startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688840368000L));
-        Session expectedSession1 = new Session(0, testFile.getName());
+        Session expectedSession1 = Session.create(0, testFile.getName());
         setContentProperties(expectedSession1,"Antigone", "Sen'jin", startTime);
         expectedList.add(expectedSession1);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688891052000L));
-        Session expectedSession2 = new Session(1, testFile.getName());
+        Session expectedSession2 = Session.create(1, testFile.getName());
         setContentProperties(expectedSession2, "Spice", "Sen'jin", startTime);
         expectedList.add(expectedSession2);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688840385000L));
-        Session expectedSession3 = new Session(2, testFile.getName());
+        Session expectedSession3 = Session.create(2, testFile.getName());
         setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
         expectedList.add(expectedSession3);
         startTime = Calendar.getInstance();
         startTime.setTime(new Date(1688840200000L));
-        Session expectedSession4 = new Session(2, testFile.getName());
+        Session expectedSession4 = Session.create(2, testFile.getName());
         setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
         expectedList.add(expectedSession4);
     }

@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractiontool.Utilities;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

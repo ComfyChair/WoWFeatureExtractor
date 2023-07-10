@@ -37,7 +37,7 @@ public class LuaReader {
                 line = line.trim();
                 if (line.startsWith(SESSION_FIELD_START)) {
                     sessionID++;
-                    Session newSession = new Session(sessionID, luaFile.getName());
+                    Session newSession = Session.create(sessionID, luaFile.getName());
                     log.fine("found session, line number: " + reader.getLineNumber() + ", content of last read line: " + line);
                     // read session lines until all info fields are populated
                     readSingleSession(reader, line, newSession);

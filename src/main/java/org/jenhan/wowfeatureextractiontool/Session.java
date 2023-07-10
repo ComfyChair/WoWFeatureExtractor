@@ -18,10 +18,9 @@ import java.util.logging.Logger;
 
 
 @XmlRootElement(name = LuaToXML.GMAF_DATA)
-@XmlType(propOrder = {LuaToXML.FILE, LuaToXML.DATE, LuaToXML.INTERACTION })
+@XmlType(propOrder = {"fileName", LuaToXML.DATE, "featureList"})
 public class Session {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private final String fileName;
     private final List<Feature> featureList = new ArrayList<>();
     // session info displayed in session picker as properties (necessary for javafx)
     @FXML
@@ -34,12 +33,17 @@ public class Session {
     private final ObjectProperty<DateFormatted> date = new SimpleObjectProperty<>();
     @FXML
     private final ObjectProperty<TimeFormatted> startTime = new SimpleObjectProperty<>();
+    private String fileName;
 
     // constructor
-    Session(int sessionID, String fileName)
-    {
-        this.sessionID.setValue(sessionID);
-        this.fileName = fileName;
+    private Session() {
+    }
+
+    static Session create(int sessionID, String fileName) {
+        Session session = new Session();
+        session.sessionID.setValue(sessionID);
+        session.fileName = fileName;
+        return session;
     }
 
     // converts lua feature table to GMAF-style xml
@@ -53,27 +57,34 @@ public class Session {
     public IntegerProperty sessionIDProperty() {
         return sessionID;
     }
+
     public StringProperty charNameProperty() {
         return charName;
     }
+
     public StringProperty serverNameProperty() {
         return serverName;
     }
+
     public ObjectProperty<DateFormatted> dateProperty() {
         return date;
     }
+
     public ObjectProperty<TimeFormatted> startTimeProperty() {
         return startTime;
     }
+
     // these getters are for jaxb bindings
     @XmlElement(name = LuaToXML.DATE)
     public String getDate() {
         return date.get().toString();
     }
+
     @XmlElement(name = LuaToXML.FILE)
     public String getFileName() {
         return fileName;
     }
+
     @XmlElements(@XmlElement(name = LuaToXML.INTERACTION))
     List<Feature> getFeatureList() {
         return featureList;

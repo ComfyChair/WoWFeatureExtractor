@@ -6,7 +6,7 @@ public interface LuaToXML {
     /**
      * XML Fields
      **/
-    final static String ENCODING = "utf-8";
+    final static String DECLARATION = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
     final static String GMAF_COLLECTION = "gmaf-collection";
     final static String GMAF_DATA = "gmaf-data";
     final static String FILE = "file";
