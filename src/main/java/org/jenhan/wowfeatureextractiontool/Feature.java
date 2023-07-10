@@ -88,4 +88,13 @@ public class Feature {
     record FeatureObject(int id, String term) {
     }
 
+    @Override
+    public String toString() {
+        return "Feature{" +
+                "beginTime=" + beginTime +
+                ", type=" + type +
+                ", description='" + description + '\'' +
+                ", objectList=" + objectList +
+                '}';
+    }
 }

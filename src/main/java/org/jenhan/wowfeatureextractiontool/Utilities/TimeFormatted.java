@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+// Utility class to display time in javafx tableview (overwritten toString function)
 public class TimeFormatted extends Date {
     Date date;
 

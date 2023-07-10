@@ -28,7 +28,7 @@ public class MainControl {
     private static final String SAVED_VAR_DIR_PREF = "saved_vars_dir_pref";
     private static final String INPUT_FILE_PREF = "input_file_pref";
     private static final String OUTPUT_DIR_PREF = "output_dir_pref";
-    private static ObservableList<SessionInfo> sessionInfos;
+    private static ObservableList<Session> sessionInfos;
     // paths
     private File addonDir;
     private File inputFile;
@@ -96,7 +96,7 @@ public class MainControl {
         return accountsFound;
     }
 
-    static ObservableList<SessionInfo> getSessionInfos() {
+    static ObservableList<Session> getSessionInfos() {
         return sessionInfos;
     }
 

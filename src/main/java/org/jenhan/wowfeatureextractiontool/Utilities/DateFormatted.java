@@ -1,11 +1,10 @@
 package org.jenhan.wowfeatureextractiontool.Utilities;
 
-import org.jenhan.wowfeatureextractiontool.SessionInfo;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+// Utility class to display date in javafx tableview (overwritten toString function)
 public class DateFormatted extends Date {
     Date date;
 

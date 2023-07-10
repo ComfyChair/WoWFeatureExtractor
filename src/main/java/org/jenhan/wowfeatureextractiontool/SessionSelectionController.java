@@ -12,17 +12,17 @@ import java.util.List;
 public class SessionSelectionController {
     // session selection
     @FXML
-    TableView<SessionInfo> sessionInfoTable;
+    TableView<Session> sessionInfoTable;
     @FXML
-    TableColumn<SessionInfo, DateFormatted> date;
+    TableColumn<Session, DateFormatted> date;
     @FXML
-    TableColumn<SessionInfo, DateFormatted> time;
+    TableColumn<Session, DateFormatted> time;
     @FXML
-    TableColumn<SessionInfo, String> charName;
+    TableColumn<Session, String> charName;
     @FXML
-    TableColumn<SessionInfo, String> serverName;
+    TableColumn<Session, String> serverName;
     @FXML
-    ObservableList<SessionInfo> sessionList;
+    ObservableList<Session> sessionList;
 
     @FXML
     void populateTable() {
@@ -31,7 +31,7 @@ public class SessionSelectionController {
         sessionInfoTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    List<SessionInfo> getSelected() {
+    List<Session> getSelected() {
         return sessionInfoTable.getSelectionModel().getSelectedItems();
     }
 }

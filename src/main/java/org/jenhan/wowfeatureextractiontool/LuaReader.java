@@ -2,15 +2,11 @@ package org.jenhan.wowfeatureextractiontool;
 
 import java.io.*;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class LuaReader {
     private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private LineNumberReader lineNumberReader = null;
     /**
      * Lua table fields
      **/
@@ -23,75 +19,35 @@ public class LuaReader {
     private final static String TYPE = "type";
     private final static String FEATURE_TIMESTAMP = "timestamp";
     private final static String OBJECT_LIST = "objects";
+    private final static String END_OF_TABLE_ENTRY = "},";
+    private final static String END_OF_SESSION  = "\t},";
+    private final static String END_OF_FEATURE_TABLE = "\t\t},";
+    private final static String END_OF_TABLE ="}";
 
-    LuaReader(File luaFile, int startLine) {
-        lineNumberReader = prepareInput(luaFile, startLine);
+    public LuaReader() {
     }
 
-    /**
-     * reader part: prepares input file stream and skips to the selected session
-     **/
-    static private LineNumberReader prepareInput(File inputFile, int startLine) {
-        LineNumberReader luaReader = null;
-        try {
-            luaReader = new LineNumberReader(new FileReader(inputFile));
-            for (int i = 0; i < startLine; i++) {
-                luaReader.readLine();
-            }
-        } catch (FileNotFoundException e) {
-            Gui.errorMessage("Something went wrong while preparing the input file : " + inputFile.getAbsolutePath());
-            log.severe("Could not read input file: " + inputFile.getAbsolutePath());
-            e.printStackTrace();
-        } catch (IOException e) {
-            Gui.errorMessage("Something went wrong while reading the input file : " + inputFile.getAbsolutePath());
-            log.severe("Error while skipping in input file: " + inputFile.getAbsolutePath());
-            e.printStackTrace();
-        }
-        return luaReader;
-    }// reads general information about sessions from lua file
-
-    static List<SessionInfo> readSessionInfo(File luaFile) {
-        LineNumberReader luaReader = prepareInput(luaFile, 0);
-        List<SessionInfo> sessionList = new ArrayList<SessionInfo>();
+    List<Session> readFile(File luaFile) {
+        List<Session> sessionList = new ArrayList<>();
         String line;
         int sessionID = -1;
-        try {
-            while (((line = luaReader.readLine()) != null)) { // null marks the end of the stream
-                log.fine("Reading a line of" + luaFile);
+        try (LineNumberReader reader = new LineNumberReader(new FileReader(luaFile))){
+            while ((!Objects.equals(line = reader.readLine(), END_OF_TABLE))) { // null marks the end of the stream
+                log.fine("Reading a line of " + luaFile);
                 line = line.trim();
                 if (line.startsWith(SESSION_FIELD_START)) {
                     sessionID++;
-                    int startLine = luaReader.getLineNumber();
-                    SessionInfo newSessionInfo = new SessionInfo(sessionID, startLine);
-                    log.info("found session, line number: " + startLine + ", content of last read line: " + line);
-                    String charName = null;
-                    String serverName = null;
-                    Calendar startTime = null;
-                    Integer startFeatureTable = null;
+                    Session newSession = new Session(sessionID);
+                    log.fine("found session, line number: " + reader.getLineNumber() + ", content of last read line: " + line);
                     // read session lines until all info fields are populated
-                    while ((charName == null) || (serverName == null) ||
-                            (startTime == null) || (startFeatureTable == null)) {
-                        line = luaReader.readLine();
-                        log.fine("Read line: " + line);
-                        if (isAssignment(line)) {
-                            String fieldKey = getLuaFieldKey(line);
-                            log.fine("is assignment with key: " + fieldKey);
-                            switch (fieldKey) {
-                                case CHAR_NAME -> charName = getLuaFieldValue(line);
-                                case SERVER_NAME -> serverName = getLuaFieldValue(line);
-                                case START_TIME -> startTime = getCalendarFromLuaField(line);
-                                case FEATURE_TABLE -> startFeatureTable = luaReader.getLineNumber();
-                                default -> log.finer("line not relevant");
-                            }
-                        }
-                    }
+                    readSingleSession(reader, line, newSession);
                     // set fields and add session info to List
-                    newSessionInfo.setContentProperties(charName, serverName, startTime, startFeatureTable);
-                    sessionList.add(newSessionInfo);
-                    log.fine("Added session: " + newSessionInfo);
+                    sessionList.add(newSession);
+                    log.fine("Added session: " + newSession);
                 }
             }
         } catch (IOException e) {
+            //TODO: handle properly
             log.severe("IOException while reading session info of file: " + luaFile
                     + "\n" + e);
             if (Gui.getPrimaryStage() != null) { // check to prevent errors when testing without gui
@@ -99,6 +55,67 @@ public class LuaReader {
             }
         }
         return sessionList;
+    }
+
+    private void readSingleSession(LineNumberReader reader, String line, Session session) throws IOException {
+        log.fine("Reading new session, line " + reader.getLineNumber());
+        while (line!= null && !line.equals(END_OF_SESSION)) {
+            line = reader.readLine();
+            log.fine("Read line: " + line);
+            if (isAssignment(line)) {
+                String fieldKey = getLuaFieldKey(line);
+                log.fine("is assignment with key: " + fieldKey);
+                switch (fieldKey) {
+                    case CHAR_NAME -> session.setCharName(getLuaFieldValue(line));
+                    case SERVER_NAME -> session.setServerName(getLuaFieldValue(line));
+                    case START_TIME -> session.setDateTime(getDateFromLuaField(line));
+                    case FEATURE_TABLE -> line = readFeatureTable(reader, session);
+                    default -> log.fine("line not relevant: " + line);
+                }
+                log.fine("Session state: " + session);
+            }
+        }
+    }
+
+    private String readFeatureTable(LineNumberReader reader, Session session) throws IOException {
+        Feature feature;
+        log.fine("Reading feature table");
+        String line = reader.readLine();
+        while (line != null && !line.equals(END_OF_FEATURE_TABLE)) {
+                log.fine("GetNext Feature - current Line: " + line);
+                if (isNextFeature(line)) {
+                    session.addFeature(readFeature(reader));
+                }
+                line = reader.readLine();
+        }
+        return line;
+    }
+
+
+    boolean isNextFeature(String line) {
+        return line.trim().equals("{");
+    }
+
+    private Feature readFeature(LineNumberReader reader) throws IOException {
+        // create feature object and fill with attributes
+        log.fine("Reading feature");
+        String line = reader.readLine();
+        Feature feature = new Feature();
+        while (!isEndOfFeature(line)) {
+            log.fine("Read Feature - current line: " + line);
+            if (isAssignment(line)) {
+                String key = getLuaFieldKey(line);
+                switch (key) {
+                    case FEATURE_TIMESTAMP -> feature.setBeginTime(getDateFromLuaField(line));
+                    case DESCRIPTION -> feature.setDescription(LuaReader.getLuaFieldValue(line));
+                    case TYPE -> feature.setType(LuaReader.getLuaFieldValue(line));
+                    case OBJECT_LIST -> readFeatureObjects(reader, feature);
+                }
+            }
+            line = reader.readLine();
+        }
+        log.fine("Feature read: " + feature);
+        return feature;
     }
 
     static boolean isAssignment(String line) {
@@ -119,7 +136,7 @@ public class LuaReader {
             }
             return valueSide;
         } else {
-            throw new InvalidParameterException("something went wrong while manipulating lua file strings");
+            throw new RuntimeException("Requested Lua field value on non-assignment line");
         }
     }
 
@@ -131,7 +148,7 @@ public class LuaReader {
             // substring to omit quotation marks and brackets
             return keySide.substring(2, keySide.length() - 2);
         } else {
-            throw new InvalidParameterException("something went wrong while manipulating lua file strings");
+            throw new InvalidParameterException("Requested Lua field key on non-assignment line");
         }
     }
 
@@ -145,71 +162,28 @@ public class LuaReader {
         return line.trim().equals("},");
     }
 
-    boolean isNextFeature(String line) {
-        return line.trim().equals("{");
-    }
-
     boolean isEndOfFeature(String line) {
         String trimmed = line.trim();
         return trimmed.startsWith("},") && trimmed.endsWith("]");
     }// converts Unix time in seconds (as String from lua field) to Calendar object
 
-    static Calendar getCalendarFromLuaField(String line) {
-        Calendar time;
-        long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000;
-        // convert UNIX time to Calendar
-        time = Calendar.getInstance();
-        time.setTime(new Date(unixTime));
-        return time;
-    }
-
     Date getDateFromLuaField(String line) {
-        long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000;
-        return new Date(unixTime);
+        long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000L;
+        Calendar startTime = Calendar.getInstance();
+        startTime.setTime(new Date(unixTime));
+        return startTime.getTime();
     }
 
-    Feature getNextFeature() throws IOException {
-        String currentLine = lineNumberReader.readLine();
-        log.info("GetNext Feature - Current line: " + currentLine);
-        Feature returnFeature = null;
-        while (currentLine != null) {
-            log.fine("LuaReader read Line: " + currentLine);
-            if (isNextFeature(currentLine)) {
-                returnFeature = readFeature(currentLine);
-            }
-            currentLine = lineNumberReader.readLine();
-        }
-        return returnFeature;
-    }
-
-    private Feature readFeature(String line) throws IOException {
-        // create feature object and fill with attributes
-        Feature interaction = new Feature();
-        while (!isEndOfFeature(line)) {
-            if (isAssignment(line)) {
-                String key = getLuaFieldKey(line);
-                switch (key) {
-                    case FEATURE_TIMESTAMP -> interaction.setBeginTime(getDateFromLuaField(line));
-                    case DESCRIPTION -> interaction.setDescription(LuaReader.getLuaFieldValue(line));
-                    case TYPE -> interaction.setType(LuaReader.getLuaFieldValue(line));
-                    case LuaReader.OBJECT_LIST -> readFeatureObjects(interaction);
-                }
-            }
-            line = lineNumberReader.readLine();
-        }
-        return interaction;
-    }
 
     // reads feature objects from lua file
-
-    private void readFeatureObjects(Feature feature) throws IOException {
-        String line = lineNumberReader.readLine();
+    private void readFeatureObjects(LineNumberReader reader, Feature feature) throws IOException {
+        String line = reader.readLine();
         int id = 1;
         while (!isEndOfTable(line)) {
             String term = getEntryFromLuaTable(line);
             feature.addObject(new Feature.FeatureObject(id, term));
             id++;
-            line = lineNumberReader.readLine();
+            line = reader.readLine();
         }
     }
 }

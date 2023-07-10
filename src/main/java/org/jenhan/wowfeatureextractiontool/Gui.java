@@ -92,7 +92,7 @@ public class Gui extends Application {
         Optional<ButtonType> response = dialog.showAndWait();
         if (response.isPresent() && response.get() == ButtonType.OK) {
             result = controller.getSelected().stream()
-                    .map(SessionInfo::sessionIDProperty)
+                    .map(Session::sessionIDProperty)
                     .map(ObservableIntegerValue::get)
                     .toList();
         }

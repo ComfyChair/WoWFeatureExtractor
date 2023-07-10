@@ -1,5 +1,7 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
+import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.*;
@@ -11,56 +13,40 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
-    String testFilePath = "src/test/resources/FeatureRecordingTool.lua";
+    String testFilePath = "src/test/resources/ShortSessionsTest.lua";
     File testFile = new File(testFilePath);
-    List<SessionInfo> sessionInfoList;
-    List<SessionInfo> expectedInfoList;
+    List<Session> sessionList;
+    List<Session> expectedList;
 
     @BeforeEach
     void setUp() {
-        sessionInfoList = Session.readSessionInfo(testFile);
-        expectedInfoList = new ArrayList<>();
-        Calendar startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688494496000L));
-        SessionInfo expectedSession1 = new SessionInfo(0, 3);
-        expectedSession1.setContentProperties("Arvensis", "Sen'jin", startTime, 8);
-        expectedInfoList.add(expectedSession1);
-        startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688544677000L));
-        SessionInfo expectedSession2 = new SessionInfo(1, 389);
-        expectedSession2.setContentProperties("Sugi", "Sen'jin", startTime, 393);
-        expectedInfoList.add(expectedSession2);
-        startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688494046000L));
-        SessionInfo expectedSession3 = new SessionInfo(2, 571);
-        expectedSession3.setContentProperties("Arvensis", "Sen'jin", startTime, 576);
-        expectedInfoList.add(expectedSession3);
-    }
-
-    @Test
-    void getSessionInfo() {
-        Session newSession = new Session(sessionInfoList.get(0));
-        assertEquals(expectedInfoList.get(0), newSession.getSessionInfo());
+        SessionManager manager = SessionManager.getInstance();
+        sessionList = manager.getSessionList(testFile);
+        expectedList = new ArrayList<>();
     }
 
     @Test
     void readSessionInfo1() {
-        assertEquals(3, sessionInfoList.size());
+        setShortTestExpected();
+        assertEquals(4, sessionList.size());
         // first session
-        assertEquals(expectedInfoList.get(0), sessionInfoList.get(0));
+        assertEquals(expectedList.get(0), sessionList.get(0));
         // second session
-        assertEquals(expectedInfoList.get(1), sessionInfoList.get(1));
+        assertEquals(expectedList.get(1), sessionList.get(1));
         // third session
-        assertEquals(expectedInfoList.get(2), sessionInfoList.get(2));
+        assertEquals(expectedList.get(2), sessionList.get(2));
+        // fourth session
+        assertEquals(expectedList.get(2), sessionList.get(2));
     }
 
     @Test
     void exportToXML_TestStartOfDocument() throws IOException {
+        setShortTestExpected();
         File testOutput = new File("src/test/testOutput/exportTest2.xml");
-        Session session = new Session(sessionInfoList.get(1));
+        Session session = sessionList.get(1);
         System.out.println("Testing start of document: " + testOutput.getPath());
-        System.out.println("Session Info: " + sessionInfoList.get(1));
-        session.exportToXML(testFile, testOutput);
+        System.out.println("Session Info: " + sessionList.get(1));
+        session.exportToXML(testOutput);
         // check header
         BufferedReader reader = new BufferedReader(new FileReader(testOutput));
         String headerLine = reader.readLine().trim();
@@ -79,10 +65,6 @@ class SessionTest {
         return line.startsWith("<" + tagString + ">") && line.endsWith("</" + tagString + ">");
     }
 
-    private boolean isOpenTag(String line, String tagString) {
-        return line.startsWith("<" + tagString) && line.endsWith(">");
-    }
-
     @Test
     void timeConversionTest(){
         Calendar testTime = Calendar.getInstance();
@@ -94,5 +76,33 @@ class SessionTest {
         assertEquals(6, month); // JAN = 0
     }
 
-
+    // convenience method for
+    void setContentProperties(Session session, String charName, String serverName, Calendar calendar){
+        session.charNameProperty().setValue(charName);
+        session.serverNameProperty().setValue(serverName);
+        session.dateProperty().setValue(new DateFormatted(calendar.getTime()));
+        session.startTimeProperty().setValue(new TimeFormatted(calendar.getTime()));
+    }
+    void setShortTestExpected(){
+        Calendar startTime = Calendar.getInstance();
+        startTime.setTime(new Date(1688840368000L));
+        Session expectedSession1 = new Session(0);
+        setContentProperties(expectedSession1,"Antigone", "Sen'jin", startTime);
+        expectedList.add(expectedSession1);
+        startTime = Calendar.getInstance();
+        startTime.setTime(new Date(1688891052000L));
+        Session expectedSession2 = new Session(1);
+        setContentProperties(expectedSession2, "Spice", "Sen'jin", startTime);
+        expectedList.add(expectedSession2);
+        startTime = Calendar.getInstance();
+        startTime.setTime(new Date(1688840385000L));
+        Session expectedSession3 = new Session(2);
+        setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
+        expectedList.add(expectedSession3);
+        startTime = Calendar.getInstance();
+        startTime.setTime(new Date(1688840200000L));
+        Session expectedSession4 = new Session(2);
+        setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
+        expectedList.add(expectedSession4);
+    }
 }
