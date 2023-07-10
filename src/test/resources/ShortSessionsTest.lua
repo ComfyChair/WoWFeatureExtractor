@@ -3,7 +3,7 @@ FRT_FeatureRecordings = {
 	["session_2"] = {
 		["characterName"] = "Antigone",
 		["dateTime"] = "20:19, Samstag, 8 Juli 2023",
-		["serverName"] = "Sen'jin",
+		["serverName"] = "TestServer",
 		["startTimeStamp"] = 1688840368,
 		["featureTable"] = {
 		},

@@ -1,16 +1,19 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
-import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SessionTest {
     final static String DECLARATION = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
@@ -29,15 +32,11 @@ class SessionTest {
     @Test
     void readSessionInfo1() {
         setShortTestExpected();
-        assertEquals(4, sessionList.size());
-        // first session
-        assertEquals(expectedList.get(0), sessionList.get(0));
-        // second session
-        assertEquals(expectedList.get(1), sessionList.get(1));
-        // third session
-        assertEquals(expectedList.get(2), sessionList.get(2));
-        // fourth session
-        assertEquals(expectedList.get(2), sessionList.get(2));
+        int expectedSessions = 4;
+        assertEquals(expectedSessions, sessionList.size());
+        for (int i = 0; i < expectedSessions; i++) {
+            assertEquals(expectedList.get(i), sessionList.get(i));
+        }
     }
 
     @Test
@@ -69,41 +68,43 @@ class SessionTest {
     @Test
     void timeConversionTest(){
         Calendar testTime = Calendar.getInstance();
-        long unixTime = 1688372354L * 1000;
+        long unixTime = 1688840368L * 1000;
         testTime.setTime(new Date(unixTime));
         int date = testTime.get(Calendar.DATE);
-        assertEquals(3, date);
+        assertEquals(8, date);
         int month = testTime.get(Calendar.MONTH);
         assertEquals(6, month); // JAN = 0
+        int hour = testTime.get(Calendar.HOUR);
+        assertEquals(8, hour);
+        int minute = testTime.get(Calendar.MINUTE);
+        assertEquals(19, minute);
     }
 
     // convenience method for
-    void setContentProperties(Session session, String charName, String serverName, Calendar calendar){
+    void setContentProperties(Session session, String charName, String serverName, Date date){
         session.charNameProperty().setValue(charName);
         session.serverNameProperty().setValue(serverName);
-        session.dateProperty().setValue(new DateFormatted(calendar.getTime()));
-        session.startTimeProperty().setValue(new TimeFormatted(calendar.getTime()));
+        session.setDateTime(date);
     }
     void setShortTestExpected(){
-        Calendar startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688840368000L));
+        long unixTime = 1688840368L * 1000L;
         Session expectedSession1 = Session.create(0, testFile.getName());
-        setContentProperties(expectedSession1,"Antigone", "Sen'jin", startTime);
+        setContentProperties(expectedSession1,"Antigone", "TestServer", new Date(unixTime));
         expectedList.add(expectedSession1);
-        startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688891052000L));
+
+        unixTime = 1688891052L * 1000L;
         Session expectedSession2 = Session.create(1, testFile.getName());
-        setContentProperties(expectedSession2, "Spice", "Sen'jin", startTime);
+        setContentProperties(expectedSession2, "Spice", "Sen'jin", new Date(unixTime));
         expectedList.add(expectedSession2);
-        startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688840385000L));
+
+        unixTime = 1688840385L * 1000L;
         Session expectedSession3 = Session.create(2, testFile.getName());
-        setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
+        setContentProperties(expectedSession3, "Antigone", "Sen'jin", new Date(unixTime));
         expectedList.add(expectedSession3);
-        startTime = Calendar.getInstance();
-        startTime.setTime(new Date(1688840200000L));
-        Session expectedSession4 = Session.create(2, testFile.getName());
-        setContentProperties(expectedSession3, "Antigone", "Sen'jin", startTime);
+
+        unixTime = 1688840200L * 1000L;
+        Session expectedSession4 = Session.create(3, testFile.getName());
+        setContentProperties(expectedSession4, "Antigone", "Sen'jin", new Date(unixTime));
         expectedList.add(expectedSession4);
     }
 }

@@ -6,10 +6,11 @@ import java.util.Objects;
 
 // Utility class to display time in javafx tableview (overwritten toString function)
 public class TimeFormatted extends Date {
-    Date date;
+    String formattedTime;
 
-    public TimeFormatted(Date date) {
-        this.date = date;
+    public TimeFormatted(Date date)
+    {
+        this.formattedTime = new SimpleDateFormat("HH:mm:ss").format(date);
     }
 
     @Override
@@ -18,16 +19,16 @@ public class TimeFormatted extends Date {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TimeFormatted that = (TimeFormatted) o;
-        return Objects.equals(date, that.date);
+        return Objects.equals(formattedTime, that.formattedTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), date);
+        return Objects.hash(super.hashCode(), formattedTime);
     }
 
     @Override
     public String toString() {
-        return new SimpleDateFormat("HH:mm:ss").format(date);
+        return formattedTime;
     }
 }
