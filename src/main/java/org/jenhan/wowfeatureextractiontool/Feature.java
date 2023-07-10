@@ -1,9 +1,6 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.*;
 import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
 
 import java.util.ArrayList;
@@ -16,7 +13,7 @@ import java.util.logging.Logger;
 
 // data structure for writing feature data
 @XmlRootElement(name = LuaToXML.INTERACTION)
-@XmlType(propOrder = {LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
+@XmlType(propOrder = {"beginTime", LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
 public class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final List<FeatureObject> objectList = new ArrayList<>();
@@ -24,7 +21,8 @@ public class Feature {
     private FeatureType type = null;
     private String description = null;
 
-    Feature(){}
+    Feature() {
+    }
 
     @XmlElement(name = LuaToXML.DESCRIPTION)
     String getDescription() {
@@ -35,8 +33,9 @@ public class Feature {
         this.description = description;
     }
 
-    TimeFormatted getBeginTime() {
-        return beginTime;
+    @XmlAttribute(name = LuaToXML.BEGIN)
+    String getBeginTime() {
+        return beginTime.toString();
     }
 
     void setBeginTime(Date beginDate) {
@@ -109,13 +108,14 @@ public class Feature {
     }
 
     @XmlRootElement(name = LuaToXML.OBJECT)
-        @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY})
-        static class FeatureObject {
+    @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY})
+    static class FeatureObject {
         private int id;
         private String term;
         private double probability;
 
-        FeatureObject(){}
+        FeatureObject() {
+        }
 
         FeatureObject(int id, String term, double probalility) {
             this.id = id;
@@ -124,29 +124,17 @@ public class Feature {
         }
 
         @XmlElement(name = LuaToXML.ID)
-            int getId() {
-                return id;
-            }
-
-            @XmlElement(name = LuaToXML.TERM)
-            String getTerm() {
-                return term;
-            }
-
-            @XmlElement(name = LuaToXML.PROBABILITY)
-            double getProbability() {
-                return probability;
-            }
-
-        public int id() {
+        int getId() {
             return id;
         }
 
-        public String term() {
+        @XmlElement(name = LuaToXML.TERM)
+        String getTerm() {
             return term;
         }
 
-        public double probalility() {
+        @XmlElement(name = LuaToXML.PROBABILITY)
+        double getProbability() {
             return probability;
         }
 
@@ -173,5 +161,5 @@ public class Feature {
                     "probalility=" + probability + ']';
         }
 
-        }
+    }
 }

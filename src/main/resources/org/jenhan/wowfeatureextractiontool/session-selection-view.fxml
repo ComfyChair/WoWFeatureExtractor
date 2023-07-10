@@ -19,7 +19,7 @@
             </TableColumn>
             <TableColumn fx:id="time" prefWidth="75.0" text="Time">
                 <cellValueFactory>
-                    <PropertyValueFactory property="time"/>
+                    <PropertyValueFactory property="startTime"/>
                 </cellValueFactory>
             </TableColumn>
             <TableColumn fx:id="charName" prefWidth="75.0" text="Character">
