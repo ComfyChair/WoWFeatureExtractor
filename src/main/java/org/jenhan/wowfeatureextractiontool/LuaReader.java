@@ -28,6 +28,7 @@ import java.util.logging.Logger;
     private final static String END_OF_FEATURE_TABLE = "\t\t},";
     private final static String END_OF_TABLE ="}";
 
+    /** constructor **/
     LuaReader() {
     }
 
@@ -82,6 +83,10 @@ import java.util.logging.Logger;
         }
     }
 
+    /** reads lua file to add features to the current session's feature list
+     * @param reader the line number reader
+     * @param session the current session
+     * @return last read line; should be END_OF_FEATURE_TABLE **/
     private String readFeatureTable(LineNumberReader reader, Session session) throws IOException {
         Feature feature;
         log.fine("Reading feature table");
@@ -96,13 +101,17 @@ import java.util.logging.Logger;
         return line;
     }
 
-
+    /** detects the next feature from the line content
+     * @param line current line of the lua file
+     * @return true if the current line opens the next feature**/
     private boolean isNextFeature(String line) {
         return line.trim().equals("{");
     }
 
+    /** reads feature properties from lua file
+     * @param reader the LineNumberReader
+     * @return the complete feature **/
     private Feature readFeature(LineNumberReader reader) throws IOException {
-        // create feature object and fill with attributes
         log.fine("Reading feature");
         String line = reader.readLine();
         Feature feature = new Feature();
@@ -123,11 +132,15 @@ import java.util.logging.Logger;
         return feature;
     }
 
+    /** determines whether a String is an assignment
+     * @param line the line **/
     private static boolean isAssignment(String line) {
-        String[] split = line.split("=");
-        return split.length > 1;
+        return line.contains("=");
     }
 
+    /** extracts the value from a lua assignment
+     * @param line the assignment String
+     * @return the value of the assignment as a String **/
     private static String getLuaFieldValue(String line) {
         if (isAssignment(line)) {
             String[] split = line.split("=");
@@ -145,6 +158,9 @@ import java.util.logging.Logger;
         }
     }
 
+    /** extracts the key from a lua assignment
+     * @param line the assignment String
+     * @return the key of the assignment as a String **/
     private static String getLuaFieldKey(String line) {
         if (isAssignment(line)) {
             String[] split = line.split("=");
@@ -157,21 +173,31 @@ import java.util.logging.Logger;
         }
     }
 
+    /** removes additional characters from a lua table entry String
+     * @param line the complete entry line
+     * @return the naked entry String **/
     private String getEntryFromLuaTable(String line) {
         String trimmed = line.trim();
         String leftOfComma = trimmed.split(",")[0];
         return leftOfComma.replace("\"", "");
     }
 
+    /** determines whether a line signals the end of a lua table
+     * @param line the line **/
     private boolean isEndOfTable(String line) {
         return line.trim().equals("},");
     }
 
+    /** determines whether a line signals the end of a feature entry
+     * @param line the line **/
     private boolean isEndOfFeature(String line) {
         String trimmed = line.trim();
         return trimmed.startsWith("},") && trimmed.endsWith("]");
     }// converts Unix time in seconds (as String from lua field) to Calendar object
 
+    /** determines the Date from a lua assignment with value = unix time in seconds
+     * @param line the assignment line
+     * @return the corresponding Date object **/
     private Date getDateFromLuaField(String line) {
         long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000L;
         Calendar startTime = Calendar.getInstance();
@@ -179,8 +205,9 @@ import java.util.logging.Logger;
         return startTime.getTime();
     }
 
-
-    // reads feature objects from lua file
+    /** reads feature objects from file and assigns them to the current feature
+     * @param reader the LineNumberReader
+     * @param feature the current feature **/
     private void readFeatureObjects(LineNumberReader reader, Feature feature) throws IOException {
         String line = reader.readLine();
         int id = 1;

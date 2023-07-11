@@ -103,15 +103,6 @@ class SessionManagerTest {
         return schema.newValidator();
     }
 
-    public boolean isValid(File xmlFile) throws IOException {
-        try {
-            validator.validate(new StreamSource(xmlFile));
-            return true;
-        } catch (SAXException e) {
-            return false;
-        }
-    }
-
     static class XmlErrorHandler implements ErrorHandler {
 
         private final List<SAXParseException> exceptions;
