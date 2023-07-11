@@ -15,7 +15,7 @@ public class SessionManager {
     }
 
     static SessionManager getInstance() {
-        // "lazy" initialization (initialize if needed)
+        // "lazy" initialization: delay initialization until needed
         if (instance == null) {
             instance = new SessionManager();
         }
@@ -24,28 +24,26 @@ public class SessionManager {
 
     List<Session> getSessionList(File luaFile) {
         LuaReader luaReader = new LuaReader();
-        // get session information from file (static call, thus handled by interface class)
         sessionList = luaReader.readFile(luaFile);
-        // create Session objects from session info
         return sessionList;
     }
 
-    void exportToXML(File outPath, List<Integer> sessionIDs) {
+    int exportToXML(File outPath, List<Integer> sessionIDs) {
         String fileName;
+        int count = 0;
         if (sessionIDs.size() == 1) { // single session, no additional identifier for output
             fileName = OUTFILE_NAME + OUTFILE_EXTENSION;
             File outFile = extendPath(outPath.toPath(), fileName);
-            System.out.println("Outpath: " + outFile.getAbsolutePath());
-            sessionList.get(sessionIDs.get(0)).exportToXML(outFile);
+            count = sessionList.get(sessionIDs.get(0)).exportToXML(outFile) ? count + 1 : count;
         } else { // multiple session, append session id to file name
             for (Integer sessionID : sessionIDs
             ) {
                 fileName = OUTFILE_NAME + "_" + sessionID + OUTFILE_EXTENSION;
                 File outFile = extendPath(outPath.toPath(), fileName);
-                System.out.println("Outpath: " + outFile.getAbsolutePath());
-                sessionList.get(sessionID).exportToXML(outFile);
+                count = sessionList.get(sessionID).exportToXML(outFile) ? count + 1 : count;
             }
         }
+        return count;
     }
 
     private File extendPath(Path path, String fileName) {

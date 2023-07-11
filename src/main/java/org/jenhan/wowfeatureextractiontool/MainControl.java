@@ -56,7 +56,6 @@ public class MainControl {
                         }
                     }
                 } else {
-                    entryDestination.getParentFile().mkdirs(); // only ask for confirmation on directory
                     OutputStream outputStream = new FileOutputStream(entryDestination);
                     zipFile.getInputStream(entry).transferTo(outputStream);
                 }
@@ -207,9 +206,9 @@ public class MainControl {
         SessionManager sessionManager = SessionManager.getInstance();
         List<Integer> sessionIDs = retrieveIdList(sessionManager);
         if (sessionIDs.size() > 0) {
-            sessionManager.exportToXML(outputFile, sessionIDs);
+            int count = sessionManager.exportToXML(outputFile, sessionIDs);
             Gui.feedbackDialog(Alert.AlertType.INFORMATION,
-                    "Converted  " + sessionIDs.size() + " sessions to xml", "Success");
+                    "Exported  " + count + " sessions to xml", "Sessions converted");
         }
     }
 

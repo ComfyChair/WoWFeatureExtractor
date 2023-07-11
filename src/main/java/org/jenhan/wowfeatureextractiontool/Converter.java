@@ -19,20 +19,25 @@ class Converter implements LuaToXML {
         collection.setSession(session);
     }
 
-    //TODO: add confirmation to overwrite files
-
     @Override
     public boolean exportToXML(File outputFile) {
-        JAXBContext context;
         boolean success = false;
-        try {
-            context = JAXBContext.newInstance(Collection.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(collection, outputFile);
-            success = true;
-        } catch (JAXBException e) {
-            Gui.feedbackDialog(Alert.AlertType.ERROR, "Error while exporting session data to XML", "");
+        boolean canWrite = true;
+        if (outputFile.exists()){
+            canWrite = Gui.confirmationDialog("Overwrite " + outputFile.getName() +
+                    " in directory " + outputFile.getAbsolutePath() + "?");
+        }
+        if (canWrite){
+            JAXBContext context;
+            try {
+                context = JAXBContext.newInstance(Collection.class);
+                Marshaller marshaller = context.createMarshaller();
+                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+                marshaller.marshal(collection, outputFile);
+                success = true;
+            } catch (JAXBException e) {
+                Gui.feedbackDialog(Alert.AlertType.ERROR, "Error while exporting session data to XML", "");
+            }
         }
         return success;
     }
