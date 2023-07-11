@@ -41,10 +41,12 @@ public class Gui extends Application {
         primaryStage.show();
     }
 
-    static public Stage getPrimaryStage() {
+    /** lets other classes access the primary stage  for error messages */
+    static Stage getPrimaryStage() {
         return Gui.primaryStage;
     }
 
+    /** opens a standard FileChooser dialog to select a folder for addon installation */
     static File promptForFolder(String message, String prefFolder) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         if (prefFolder != null) {
@@ -54,22 +56,21 @@ public class Gui extends Application {
         return directoryChooser.showDialog(getPrimaryStage());
     }
 
+    /** opens a standard FileChooser dialog to select a lua file as input */
     public static File promptForFile(String message, String prefFile) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(message);
-        // only allow .lua files
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Lua Files", "*.lua"));
-        // set previously chosen file as default (if there is any)
         if (prefFile != null) {
             fileChooser.setInitialDirectory(new File(prefFile).getParentFile());
         }
         return fileChooser.showOpenDialog(getPrimaryStage());
     }
 
-    // opens a dialog to select a recorded session
-    // returns a list of the selected session ids (empty if canceled)
+    /** opens a standard dialog with custom content to select a recorded session
+     * dialog content created from session-selection-view.fxml
+     * @return  a list of the selected session ids, empty List if canceled */
     public static List<Integer> promptForSession() {
-        // create dialog with content from fxml
         FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("session-selection-view.fxml"));
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(primaryStage);
@@ -79,17 +80,21 @@ public class Gui extends Application {
         try {
             dialogContent = loader.load();
         } catch (IOException e) {
-            errorMessage("Error in session selection dialog creation");
+            feedbackDialog(Alert.AlertType.ERROR, "Error in session selection dialog creation", "IO Error");
             System.out.println(e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
         }
-        // populate session table in dialog content
+        return sessionSelection(loader, dialog, dialogContent);
+    }
+
+    /** handles populating session table in selection dialog and user response
+     * @return List of selected session ids */
+    private static List<Integer> sessionSelection(FXMLLoader loader, Dialog<ButtonType> dialog, Parent dialogContent) {
         SessionSelectionController controller = loader.getController();
         controller.populateTable();
         dialog.getDialogPane().setContent(dialogContent);
         List<Integer> result = new ArrayList<>(); // default for: failure or no selection
-        // show dialog and wait for results
         Optional<ButtonType> response = dialog.showAndWait();
         if (response.isPresent() && response.get() == ButtonType.OK) {
             result = controller.getSelected().stream()
@@ -100,45 +105,17 @@ public class Gui extends Application {
         return result;
     }
 
-    // user feedback dialogs
-    public static void errorMessage(String message) {
-        Alert alertMessage = new Alert(Alert.AlertType.ERROR);
-        alertMessage.setContentText(message);
-        alertMessage.showAndWait();
-    }
-
-    public static boolean confirm(String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText(message);
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.OK;
-    }
-
-    public static void notice(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    public static void success(String message) {
-        Alert dialog = new Alert(Alert.AlertType.INFORMATION);
-        dialog.setTitle("Success");
-        dialog.setContentText(message);
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-        dialog.showAndWait();
-    }
-
-    // Exception handling
+    /** reroutes uncaught exceptions to Gui, if loaded */
     private static void showError(Thread thread, Throwable e) {
-        System.err.println("***Default exception handler***");
+        System.err.println("*** Default exception handler ***");
         if (Platform.isFxApplicationThread()) {
             showErrorDialog(e);
         } else {
-            System.err.println("An unexpected error occurred in "+e);
-
+            System.err.println(e.getMessage() + e);
         }
     }
 
+    /** shows exception dialog */
     private static void showErrorDialog(Throwable e) {
         StringWriter errorMsg = new StringWriter();
         e.printStackTrace(new PrintWriter(errorMsg));
@@ -147,11 +124,30 @@ public class Gui extends Application {
         FXMLLoader loader = new FXMLLoader(Gui.class.getResource("Error.fxml"));
         try {
             Parent root = loader.load();
-            ((ErrorController)loader.getController()).setErrorText(errorMsg.toString());
+            ((ErrorController) loader.getController()).setErrorText(errorMsg.toString());
             dialog.setScene(new Scene(root, 250, 400));
             dialog.show();
+            e.printStackTrace(); // print in console nonetheless
         } catch (IOException exc) {
             exc.printStackTrace();
         }
     }
+
+    /** shows user feedback dialog */
+    public static void feedbackDialog(Alert.AlertType type, String message, String title){
+        Alert dialog = new Alert(type);
+        dialog.setTitle(title);
+        dialog.setContentText(message);
+        dialog.showAndWait();
+    }
+
+    /** shows user confirmation dialog
+     * @return true if user confirmed */
+    public static boolean confirmationDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
 }

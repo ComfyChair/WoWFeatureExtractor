@@ -18,6 +18,8 @@ class Converter implements LuaToXML {
         collection.setSession(session);
     }
 
+    //TODO: add confirmation to overwrite files
+
     @Override
     public boolean exportToXML(File outputFile) {
         JAXBContext context = null;

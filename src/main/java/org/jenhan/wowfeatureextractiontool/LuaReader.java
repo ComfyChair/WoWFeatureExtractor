@@ -1,5 +1,7 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import javafx.scene.control.Alert;
+
 import java.io.*;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -51,7 +53,7 @@ public class LuaReader {
             log.severe("IOException while reading session info of file: " + luaFile
                     + "\n" + e);
             if (Gui.getPrimaryStage() != null) { // check to prevent errors when testing without gui
-                Gui.errorMessage("Could not extract session information");
+                Gui.feedbackDialog(Alert.AlertType.ERROR, "Could not extract session information", "");
             }
         }
         return sessionList;

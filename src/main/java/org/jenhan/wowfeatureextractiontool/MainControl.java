@@ -3,6 +3,7 @@ package org.jenhan.wowfeatureextractiontool;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,7 +56,7 @@ public class MainControl {
             }
             log.info("Unzipped addon files");
         } catch (IOException e) {
-            Gui.errorMessage("Error while unzipping addon files");
+            Gui.feedbackDialog(Alert.AlertType.ERROR, "Error while unzipping addon files", "Error");
         }
     }
 
@@ -69,7 +70,8 @@ public class MainControl {
         if (accountPath.toFile().exists()) {
             return accountPath;
         } else {
-            Gui.notice("Can't locate your SavedVariables folder. Please select the input file manually.");
+            Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+                    "Can't locate your SavedVariables folder. Please select the input file manually.","");
             return null;
         }
     }
@@ -91,7 +93,8 @@ public class MainControl {
                 }
             });
         } catch (IOException e) {
-            Gui.errorMessage("Something went wrong while looking for the SavedVariables folder");
+            Gui.feedbackDialog( Alert.AlertType.ERROR,
+                    "Something went wrong while looking for the SavedVariables folder", "IO Error");
         }
         return accountsFound;
     }
@@ -121,12 +124,13 @@ public class MainControl {
         log.fine("Selected dir: " + destinationDir);
         // check for writing privileges
         if (!destinationDir.canWrite()) {
-            Gui.errorMessage("No writing access to this directory, choose another one");
+            Gui.feedbackDialog(Alert.AlertType.ERROR,
+                    "No writing access to this directory, choose another one", "Access Error");
             return false;
         }
         // check for expected directory name
         if (!destinationDir.getName().endsWith("AddOns")) {
-            boolean confirmation = Gui.confirm("Are you sure you want to install in this directory?" +
+            boolean confirmation = Gui.confirmationDialog("Are you sure you want to install in this directory?" +
                     " It does not appear to be a WoW Addon folder: " + destinationDir);
             if (!confirmation) {
                 System.out.println("Don't install");
@@ -141,7 +145,8 @@ public class MainControl {
         // from Addons directory, move up to "_retail_" directory
         Path addonPath = addonDir.toPath().toAbsolutePath();
         if (addonPath.getNameCount() < 2) { // can we move two directories up?
-            Gui.notice("Can't locate your SavedVariables folder. Please select the input file manually.");
+            Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+                    "Can't locate your SavedVariables folder. Please select the input file manually.", "");
         } else {
             Path accountPath = getWTFAccountDir(addonPath);
             if (accountPath != null) {
@@ -149,14 +154,15 @@ public class MainControl {
                 List<Path> accountsFound = getUppercaseFolders(accountPath);
                 if (accountsFound.size() == 1) { // one account on this installation
                     Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
-                    Gui.notice("Saved vars directory located: " + savedVarsDir);
+                    Gui.feedbackDialog(Alert.AlertType.INFORMATION, ("Saved vars directory located: " + savedVarsDir), "");
                     Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
                     prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
                     String inputFilePath = savedVarsDir + File.separator + ADDON_NAME + ".lua";
                     inputFile = new File(inputFilePath);
                     prefs.put(INPUT_FILE_PREF, inputFilePath);
                 } else {
-                    Gui.notice("You seem to have multiple WoW accounts. Please select the input file manually.");
+                    Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+                            "You seem to have multiple WoW accounts. Please select the input file manually.", "");
                 }
             }
         }
@@ -174,7 +180,8 @@ public class MainControl {
                     this.inputFile = selectedFile;
                     prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
                 } else {
-                    Gui.errorMessage("Error: Could not read the file: " + selectedFile.getPath());
+                    Gui.feedbackDialog(Alert.AlertType.ERROR,
+                            "Error: Could not read the file: " + selectedFile.getPath(), "Error");
                 }
             }
         }
@@ -196,7 +203,8 @@ public class MainControl {
         List<Integer> sessionIDs = getSessionID(sessionManager);
         if (sessionIDs.size() > 0) {
             sessionManager.exportToXML(inputFile, outputFile, sessionIDs);
-            Gui.success("Converted  " + sessionIDs.size() + " sessions to xml");
+            Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+                    "Converted  " + sessionIDs.size() + " sessions to xml", "Success");
         }
     }
 
@@ -204,7 +212,7 @@ public class MainControl {
         sessionInfos = FXCollections.observableList(sessionManager.getSessionList(inputFile));
         List<Integer> sessionIDs = new ArrayList<>();
         if (sessionInfos.isEmpty()) { // no session recorded
-            Gui.errorMessage("There was no recording found in the input file");
+            Gui.feedbackDialog( Alert.AlertType.ERROR, "There was no recording found in the input file", "");
         } else {
             if (sessionInfos.size() == 1) { // only one session
                 sessionIDs.add(0);
@@ -220,11 +228,11 @@ public class MainControl {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         inputFile = Gui.promptForFile("Please select the input file", prefs.get(OUTPUT_DIR_PREF, null));
         if (inputFile == null) {
-            Gui.errorMessage("There is no valid input file");
+            Gui.feedbackDialog(Alert.AlertType.ERROR, "There is no valid input file", "");
             return false;
         }
         if (!inputFile.canRead()) {
-            Gui.errorMessage("Can not read file: " + inputFile.getAbsolutePath());
+            Gui.feedbackDialog(Alert.AlertType.ERROR, "Can not read file: " + inputFile.getAbsolutePath(), "");
             return false;
         }
         // TODO: Immediately check for sessions in input file?
