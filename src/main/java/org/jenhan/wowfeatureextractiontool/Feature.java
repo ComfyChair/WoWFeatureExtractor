@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** data structure for writing feature data **/
+/** Data structure for writing feature data to xml **/
 @XmlRootElement(name = LuaToXML.INTERACTION)
 @XmlType(propOrder = {"beginTime", LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
 public class Feature {
@@ -19,7 +19,23 @@ public class Feature {
     private FeatureType type = FeatureType.UNKNOWN;
     private String description = null;
 
+    /** standard constructor, made explicit for jaxb binding **/
     Feature() {
+    }
+
+    /** adds feature objects to list **/
+    void addObject(FeatureObject object) {
+        this.objectList.add(object);
+    }
+
+    /** returns a formatted time string **/
+    @XmlAttribute(name = LuaToXML.BEGIN)
+    String getBeginTime() {
+        return beginTime.toString();
+    }
+
+    void setBeginTime(Date beginDate) {
+        this.beginTime = new TimeFormatted(beginDate);
     }
 
     @XmlElement(name = LuaToXML.DESCRIPTION)
@@ -35,16 +51,6 @@ public class Feature {
 
     void setDescription(String description) {
         this.description = description;
-    }
-
-    /** returns a formatted time string **/
-    @XmlAttribute(name = LuaToXML.BEGIN)
-    String getBeginTime() {
-        return beginTime.toString();
-    }
-
-    void setBeginTime(Date beginDate) {
-        this.beginTime = new TimeFormatted(beginDate);
     }
 
     @XmlElement(name = LuaToXML.TYPE)
@@ -69,10 +75,6 @@ public class Feature {
         return objectList;
     }
 
-    void addObject(FeatureObject object) {
-        this.objectList.add(object);
-    }
-
     @Override
     public String toString() {
         return "Feature{" +
@@ -83,7 +85,7 @@ public class Feature {
                 '}';
     }
 
-    /** feature type enum with standard description **/
+    /** enum data structure for allowed types with standard description **/
     enum FeatureType {
         MOV_1("started moving"),
         MOV_2("stopped moving"),
@@ -109,7 +111,7 @@ public class Feature {
 
     }
 
-    /** objects that were detected in a feature **/
+    /** Inner class for objects that were detected in a feature **/
     @XmlRootElement(name = LuaToXML.OBJECT)
     @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY})
     static class FeatureObject {
@@ -117,25 +119,32 @@ public class Feature {
         private String term;
         private double probability;
 
+        /** standard constructor needed for jaxb binding **/
         FeatureObject() {
         }
 
+        /** constructor
+         * @param id id for xml output
+         * @param term term for xml output **/
         FeatureObject(int id, String term) {
             this.id = id;
             this.term = term;
             this.probability = 1.00;
         }
 
+        /** needed for jaxb binding **/
         @XmlElement(name = LuaToXML.ID)
         int getId() {
             return id;
         }
 
+        /** needed for jaxb binding **/
         @XmlElement(name = LuaToXML.TERM)
         String getTerm() {
             return term;
         }
 
+        /** needed for jaxb binding **/
         @XmlElement(name = LuaToXML.PROBABILITY)
         double getProbability() {
             return probability;

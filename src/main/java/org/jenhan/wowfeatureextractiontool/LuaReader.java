@@ -52,8 +52,8 @@ import java.util.logging.Logger;
                 }
             }
         } catch (IOException e) {
-            log.severe("IOException while reading session info of file: " + luaFile + "\n" + e);
-            MainControl.handleError("Could not extract session information", e);
+            log.severe("IOException while reading session info of file: " + luaFile);
+            MainControl.handleError("Could not read session information\n", e);
         }
         return sessionList;
     }
@@ -97,7 +97,7 @@ import java.util.logging.Logger;
     }
 
 
-    boolean isNextFeature(String line) {
+    private boolean isNextFeature(String line) {
         return line.trim().equals("{");
     }
 
@@ -123,12 +123,12 @@ import java.util.logging.Logger;
         return feature;
     }
 
-    static boolean isAssignment(String line) {
+    private static boolean isAssignment(String line) {
         String[] split = line.split("=");
         return split.length > 1;
     }
 
-    static String getLuaFieldValue(String line) {
+    private static String getLuaFieldValue(String line) {
         if (isAssignment(line)) {
             String[] split = line.split("=");
             // right hand side of line = value
@@ -145,7 +145,7 @@ import java.util.logging.Logger;
         }
     }
 
-    static String getLuaFieldKey(String line) {
+    private static String getLuaFieldKey(String line) {
         if (isAssignment(line)) {
             String[] split = line.split("=");
             // left hand side of line = key
@@ -157,22 +157,22 @@ import java.util.logging.Logger;
         }
     }
 
-    String getEntryFromLuaTable(String line) {
+    private String getEntryFromLuaTable(String line) {
         String trimmed = line.trim();
         String leftOfComma = trimmed.split(",")[0];
         return leftOfComma.replace("\"", "");
     }
 
-    boolean isEndOfTable(String line) {
+    private boolean isEndOfTable(String line) {
         return line.trim().equals("},");
     }
 
-    boolean isEndOfFeature(String line) {
+    private boolean isEndOfFeature(String line) {
         String trimmed = line.trim();
         return trimmed.startsWith("},") && trimmed.endsWith("]");
     }// converts Unix time in seconds (as String from lua field) to Calendar object
 
-    Date getDateFromLuaField(String line) {
+    private Date getDateFromLuaField(String line) {
         long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000L;
         Calendar startTime = Calendar.getInstance();
         startTime.setTime(new Date(unixTime));
