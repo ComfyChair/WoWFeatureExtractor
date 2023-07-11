@@ -10,6 +10,6 @@ module org.jenhan.wowfeatureextractiontool {
 
     opens org.jenhan.wowfeatureextractiontool to javafx.fxml, jakarta.xml.bind;
     exports org.jenhan.wowfeatureextractiontool;
-    exports org.jenhan.wowfeatureextractiontool.Utilities;
-    opens org.jenhan.wowfeatureextractiontool.Utilities to jakarta.xml.bind, javafx.fxml;
+    exports org.jenhan.wowfeatureextractiontool.Util;
+    opens org.jenhan.wowfeatureextractiontool.Util to jakarta.xml.bind, javafx.fxml;
 }

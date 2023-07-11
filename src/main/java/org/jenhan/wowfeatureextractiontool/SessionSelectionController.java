@@ -5,11 +5,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import org.jenhan.wowfeatureextractiontool.Utilities.DateFormatted;
+import org.jenhan.wowfeatureextractiontool.Util.DateFormatted;
 
 import java.util.List;
 
-/** GUI controller for session selection dialog **/
+/**
+ * GUI controller for session selection dialog
+ **/
 public class SessionSelectionController {
     // session selection
     @FXML

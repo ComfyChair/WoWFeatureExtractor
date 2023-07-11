@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool.Utilities;
+package org.jenhan.wowfeatureextractiontool.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

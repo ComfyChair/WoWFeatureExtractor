@@ -25,15 +25,15 @@ class LuaReaderTest {
     void setUp() {
         testReader = new LuaReader();
         expectedSessionList = new ArrayList<>();
-        List<SessionData> sessionData = new ArrayList<>();
+        sessionData = new ArrayList<>();
         Collections.addAll(sessionData, session_0, session_1, session_2, session_3);
         for (int i = 0; i < 4; i++) {
             Session newSession = Session.create(i, shortSessionsFile.getName());
             expectedSessionList.add(newSession);
             SessionData thisSessionData = sessionData.get(i);
-            newSession.setCharName(thisSessionData.charName);
-            newSession.setDateTime(thisSessionData.date);
-            newSession.setServerName(thisSessionData.serverName);
+            newSession.setCharName(thisSessionData.charName());
+            newSession.setDateTime(thisSessionData.date());
+            newSession.setServerName(thisSessionData.serverName());
         }
 
     }

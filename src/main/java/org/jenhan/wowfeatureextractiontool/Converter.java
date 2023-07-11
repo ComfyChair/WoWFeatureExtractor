@@ -5,7 +5,6 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import javafx.scene.control.Alert;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -36,7 +35,7 @@ class Converter implements LuaToXML {
                 marshaller.marshal(collection, outputFile);
                 success = true;
             } catch (JAXBException e) {
-                Gui.feedbackDialog(Alert.AlertType.ERROR, "Error while exporting session data to XML", "");
+                MainControl.handleError("Error while exporting session data to XML\n", e);
             }
         }
         return success;

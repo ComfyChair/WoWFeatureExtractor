@@ -1,7 +1,7 @@
 package org.jenhan.wowfeatureextractiontool;
 
 import jakarta.xml.bind.annotation.*;
-import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
+import org.jenhan.wowfeatureextractiontool.Util.TimeFormatted;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 /** Data structure for writing feature data to xml **/
 @XmlRootElement(name = LuaToXML.INTERACTION)
 @XmlType(propOrder = {"beginTime", LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
-public class Feature {
+class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final List<FeatureObject> objectList = new ArrayList<>();
     private TimeFormatted beginTime = new TimeFormatted(new Date(0L));

@@ -105,7 +105,7 @@ public class MainControl {
         return accountsFound;
     }
 
-    public static boolean confirmationDialog(String message) {
+    static boolean confirmationDialog(String message) {
         if (Gui.getPrimaryStage() != null){
             return Gui.confirmationDialog(message);
         } else {
@@ -214,9 +214,9 @@ public class MainControl {
         SessionManager sessionManager = SessionManager.getInstance();
         List<Integer> sessionIDs = retrieveIdList(sessionManager);
         if (sessionIDs.size() > 0) {
-            int count = sessionManager.exportToXML(outputFile, sessionIDs);
+            List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
             Gui.feedbackDialog(Alert.AlertType.INFORMATION,
-                    "Exported  " + count + " sessions to xml", "Sessions converted");
+                    "Exported  " + outList.size() + " sessions to xml", "Sessions converted");
         }
     }
 

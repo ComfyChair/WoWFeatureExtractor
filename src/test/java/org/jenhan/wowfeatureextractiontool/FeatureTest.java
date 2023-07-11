@@ -1,6 +1,6 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
+import org.jenhan.wowfeatureextractiontool.Util.TimeFormatted;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
