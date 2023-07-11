@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 /** data structure for writing feature data **/
 @XmlRootElement(name = LuaToXML.INTERACTION)
 @XmlType(propOrder = {"beginTime", LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
-class Feature {
+public class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final List<FeatureObject> objectList = new ArrayList<>();
     private TimeFormatted beginTime = new TimeFormatted(new Date(0L));

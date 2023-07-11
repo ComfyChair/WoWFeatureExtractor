@@ -123,7 +123,7 @@ public class Session implements LuaToXML{
 
     /** adds a feature to the feature list
      * @param feature feature to be added **/
-    public void addFeature(Feature feature) {
+    void addFeature(Feature feature) {
         this.featureList.add(feature);
     }
 

@@ -41,15 +41,22 @@ public class MainControl {
     private static void unzipAddon(File destinationDir) {
         try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath())) {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            boolean confirmOverwrite = false;
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 File entryDestination = new File(destinationDir, entry.getName());
                 if (entry.isDirectory()) {
-                    //TODO: check mkdirs result for errors
-                    entryDestination.mkdirs();
+                    boolean created = entryDestination.mkdirs();
+                    if (!created && !confirmOverwrite){
+                        confirmOverwrite = Gui.confirmationDialog("Overwrite existing installation in "
+                                + destinationDir + "?");
+                        if (!confirmOverwrite) {
+                            log.info("Aborted installing addon");
+                            return;
+                        }
+                    }
                 } else {
-                    entryDestination.getParentFile().mkdirs();
-                    //TODO: check mkdirs result for errors
+                    entryDestination.getParentFile().mkdirs(); // only ask for confirmation on directory
                     OutputStream outputStream = new FileOutputStream(entryDestination);
                     zipFile.getInputStream(entry).transferTo(outputStream);
                 }
@@ -200,7 +207,7 @@ public class MainControl {
         SessionManager sessionManager = SessionManager.getInstance();
         List<Integer> sessionIDs = retrieveIdList(sessionManager);
         if (sessionIDs.size() > 0) {
-            sessionManager.exportToXML(inputFile, outputFile, sessionIDs);
+            sessionManager.exportToXML(outputFile, sessionIDs);
             Gui.feedbackDialog(Alert.AlertType.INFORMATION,
                     "Converted  " + sessionIDs.size() + " sessions to xml", "Success");
         }

@@ -29,7 +29,7 @@
     <Button onAction="#selectFile"
             prefHeight="80.0"
             prefWidth="80.0"
-            text="Select file"
+            text="Select input"
             textAlignment="CENTER"
             wrapText="true">
         <font>

@@ -30,7 +30,7 @@ public class SessionManager {
         return sessionList;
     }
 
-    void exportToXML(File inPath, File outPath, List<Integer> sessionIDs) {
+    void exportToXML(File outPath, List<Integer> sessionIDs) {
         String fileName;
         if (sessionIDs.size() == 1) { // single session, no additional identifier for output
             fileName = OUTFILE_NAME + OUTFILE_EXTENSION;

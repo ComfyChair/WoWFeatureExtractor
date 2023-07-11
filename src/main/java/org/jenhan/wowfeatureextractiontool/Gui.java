@@ -105,6 +105,7 @@ public class Gui extends Application {
         return result;
     }
 
+    //TODO: Lokalisierung?
     /** reroutes uncaught exceptions to Gui, if loaded **/
     private static void showError(Thread thread, Throwable e) {
         System.err.println("*** Default exception handler ***");
