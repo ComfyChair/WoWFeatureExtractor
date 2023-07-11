@@ -22,12 +22,12 @@ public class TimeFormatted extends Date {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TimeFormatted that = (TimeFormatted) o;
-        return Objects.equals(formattedTime, that.formattedTime);
+        return this.formattedTime.equals(that.formattedTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), formattedTime);
+        return Objects.hash(formattedTime);
     }
 
     @Override

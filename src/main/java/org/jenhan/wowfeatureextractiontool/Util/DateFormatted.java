@@ -21,12 +21,12 @@ public class DateFormatted extends Date {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         DateFormatted that = (DateFormatted) o;
-        return Objects.equals(formattedDate, that.formattedDate);
+        return this.formattedDate.equals(that.formattedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), formattedDate);
+        return Objects.hash(formattedDate);
     }
 
     @Override
