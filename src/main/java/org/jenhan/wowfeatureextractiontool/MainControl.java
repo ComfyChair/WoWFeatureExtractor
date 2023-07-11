@@ -251,7 +251,9 @@ public class MainControl {
         return true;
     }
 
-    /** central error handler **/
+    /** central error handler
+     * @param message the error message
+     * @param e the exception **/
     public static void handleError(String message, Exception e) {
         if (Gui.getPrimaryStage() != null){
             Gui.feedbackDialog(Alert.AlertType.ERROR, message, "");

@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+/** Session Management Singleton **/
 public class SessionManager {
     private static final String OUTFILE_NAME = "WoW_Features";
     private static final String OUTFILE_EXTENSION = ".xml";
@@ -13,7 +14,7 @@ public class SessionManager {
     private SessionManager() {
     }
 
-    public static SessionManager getInstance() {
+    static SessionManager getInstance() {
         // "lazy" initialization (initialize if needed)
         if (instance == null) {
             instance = new SessionManager();

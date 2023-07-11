@@ -2,14 +2,12 @@ package org.jenhan.wowfeatureextractiontool;
 
 import jakarta.xml.bind.annotation.*;
 import org.jenhan.wowfeatureextractiontool.Utilities.TimeFormatted;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /** data structure for writing feature data **/
 @XmlRootElement(name = LuaToXML.INTERACTION)
@@ -27,7 +25,7 @@ class Feature {
     @XmlElement(name = LuaToXML.DESCRIPTION)
     String getDescription() {
         String result;
-        if (description != null){
+        if (description != null) {
             result = description;
         } else {
             result = this.getType().standardDescription;
@@ -84,6 +82,7 @@ class Feature {
                 '}';
     }
 
+    /** feature type enum with standard description **/
     enum FeatureType {
         MOV_1("started moving"),
         MOV_2("stopped moving"),
@@ -109,6 +108,7 @@ class Feature {
 
     }
 
+    /** objects that were detected in a feature **/
     @XmlRootElement(name = LuaToXML.OBJECT)
     @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY})
     static class FeatureObject {

@@ -6,8 +6,11 @@ import java.util.Objects;
 
 /** Utility class to display the date in javafx tableview by overwriting toString function **/
 public class DateFormatted extends Date {
-    String formattedDate;
+    /** formatted String representation of the date **/
+    private final String formattedDate;
 
+    /** constructor
+     * @param date the date that is to be formatted **/
     public DateFormatted(Date date) {
         this.formattedDate =  new SimpleDateFormat("dd.MM.yyyy").format(date);
     }

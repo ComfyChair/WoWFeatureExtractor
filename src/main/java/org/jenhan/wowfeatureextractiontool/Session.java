@@ -16,29 +16,37 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-
+/** Recording session class containing general information and list of features **/
 @XmlRootElement(name = LuaToXML.GMAF_DATA)
 @XmlType(propOrder = {"fileName", LuaToXML.DATE, "featureList"})
-public class Session {
+public class Session implements LuaToXML{
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final List<Feature> featureList = new ArrayList<>();
-    // session info displayed in session picker as properties (necessary for javafx)
+    /** session id displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final IntegerProperty sessionID = new SimpleIntegerProperty();
+    /** character name displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final StringProperty charName = new SimpleStringProperty();
+    /** server name displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final StringProperty serverName = new SimpleStringProperty();
+    /** formatted recording date displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final ObjectProperty<DateFormatted> date = new SimpleObjectProperty<>();
+    /** formatted recording time displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final ObjectProperty<TimeFormatted> startTime = new SimpleObjectProperty<>();
     private String fileName;
 
-    // constructor
+    /** private constructor; default constructor necessary for javafx table view **/
     private Session() {
     }
 
+    /** creates a new session instance
+     * @param sessionID the session id
+     * @param fileName the filename
+     * @return returns the new session **/
     static Session create(int sessionID, String fileName) {
         Session session = new Session();
         session.sessionID.setValue(sessionID);
@@ -46,61 +54,77 @@ public class Session {
         return session;
     }
 
-    // converts lua feature table to GMAF-style xml
-    boolean exportToXML(File outputFile) {
+    /** converts the session content to a GMAF-compatible xml **/
+    @Override
+    public boolean exportToXML(File outputFile) {
         Converter converter = new Converter(this);
         // pass to default interface method
         return converter.exportToXML(outputFile);
     }
 
-    // these getters are for Javafx and have to remain public
+   /** @return the character name property **/
     public IntegerProperty sessionIDProperty() {
         return sessionID;
     }
 
+    /** @return the character name property, necessary for javafx **/
     public StringProperty charNameProperty() {
         return charName;
     }
 
+    /** @return the server name property, necessary for javafx **/
     public StringProperty serverNameProperty() {
         return serverName;
     }
 
+    /** @return the formatted date property, necessary for javafx **/
     public ObjectProperty<DateFormatted> dateProperty() {
         return date;
     }
 
+    /** @return the formatted time property, necessary for javafx **/
     public ObjectProperty<TimeFormatted> startTimeProperty() {
         return startTime;
     }
 
-    // these getters are for jaxb bindings
+    /** @return the formatted date string, necessary for jaxb bindings **/
     @XmlElement(name = LuaToXML.DATE)
     public String getDate() {
         return date.get().toString();
     }
 
+    /** @return the file name string, necessary for jaxb bindings **/
     @XmlElement(name = LuaToXML.FILE)
     public String getFileName() {
         return fileName;
     }
 
+    /** @return the feature list, necessary for jaxb bindings **/
     @XmlElements(@XmlElement(name = LuaToXML.INTERACTION))
     List<Feature> getFeatureList() {
         return featureList;
     }
 
+    /** sets the character name property **/
     void setCharName(String charName) {
         this.charName.set(charName);
     }
 
+    /** sets the server name property **/
     void setServerName(String serverName) {
         this.serverName.set(serverName);
     }
 
+    /** sets the date and time properties **/
     void setDateTime(Date date) {
         this.date.set(new DateFormatted(date));
         this.startTime.set(new TimeFormatted(date));
+    }
+
+    /** adds a feature to the feature list
+     * @param feature feature to be added **/
+    public void addFeature(Feature feature) {
+        this.featureList.add(feature);
     }
 
     @Override
@@ -130,7 +154,4 @@ public class Session {
                 '}';
     }
 
-    public void addFeature(Feature feature) {
-        this.featureList.add(feature);
-    }
 }
