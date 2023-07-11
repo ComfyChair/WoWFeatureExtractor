@@ -11,14 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-// data structure for writing feature data
+/** data structure for writing feature data **/
 @XmlRootElement(name = LuaToXML.INTERACTION)
 @XmlType(propOrder = {"beginTime", LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
-public class Feature {
+class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final List<FeatureObject> objectList = new ArrayList<>();
-    private TimeFormatted beginTime = null;
-    private FeatureType type = null;
+    private TimeFormatted beginTime = new TimeFormatted(new Date(0L));
+    private FeatureType type = FeatureType.UNKNOWN;
     private String description = null;
 
     Feature() {
@@ -26,7 +26,13 @@ public class Feature {
 
     @XmlElement(name = LuaToXML.DESCRIPTION)
     String getDescription() {
-        return description;
+        String result;
+        if (description != null){
+            result = description;
+        } else {
+            result = this.getType().standardDescription;
+        }
+        return result;
     }
 
     void setDescription(String description) {
@@ -47,7 +53,7 @@ public class Feature {
         return type;
     }
 
-    public void setType(String typeString) {
+    void setType(String typeString) {
         for (FeatureType type : FeatureType.values()) {
             if (type.name().equalsIgnoreCase(typeString)) {
                 this.type = type;
@@ -57,10 +63,6 @@ public class Feature {
             log.logp(Level.WARNING, "Feature", "setType", "Unknown feature type: " + typeString);
             this.type = FeatureType.UNKNOWN;
         }
-    }
-
-    boolean isComplete() {
-        return beginTime != null && type != null && description != null;
     }
 
     @XmlElements(@XmlElement(name = LuaToXML.OBJECT))

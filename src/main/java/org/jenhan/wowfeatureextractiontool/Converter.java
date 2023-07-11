@@ -5,6 +5,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import javafx.scene.control.Alert;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -22,17 +23,16 @@ class Converter implements LuaToXML {
 
     @Override
     public boolean exportToXML(File outputFile) {
-        JAXBContext context = null;
+        JAXBContext context;
         boolean success = false;
         try {
             context = JAXBContext.newInstance(Collection.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            // marshal to file
             marshaller.marshal(collection, outputFile);
+            success = true;
         } catch (JAXBException e) {
-            //TODO: handle properly
-            throw new RuntimeException(e);
+            Gui.feedbackDialog(Alert.AlertType.ERROR, "Error while exporting session data to XML", "");
         }
         return success;
     }

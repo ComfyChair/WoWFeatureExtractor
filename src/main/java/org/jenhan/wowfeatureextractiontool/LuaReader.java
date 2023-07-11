@@ -1,17 +1,20 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import javafx.scene.control.Alert;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
-public class LuaReader {
+/** Reader class to read extracted features from SavedVariables file **/
+ class LuaReader {
     private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    /**
-     * Lua table fields
-     **/
+    /** Lua table fields **/
     private final static String SESSION_FIELD_START = "[\"session_";
     private final static String CHAR_NAME = "characterName";
     private final static String SERVER_NAME = "serverName";
@@ -21,44 +24,44 @@ public class LuaReader {
     private final static String TYPE = "type";
     private final static String FEATURE_TIMESTAMP = "timestamp";
     private final static String OBJECT_LIST = "objects";
-    private final static String END_OF_TABLE_ENTRY = "},";
     private final static String END_OF_SESSION  = "\t},";
     private final static String END_OF_FEATURE_TABLE = "\t\t},";
     private final static String END_OF_TABLE ="}";
 
-    public LuaReader() {
+    LuaReader() {
     }
 
+    /** reads the input file and creates session instances
+     * @param luaFile input file
+     * @return list of created session instances **/
     List<Session> readFile(File luaFile) {
         List<Session> sessionList = new ArrayList<>();
         String line;
         int sessionID = -1;
         try (LineNumberReader reader = new LineNumberReader(new FileReader(luaFile))){
-            while ((!Objects.equals(line = reader.readLine(), END_OF_TABLE))) { // null marks the end of the stream
+            while ((line = reader.readLine()) != null && (!line.equals(END_OF_TABLE))) { // null marks the end of the stream
                 log.fine("Reading a line of " + luaFile);
                 line = line.trim();
                 if (line.startsWith(SESSION_FIELD_START)) {
                     sessionID++;
                     Session newSession = Session.create(sessionID, luaFile.getName());
                     log.fine("found session, line number: " + reader.getLineNumber() + ", content of last read line: " + line);
-                    // read session lines until all info fields are populated
                     readSingleSession(reader, line, newSession);
-                    // set fields and add session info to List
                     sessionList.add(newSession);
                     log.fine("Added session: " + newSession);
                 }
             }
         } catch (IOException e) {
-            //TODO: handle properly
-            log.severe("IOException while reading session info of file: " + luaFile
-                    + "\n" + e);
-            if (Gui.getPrimaryStage() != null) { // check to prevent errors when testing without gui
-                Gui.feedbackDialog(Alert.AlertType.ERROR, "Could not extract session information", "");
-            }
+            log.severe("IOException while reading session info of file: " + luaFile + "\n" + e);
+            MainControl.handleError("Could not extract session information", e);
         }
         return sessionList;
     }
 
+    /** reads the data of a single session
+     * @param reader the LineNumber reader
+     * @param line content of last read line
+     * @param session the newly created session instance **/
     private void readSingleSession(LineNumberReader reader, String line, Session session) throws IOException {
         log.fine("Reading new session, line " + reader.getLineNumber());
         while (line!= null && !line.equals(END_OF_SESSION)) {

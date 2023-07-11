@@ -11,14 +11,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.jenhan.wowfeatureextractiontool.Utilities.ErrorController;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +23,8 @@ import java.util.Optional;
 public class Gui extends Application {
     private static Stage primaryStage;
 
-    /** entry point **/
+    /** entry point
+     * @param args standard arguments, not considered **/
     public static void main(String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(Gui::showError);
         launch();
@@ -112,34 +109,27 @@ public class Gui extends Application {
     private static void showError(Thread thread, Throwable e) {
         System.err.println("*** Default exception handler ***");
         if (Platform.isFxApplicationThread()) {
+            System.out.println("Gui is running, rerouting error message");
             showErrorDialog(e);
+            e.printStackTrace();
         } else {
-            System.err.println(e.getMessage() + e);
+            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    /** shows exception dialog **/
+    /** shows exception dialog and prints stacktrace for uncaught exceptions **/
     private static void showErrorDialog(Throwable e) {
-        StringWriter errorMsg = new StringWriter();
-        e.printStackTrace(new PrintWriter(errorMsg));
-        Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        FXMLLoader loader = new FXMLLoader(Gui.class.getResource("Error.fxml"));
-        try {
-            Parent root = loader.load();
-            ((ErrorController) loader.getController()).setErrorText(errorMsg.toString());
-            dialog.setScene(new Scene(root, 250, 400));
-            dialog.show();
-            e.printStackTrace(); // print in console nonetheless
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
+        feedbackDialog(Alert.AlertType.ERROR, e.getMessage(), "Uncaught Exception");
+        e.printStackTrace();
     }
 
     /** shows user feedback dialog **/
     static void feedbackDialog(Alert.AlertType type, String message, String title){
         Alert dialog = new Alert(type);
-        dialog.setTitle(title);
+        if (!title.isEmpty()){
+            dialog.setTitle(title);
+        }
         dialog.setContentText(message);
         dialog.showAndWait();
     }
@@ -147,8 +137,9 @@ public class Gui extends Application {
     /** shows user confirmation dialog
      * @return true if user confirmed **/
     static boolean confirmationDialog(String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setContentText(message);
+        alert.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == ButtonType.OK;
     }
