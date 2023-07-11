@@ -19,8 +19,8 @@ class DateFormattedTest {
 
     @BeforeEach
     void setUp() {
-        Random rnd = new Random();
         testCalendar = new GregorianCalendar();
+        // TODO: randomize test date
         testFormatted = new DateFormatted(testCalendar.getTime());
 
         anotherDayCalendar = new GregorianCalendar(testCalendar.get(Calendar.YEAR),
