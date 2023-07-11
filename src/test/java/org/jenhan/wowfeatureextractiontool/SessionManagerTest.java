@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SessionManagerTest {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -26,14 +25,15 @@ class SessionManagerTest {
     File shortSessionsFile = new File("src/test/resources/ShortSessionsTest.lua");
     List<Session> expectedList = new ArrayList<>();
     Validator validator;
-    XmlErrorHandler errorHandler;
+    XmlErrorHandler xsdErrorHandler;
     private final static File xsdFile = new File("src/test/resources/gmaf-interaction.xsd");
 
     @BeforeEach
     void setUp() throws SAXException {
         testManager = SessionManager.getInstance();
         validator = initValidator();
-        errorHandler = setErrorHandler();
+        xsdErrorHandler = new XmlErrorHandler();
+        validator.setErrorHandler(xsdErrorHandler);
         List<LuaReaderTest.SessionData> sessionData = new ArrayList<>();
         LuaReaderTest.SessionData session_0 = new LuaReaderTest.SessionData("Antigone", "TestServer", new Date(1688840368L *1000));
         LuaReaderTest.SessionData session_1 = new LuaReaderTest.SessionData("Spice", "Sen'jin", new Date(1688891052L * 1000));
@@ -74,17 +74,25 @@ class SessionManagerTest {
     }
 
     @Test
-    void exportToXML() throws SAXException, IOException {
+    void exportToXML() throws IOException, SAXException {
         String outPath = "src/test/testOutput";
         File outFile = new File(outPath);
         testManager.getSessionList(shortSessionsFile);
         // single session export
         List<File> outList = testManager.exportToXML(outFile, Arrays.asList(0));
-        assertTrue(isValid(outFile));
-        errorHandler.getExceptions().forEach(e -> log.info(e.getMessage()));
+        validate(outList.get(0));
         // multiple session export
         outList = testManager.exportToXML(outFile, Arrays.asList(1, 2, 3));
+        for (File file : outList
+        ) {
+            validate(file);
+        }
+        assertEquals(0, xsdErrorHandler.getExceptions().size());
+    }
 
+    private void validate(File outFile) throws SAXException, IOException {
+        validator.validate(new StreamSource(outFile));
+        xsdErrorHandler.getExceptions().forEach(e -> log.info(outFile.getName() + ": " + e.getMessage()));
     }
 
     /** initializes a xml validator **/
@@ -93,12 +101,6 @@ class SessionManagerTest {
         Source schemaFile = new StreamSource(xsdFile);
         Schema schema = factory.newSchema(schemaFile);
         return schema.newValidator();
-    }
-
-    private XmlErrorHandler setErrorHandler(){
-        XmlErrorHandler xsdErrorHandler = new XmlErrorHandler();
-        validator.setErrorHandler(xsdErrorHandler);
-        return xsdErrorHandler;
     }
 
     public boolean isValid(File xmlFile) throws IOException {

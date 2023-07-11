@@ -36,7 +36,7 @@ class SessionManager {
     /** initiates export of the selected session to xml
      * @param outPath outputFile
      * @param sessionIDs List if session ids = position in internal session list
-     * @return number of converted sessions **/
+     * @return List of converted files **/
     List<File> exportToXML(File outPath, List<Integer> sessionIDs) {
         String fileName;
         List<File> outList = new ArrayList<>();

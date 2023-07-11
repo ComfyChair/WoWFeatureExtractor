@@ -12,7 +12,7 @@
                             <xs:element name="file" type="xs:string"/>
                             <xs:element name="date" type="xs:string"/>
 
-                            <xs:element name="interaction" maxOccurs="unbounded">
+                            <xs:element name="interaction" minOccurs="0" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="type" type="xs:string"/>
@@ -23,6 +23,7 @@
                                                 <xs:sequence>
                                                     <xs:element name="id" type="xs:int"/>
                                                     <xs:element name="term" type="xs:string"/>
+                                                    <xs:element name="probability" type="xs:decimal"/>
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
