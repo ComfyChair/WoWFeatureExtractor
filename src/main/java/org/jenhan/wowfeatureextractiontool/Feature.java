@@ -37,6 +37,7 @@ public class Feature {
         this.description = description;
     }
 
+    /** returns a formatted time string **/
     @XmlAttribute(name = LuaToXML.BEGIN)
     String getBeginTime() {
         return beginTime.toString();
@@ -119,10 +120,10 @@ public class Feature {
         FeatureObject() {
         }
 
-        FeatureObject(int id, String term, double probalility) {
+        FeatureObject(int id, String term) {
             this.id = id;
             this.term = term;
-            this.probability = probalility;
+            this.probability = 1.00;
         }
 
         @XmlElement(name = LuaToXML.ID)

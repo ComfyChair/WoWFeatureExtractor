@@ -186,7 +186,7 @@ import java.util.logging.Logger;
         int id = 1;
         while (!isEndOfTable(line)) {
             String term = getEntryFromLuaTable(line);
-            feature.addObject(new Feature.FeatureObject(id, term, 1));
+            feature.addObject(new Feature.FeatureObject(id, term));
             id++;
             line = reader.readLine();
         }

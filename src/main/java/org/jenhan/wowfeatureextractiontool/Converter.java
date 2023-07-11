@@ -24,7 +24,7 @@ class Converter implements LuaToXML {
         boolean success = false;
         boolean canWrite = true;
         if (outputFile.exists()){
-            canWrite = Gui.confirmationDialog("Overwrite " + outputFile.getName() +
+            canWrite = MainControl.confirmationDialog("Overwrite " + outputFile.getName() +
                     " in directory " + outputFile.getAbsolutePath() + "?");
         }
         if (canWrite){

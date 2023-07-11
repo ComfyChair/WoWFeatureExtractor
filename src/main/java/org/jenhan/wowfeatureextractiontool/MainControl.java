@@ -105,6 +105,14 @@ public class MainControl {
         return accountsFound;
     }
 
+    public static boolean confirmationDialog(String message) {
+        if (Gui.getPrimaryStage() != null){
+            return Gui.confirmationDialog(message);
+        } else {
+            return true; // no confirmation without GUI -> test cases
+        }
+    }
+
     /** unzips the addon files into the specified folder **/
     @FXML
     void installAddon() {
