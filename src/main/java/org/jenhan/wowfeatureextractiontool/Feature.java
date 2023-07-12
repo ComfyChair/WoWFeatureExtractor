@@ -2,11 +2,11 @@ package org.jenhan.wowfeatureextractiontool;
 
 import jakarta.xml.bind.annotation.*;
 import org.jenhan.wowfeatureextractiontool.Util.TimeFormatted;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Data structure for writing feature data to xml **/
@@ -59,15 +59,13 @@ class Feature {
     }
 
     void setType(String typeString) {
+        FeatureType newType = FeatureType.UNKNOWN;
         for (FeatureType type : FeatureType.values()) {
             if (type.name().equalsIgnoreCase(typeString)) {
-                this.type = type;
+                newType = type;
             }
         }
-        if (this.type == null) {
-            log.logp(Level.WARNING, "Feature", "setType", "Unknown feature type: " + typeString);
-            this.type = FeatureType.UNKNOWN;
-        }
+        this.type = newType;
     }
 
     @XmlElements(@XmlElement(name = LuaToXML.OBJECT))
@@ -109,6 +107,9 @@ class Feature {
             this.standardDescription = description;
         }
 
+        String getStandardDescription(){
+            return this.standardDescription;
+        }
     }
 
     /** Inner class for objects that were detected in a feature **/
@@ -156,7 +157,7 @@ class Feature {
             if (obj == null || obj.getClass() != this.getClass()) return false;
             var that = (FeatureObject) obj;
             return this.id == that.id &&
-                    Objects.equals(this.term, that.term) &&
+                    this.term. equals(that.term) &&
                     Double.doubleToLongBits(this.probability) == Double.doubleToLongBits(that.probability);
         }
 
