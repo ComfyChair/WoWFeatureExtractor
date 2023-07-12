@@ -69,7 +69,7 @@ public class Gui extends Application {
      * dialog content created from session-selection-view.fxml
      * @return  a list of the selected session ids, empty List if canceled **/
     static List<Integer> promptForSession() {
-        FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("session-selection-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("/views/session-selection-view.fxml"));
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(primaryStage);
         dialog.setTitle("Session selection");

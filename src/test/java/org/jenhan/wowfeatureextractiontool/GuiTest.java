@@ -5,11 +5,10 @@ import javafx.scene.Parent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.loadui.testfx.GuiTest;
 
 import java.io.IOException;
 
-class MainControlGuiTest extends GuiTest {
+class GuiTest extends org.loadui.testfx.GuiTest {
 
     @BeforeEach
     void setUp() {
