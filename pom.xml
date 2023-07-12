@@ -59,13 +59,19 @@
             <groupId>org.testfx</groupId>
             <artifactId>testfx-core</artifactId>
             <version>4.0.16-alpha</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testfx</groupId>
             <artifactId>testfx-junit5</artifactId>
             <version>4.0.16-alpha</version>
-            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.16-alpha</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
@@ -92,7 +98,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                org.jenhan.wowfeatureextractiontool/org.jenhan.wowfeatureextractiontool.HelloApplication
+                                org.jenhan.wowfeatureextractiontool.Gui
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
@@ -103,6 +109,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <argLine> --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED </argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

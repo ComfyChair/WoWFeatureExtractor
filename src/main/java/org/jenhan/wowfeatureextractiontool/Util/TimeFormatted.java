@@ -2,7 +2,6 @@ package org.jenhan.wowfeatureextractiontool.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 /** Utility class to display time in javafx tableview (overwritten toString function) **/
 public class TimeFormatted extends Date {
@@ -27,7 +26,7 @@ public class TimeFormatted extends Date {
 
     @Override
     public int hashCode() {
-        return Objects.hash(formattedTime);
+        return formattedTime.hashCode();
     }
 
     @Override
