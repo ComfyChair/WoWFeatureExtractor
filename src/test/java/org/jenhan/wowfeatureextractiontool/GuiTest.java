@@ -1,22 +1,64 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.api.FxAssert;
+import org.testfx.api.FxRobot;
+import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.Start;
+import org.testfx.matcher.control.LabeledMatchers;
 
-import java.io.IOException;
 
-class GuiTest extends org.loadui.testfx.GuiTest {
+@ExtendWith(ApplicationExtension.class)
+class GuiTest {
+    private Button button;
 
-    @BeforeEach
-    void setUp() {
+    /**
+     * Will be called with {@code @Before} semantics, i. e. before each test method.
+     *
+     * @param stage - Will be injected by the test runner.
+     */
+    @Start
+    private void start(Stage stage) {
+        button = new Button("click me!");
+        button.setId("myButton");
+        button.setOnAction(actionEvent -> button.setText("clicked!"));
+        stage.setScene(new Scene(new StackPane(button), 100, 100));
+        stage.show();
     }
 
-    @AfterEach
-    void tearDown() {
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
+    @Test
+    void should_contain_button_with_text(FxRobot robot) {
+        FxAssert.verifyThat(button, LabeledMatchers.hasText("click me!"));
+        // or (lookup by css id):
+        FxAssert.verifyThat("#myButton", LabeledMatchers.hasText("click me!"));
+        // or (lookup by css class):
+        FxAssert.verifyThat(".button", LabeledMatchers.hasText("click me!"));
     }
+
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
+    @Test
+    void when_button_is_clicked_text_changes(FxRobot robot) {
+        // when:
+        robot.clickOn(".button");
+
+        // then:
+        FxAssert.verifyThat(button, LabeledMatchers.hasText("clicked!"));
+        // or (lookup by css id):
+        FxAssert.verifyThat("#myButton", LabeledMatchers.hasText("clicked!"));
+        // or (lookup by css class):
+        FxAssert.verifyThat(".button", LabeledMatchers.hasText("clicked!"));
+    }
+
 
     @Test
     void confirmationDialog() {
@@ -46,14 +88,4 @@ class GuiTest extends org.loadui.testfx.GuiTest {
     void sessionList() {
     }
 
-    @Override
-    protected Parent getRootNode() {
-        Parent parent = null;
-        try {
-            parent = FXMLLoader.load(getClass().getResource("/views/main.fxml"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return parent;
-    }
 }
