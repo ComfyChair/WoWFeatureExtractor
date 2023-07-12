@@ -29,7 +29,7 @@ public class SessionSelectionController {
 
     @FXML
     void populateTable() {
-        sessionList = MainControl.getSessionInfos();
+        sessionList = MainControl.sessionList();
         sessionInfoTable.setItems(sessionList);
         sessionInfoTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }

@@ -32,7 +32,7 @@ public class MainControl {
     private static final String INPUT_FILE_PREF = "input_file_pref";
     private static final String OUTPUT_DIR_PREF = "output_dir_pref";
     // initialize empty observable list for testing
-    private static ObservableList<Session> sessionInfos = FXCollections.observableList(new ArrayList<>());
+    private static ObservableList<Session> sessionList = FXCollections.observableList(new ArrayList<>());
     // paths
     private File addonDir;
     private File inputFile;
@@ -84,7 +84,7 @@ public class MainControl {
     }
 
     /** looks for folders that are named after account names (in uppercase) in WTF/Account folder **/
-    private static List<Path> getUppercaseFolders(Path accountPath) {
+    private static List<Path> detectAccountFolders(Path accountPath) {
         List<Path> accountsFound = new ArrayList<>();
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**[A-Z]");
         try {
@@ -171,7 +171,7 @@ public class MainControl {
             Path accountPath = getWTFAccountDir(addonPath);
             if (accountPath != null) {
                 // Account-wide Folders are in UPPERCASE -> look for them
-                List<Path> accountsFound = getUppercaseFolders(accountPath);
+                List<Path> accountsFound = detectAccountFolders(accountPath);
                 if (accountsFound.size() == 1) { // one account on this installation
                     Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
                     handleUserfeedback(Alert.AlertType.INFORMATION, ("Saved vars directory located: " + savedVarsDir), "");
@@ -218,7 +218,7 @@ public class MainControl {
             hasInputFile = promptForInputFile();
         }
         if (!hasInputFile) return; // user canceled
-        // session stuff
+        // get going
         SessionManager sessionManager = SessionManager.getInstance();
         List<Integer> sessionIDs = selectSessions(sessionManager);
         if (sessionIDs.size() > 0) {
@@ -232,15 +232,15 @@ public class MainControl {
      * @param sessionManager the SessionManager
      * @return list of selected session IDs **/
     private List<Integer> selectSessions(SessionManager sessionManager) {
-        sessionInfos = FXCollections.observableList(sessionManager.getSessionList(inputFile));
+        sessionList = FXCollections.observableList(sessionManager.getSessionList(inputFile));
         List<Integer> sessionIDs = new ArrayList<>();
-        if (sessionInfos.isEmpty()) { // no session recorded
+        if (sessionList.isEmpty()) { // no session recorded
             handleUserfeedback(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
         } else {
-            if (sessionInfos.size() == 1) { // only one session
+            if (sessionList.size() == 1) { // only one session
                 sessionIDs.add(0);
             }
-            if (sessionInfos.size() > 1) { // if more than 1 session, session selection is required
+            if (sessionList.size() > 1) { // if more than 1 session, session selection is required
                 sessionIDs.addAll(Gui.promptForSession());
             }
         }
@@ -282,8 +282,9 @@ public class MainControl {
         if (Gui.getPrimaryStage() != null){
             Gui.feedbackDialog(Alert.AlertType.ERROR, message, "");
         } else {
-            System.out.println(message + e);
+            System.err.println(message);
         }
+        System.err.println(e.getMessage());
         e.printStackTrace();
     }
 
@@ -299,8 +300,8 @@ public class MainControl {
 
     /** getter for session info, necessary for GUI display
      * @return list of sessions to populate the session selection table **/
-    static ObservableList<Session> getSessionInfos() {
-        return sessionInfos;
+    static ObservableList<Session> sessionList() {
+        return sessionList;
     }
 
 }
