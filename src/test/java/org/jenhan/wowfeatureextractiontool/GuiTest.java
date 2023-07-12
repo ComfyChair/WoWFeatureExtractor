@@ -1,8 +1,8 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +12,12 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
 
+import java.io.IOException;
+
 @ExtendWith(ApplicationExtension.class)
 class GuiTest {
-    private Button button;
+    private Scene scene;
+    private Button installBtn, selectBtn, exportBtn;
 
     /**
      * Will be called with {@code @Before} semantics, i. e. before each test method.
@@ -22,49 +25,38 @@ class GuiTest {
      * @param stage - Will be injected by the test runner.
      */
     @Start
-    private void start(Stage stage) {
-        button = new Button("click me!");
-        button.setId("myButton");
-        button.setOnAction(actionEvent -> button.setText("clicked!"));
-        stage.setScene(new Scene(new StackPane(button), 100, 100));
+    private void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/main-view.fxml"));
+        scene = new Scene(fxmlLoader.load(), 360, 240);
+        stage.setScene(scene);
         stage.show();
+
+        installBtn = (Button) scene.lookup("#installBtn");
+        selectBtn = (Button) scene.lookup("#selectBtn");
+        exportBtn = (Button) scene.lookup("#exportBtn");
     }
 
     /**
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void should_contain_button_with_text(FxRobot robot) {
-        FxAssert.verifyThat(button, LabeledMatchers.hasText("click me!"));
-        // or (lookup by css id):
-        FxAssert.verifyThat("#myButton", LabeledMatchers.hasText("click me!"));
-        // or (lookup by css class):
-        FxAssert.verifyThat(".button", LabeledMatchers.hasText("click me!"));
+    void testButtonText(FxRobot robot) {
+        FxAssert.verifyThat(installBtn, LabeledMatchers.hasText("Install addon"));
+        FxAssert.verifyThat(selectBtn, LabeledMatchers.hasText("Select input"));
+        FxAssert.verifyThat(exportBtn, LabeledMatchers.hasText("Export XML"));
     }
 
     /**
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void when_button_is_clicked_text_changes(FxRobot robot) {
-        // when:
-        robot.clickOn(".button");
+    void confirmationDialog(FxRobot robot) {
 
-        // then:
-        FxAssert.verifyThat(button, LabeledMatchers.hasText("clicked!"));
-        // or (lookup by css id):
-        FxAssert.verifyThat("#myButton", LabeledMatchers.hasText("clicked!"));
-        // or (lookup by css class):
-        FxAssert.verifyThat(".button", LabeledMatchers.hasText("clicked!"));
-    }
-
-
-    @Test
-    void confirmationDialog() {
     }
 
     @Test
-    void installAddon() {
+    void installAddon(FxRobot robot) {
+
     }
 
     @Test

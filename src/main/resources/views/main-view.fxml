@@ -15,7 +15,8 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <Button onAction="#installAddon"
+    <Button id="installBtn"
+            onAction="#installAddon"
             prefHeight="80.0"
             prefWidth="80.0"
             text="Install addon"
@@ -26,7 +27,8 @@
         </font>
     </Button>
 
-    <Button onAction="#selectFile"
+    <Button id="selectBtn"
+            onAction="#selectFile"
             prefHeight="80.0"
             prefWidth="80.0"
             text="Select input"
@@ -37,7 +39,8 @@
         </font>
     </Button>
 
-    <Button onAction="#exportToXML"
+    <Button id="exportBtn"
+            onAction="#exportToXML"
             prefHeight="80.0"
             prefWidth="80.0"
             text="Export XML"
