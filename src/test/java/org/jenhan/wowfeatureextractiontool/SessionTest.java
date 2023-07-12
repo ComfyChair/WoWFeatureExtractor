@@ -12,8 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
     final static String DECLARATION = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
@@ -106,5 +105,12 @@ class SessionTest {
         Session expectedSession4 = Session.create(3, testFile.getName());
         setContentProperties(expectedSession4, "Antigone", "Sen'jin", new Date(unixTime));
         expectedList.add(expectedSession4);
+    }
+
+    @Test
+    void testHashCode() {
+        setShortTestExpected();
+        assertNotEquals(sessionList.get(0).hashCode(), sessionList.get(1).hashCode());
+        assertEquals(sessionList.get(0).hashCode(), expectedList.get(0).hashCode());
     }
 }
