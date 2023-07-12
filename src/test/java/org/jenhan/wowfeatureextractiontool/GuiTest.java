@@ -1,6 +1,5 @@
 package org.jenhan.wowfeatureextractiontool;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -13,9 +12,11 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 @ExtendWith(ApplicationExtension.class)
 class GuiTest {
+    private Gui gui = new Gui();
     private Scene scene;
     private Button installBtn, selectBtn, exportBtn;
 
@@ -25,12 +26,10 @@ class GuiTest {
      * @param stage - Will be injected by the test runner.
      */
     @Start
-    private void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/main-view.fxml"));
-        scene = new Scene(fxmlLoader.load(), 360, 240);
-        stage.setScene(scene);
-        stage.show();
+    private void start(Stage stage) throws IOException, TimeoutException {
+        gui.start(stage);
 
+        scene = stage.getScene();
         installBtn = (Button) scene.lookup("#installBtn");
         selectBtn = (Button) scene.lookup("#selectBtn");
         exportBtn = (Button) scene.lookup("#exportBtn");
@@ -50,33 +49,51 @@ class GuiTest {
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void confirmationDialog(FxRobot robot) {
-
-    }
-
-    @Test
     void installAddon(FxRobot robot) {
 
     }
 
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
     @Test
-    void selectFile() {
+    void selectFile(FxRobot robot) {
     }
 
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
     @Test
-    void exportToXML() {
+    void exportToXML(FxRobot robot) {
     }
 
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
     @Test
-    void handleError() {
+    void confirmationDialog(FxRobot robot) {
+
     }
 
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
     @Test
-    void handleUserfeedback() {
+    void handleError(FxRobot robot) {
     }
 
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
     @Test
-    void sessionList() {
+    void handleUserfeedback(FxRobot robot) {
+    }
+
+    /**
+     * @param robot - Will be injected by the test runner.
+     */
+    @Test
+    void sessionList(FxRobot robot) {
     }
 
 }
