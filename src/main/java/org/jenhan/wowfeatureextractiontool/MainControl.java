@@ -31,7 +31,8 @@ public class MainControl {
     private static final String SAVED_VAR_DIR_PREF = "saved_vars_dir_pref";
     private static final String INPUT_FILE_PREF = "input_file_pref";
     private static final String OUTPUT_DIR_PREF = "output_dir_pref";
-    private static ObservableList<Session> sessionInfos;
+    // initialize empty observable list for testing
+    private static ObservableList<Session> sessionInfos = FXCollections.observableList(new ArrayList<>());
     // paths
     private File addonDir;
     private File inputFile;
@@ -62,7 +63,7 @@ public class MainControl {
             }
             log.info("Unzipped addon files");
         } catch (IOException e) {
-            Gui.feedbackDialog(Alert.AlertType.ERROR, "Error while unzipping addon files", "Error");
+            handleError("Error while unzipping addon files", e);
         }
     }
 
@@ -76,7 +77,7 @@ public class MainControl {
         if (accountPath.toFile().exists()) {
             return accountPath;
         } else {
-            Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+            handleUserfeedback(Alert.AlertType.INFORMATION,
                     "Can't locate your SavedVariables folder. Please select the input file manually.", "");
             return null;
         }
@@ -99,8 +100,7 @@ public class MainControl {
                 }
             });
         } catch (IOException e) {
-            Gui.feedbackDialog(Alert.AlertType.ERROR,
-                    "Something went wrong while looking for the SavedVariables folder", "IO Error");
+            handleError("Something went wrong while looking for the SavedVariables folder", e);
         }
         return accountsFound;
     }
@@ -109,7 +109,7 @@ public class MainControl {
         if (Gui.getPrimaryStage() != null){
             return Gui.confirmationDialog(message);
         } else {
-            return true; // no confirmation without GUI -> test cases
+            return true; // no confirmation request without GUI, as in test cases
         }
     }
 
@@ -121,26 +121,20 @@ public class MainControl {
         installFolderExpected = "Interface" + separator + "AddOns";
         File destinationDir = Gui.promptForFolder(
                 "Select installation directory", prefs.get(ADDON_DIR_PREF, null));
-        if (isValidDirectory(destinationDir)) {
+        if (isValidInstallDirectory(destinationDir)) {
             this.addonDir = destinationDir;
             prefs.put(ADDON_DIR_PREF, addonDir.getPath());
             unzipAddon(destinationDir);
             locateSavedVariablesDir();
         } else {
-            Gui.feedbackDialog(Alert.AlertType.ERROR, "Sorry, this is an invalid installation directory", "");
+            handleUserfeedback(Alert.AlertType.ERROR, "Sorry, this is an invalid installation directory", "");
         }
     }
 
-    /** checks for valid installation directory **/
-    private boolean isValidDirectory(File destinationDir) {
-        if (destinationDir == null) return false; // user canceled selection, do nothing
-        log.fine("Selected dir: " + destinationDir);
-        // check for writing privileges
-        if (!destinationDir.canWrite()) {
-            Gui.feedbackDialog(Alert.AlertType.ERROR,
-                    "No writing access to this directory, choose another one", "Access Error");
-            return false;
-        }
+    /** checks if a selected directory is valid for addon installation
+     * @return true for a valid destination directory **/
+    private boolean isValidInstallDirectory(File destinationDir) {
+        if (!isValidDirectory(destinationDir)) return false;
         boolean confirmation = true;
         if (!destinationDir.getName().endsWith(installFolderExpected)) { // check for expected directory name
             confirmation = Gui.confirmationDialog("Are you sure you want to install in this directory?" +
@@ -152,12 +146,26 @@ public class MainControl {
         return confirmation;
     }
 
+    /** checks for writing access to a directory or canceled selection
+     * @return true for a valid destination directory **/
+    private static boolean isValidDirectory(File destinationDir) {
+        if (destinationDir == null) return false;
+        log.fine("Selected dir: " + destinationDir);
+        // check for writing privileges
+        if (!destinationDir.canWrite()) {
+            handleUserfeedback(Alert.AlertType.ERROR,
+                    "No writing access to this directory, choose another one", "Access Error");
+            return false;
+        }
+        return true;
+    }
+
     /** deducts the SavedVariables directory from the installation path **/
     private void locateSavedVariablesDir() {
         // from Addons directory, move up to "_retail_" directory
         Path addonPath = addonDir.toPath().toAbsolutePath();
         if (addonPath.getNameCount() < 2) { // can we move two directories up?
-            Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+            handleUserfeedback(Alert.AlertType.INFORMATION,
                     "Can't locate your SavedVariables folder. Please select the input file manually.", "");
         } else {
             Path accountPath = getWTFAccountDir(addonPath);
@@ -166,14 +174,14 @@ public class MainControl {
                 List<Path> accountsFound = getUppercaseFolders(accountPath);
                 if (accountsFound.size() == 1) { // one account on this installation
                     Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
-                    Gui.feedbackDialog(Alert.AlertType.INFORMATION, ("Saved vars directory located: " + savedVarsDir), "");
+                    handleUserfeedback(Alert.AlertType.INFORMATION, ("Saved vars directory located: " + savedVarsDir), "");
                     Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
                     prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
                     String inputFilePath = savedVarsDir + File.separator + ADDON_NAME + ".lua";
                     inputFile = new File(inputFilePath);
                     prefs.put(INPUT_FILE_PREF, inputFilePath);
                 } else {
-                    Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+                    handleUserfeedback(Alert.AlertType.INFORMATION,
                             "You seem to have multiple WoW accounts. Please select the input file manually.", "");
                 }
             }
@@ -192,14 +200,14 @@ public class MainControl {
                     this.inputFile = selectedFile;
                     prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
                 } else {
-                    Gui.feedbackDialog(Alert.AlertType.ERROR,
+                    handleUserfeedback(Alert.AlertType.ERROR,
                             "Error: Could not read the file: " + selectedFile.getPath(), "Error");
                 }
             }
         }
     }
 
-    /** exports the .lua file to .xml format (called on button click) **/
+    /** exports the .lua file to .xml format; called from GUI on button click **/
     @FXML
     void exportToXML() {
         //TODO: Allow specifying a file name
@@ -212,20 +220,22 @@ public class MainControl {
         if (!hasInputFile) return; // user canceled
         // session stuff
         SessionManager sessionManager = SessionManager.getInstance();
-        List<Integer> sessionIDs = retrieveIdList(sessionManager);
+        List<Integer> sessionIDs = selectSessions(sessionManager);
         if (sessionIDs.size() > 0) {
             List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
-            Gui.feedbackDialog(Alert.AlertType.INFORMATION,
+            handleUserfeedback(Alert.AlertType.INFORMATION,
                     "Exported  " + outList.size() + " sessions to xml", "Sessions converted");
         }
     }
 
-    /** retrieves session ID list from session manager to determine necessity for session selection prompt **/
-    private List<Integer> retrieveIdList(SessionManager sessionManager) {
+    /** retrieves session list from session manager, prompts for session selection if more than one session is returned
+     * @param sessionManager the SessionManager
+     * @return list of selected session IDs **/
+    private List<Integer> selectSessions(SessionManager sessionManager) {
         sessionInfos = FXCollections.observableList(sessionManager.getSessionList(inputFile));
         List<Integer> sessionIDs = new ArrayList<>();
         if (sessionInfos.isEmpty()) { // no session recorded
-            Gui.feedbackDialog(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
+            handleUserfeedback(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
         } else {
             if (sessionInfos.size() == 1) { // only one session
                 sessionIDs.add(0);
@@ -237,38 +247,38 @@ public class MainControl {
         return sessionIDs;
     }
 
-    /** initiates user prompt for the input file location **/
+    /** initiates user prompt for the input file location
+     * @return true if a valid file was selected**/
     private boolean promptForInputFile() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         inputFile = Gui.promptForFile("Please select the input file", prefs.get(OUTPUT_DIR_PREF, null));
         if (inputFile == null) {
-            Gui.feedbackDialog(Alert.AlertType.ERROR, "There is no valid input file", "");
+            handleUserfeedback(Alert.AlertType.ERROR, "There is no valid input file", "");
             return false;
         }
         if (!inputFile.canRead()) {
-            Gui.feedbackDialog(Alert.AlertType.ERROR, "Can not read file: " + inputFile.getAbsolutePath(), "");
+            handleUserfeedback(Alert.AlertType.ERROR, "Can not read file: " + inputFile.getAbsolutePath(), "");
             return false;
         }
         return true;
     }
 
-    /** initiates user prompt for the output directory location **/
+    /** initiates user prompt for the output directory location
+     * @return true if a valid directory was selected **/
     private boolean promptForOutputDirectory() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File selectedDir = Gui.promptForFolder("Select export directory", prefs.get(OUTPUT_DIR_PREF, null));
-        if (selectedDir == null) {
-            return false;
-        }
+        if (!isValidDirectory(selectedDir)) return false;
         prefs.put(OUTPUT_DIR_PREF, selectedDir.getPath());
         outputFile = selectedDir.toPath().toFile();
         log.info("Output file will be saved to: " + outputFile.getAbsolutePath() + ".xml");
         return true;
     }
 
-    /** central error handler
+    /** central error handler with Exception
      * @param message the error message
      * @param e the exception **/
-    public static void handleError(String message, Exception e) {
+    static void handleError(String message, Exception e) {
         if (Gui.getPrimaryStage() != null){
             Gui.feedbackDialog(Alert.AlertType.ERROR, message, "");
         } else {
@@ -277,7 +287,18 @@ public class MainControl {
         e.printStackTrace();
     }
 
-    /** getter for session info, necessary for GUI display **/
+    /** central error handler without Exception
+     * @param message the error message **/
+    static void handleUserfeedback(Alert.AlertType alertType, String message, String title) {
+        if (Gui.getPrimaryStage() != null){
+            Gui.feedbackDialog(alertType, message, title);
+        } else {
+            System.out.println(alertType + " - " +  title + ": " + message);
+        }
+    }
+
+    /** getter for session info, necessary for GUI display
+     * @return list of sessions to populate the session selection table **/
     static ObservableList<Session> getSessionInfos() {
         return sessionInfos;
     }

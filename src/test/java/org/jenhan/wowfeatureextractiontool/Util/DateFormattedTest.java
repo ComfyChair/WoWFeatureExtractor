@@ -27,7 +27,7 @@ class DateFormattedTest {
                 testCalendar.get(Calendar.MONTH), (testCalendar.get(Calendar.DAY_OF_MONTH) + 1) % 28 );
         int monthOrdinal = (testCalendar.get(Calendar.MONTH) + 1) % 12;
         anotherMonthCalendar = new GregorianCalendar(testCalendar.get(Calendar.YEAR),
-                monthOrdinal, testCalendar.get(Calendar.DAY_OF_MONTH));
+                 monthOrdinal, testCalendar.get(Calendar.DAY_OF_MONTH));
         anotherYearCalendar = new GregorianCalendar(testCalendar.get(Calendar.YEAR) + 1 ,
                 testCalendar.get(Calendar.MONTH), testCalendar.get(Calendar.DAY_OF_MONTH) );
         Collections.addAll(compareCalendars, anotherDayCalendar, anotherMonthCalendar, anotherYearCalendar);
