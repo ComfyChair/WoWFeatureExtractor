@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,8 +52,7 @@ import java.util.logging.Logger;
                 }
             }
         } catch (IOException e) {
-            log.severe("IOException while reading session info of file: " + luaFile);
-            MainControl.handleError("Could not read session information\n", e);
+            MainControl.handleError("Could not read session information from " + luaFile.getAbsolutePath(), e);
         }
         return sessionList;
     }
@@ -140,8 +138,9 @@ import java.util.logging.Logger;
 
     /** extracts the value from a lua assignment
      * @param line the assignment String
-     * @return the value of the assignment as a String **/
+     * @return the value of the assignment as a String; empty string if called on a non-assignment String  **/
     private static String getLuaFieldValue(String line) {
+        String result = "";
         if (isAssignment(line)) {
             String[] split = line.split("=");
             // right hand side of line = value
@@ -152,25 +151,24 @@ import java.util.logging.Logger;
             if (valueSide.startsWith("\"")) {
                 valueSide = valueSide.substring(1, valueSide.length() - 1);
             }
-            return valueSide;
-        } else {
-            throw new RuntimeException("Requested Lua field value on non-assignment line");
+            result = valueSide;
         }
+        return result;
     }
 
     /** extracts the key from a lua assignment
      * @param line the assignment String
-     * @return the key of the assignment as a String **/
+     * @return the key of the assignment as a String; empty string if called on a non-assignment String **/
     private static String getLuaFieldKey(String line) {
+        String result = "";
         if (isAssignment(line)) {
             String[] split = line.split("=");
             // left hand side of line = key
             String keySide = split[0].trim();
             // substring to omit quotation marks and brackets
-            return keySide.substring(2, keySide.length() - 2);
-        } else {
-            throw new InvalidParameterException("Requested Lua field key on non-assignment line");
+            result = keySide.substring(2, keySide.length() - 2);
         }
+        return result;
     }
 
     /** removes additional characters from a lua table entry String

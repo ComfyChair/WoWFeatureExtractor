@@ -52,7 +52,12 @@ class LuaReaderTest {
             assertEquals(expected.dateProperty().get().toString(), actual.dateProperty().get().toString());
             assertEquals(expected.startTimeProperty().get().toString(), actual.startTimeProperty().get().toString());
         }
+    }
 
+    @Test
+    void readFileInvalid() {
+        List<Session> actualList = testReader.readFile(new File("does_not_exist"));
+        assertEquals(0, actualList.size());
     }
 
     record SessionData(String charName, String serverName, Date date){}
