@@ -5,26 +5,21 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 /** Main controller class **/
 public class MainControl {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private static final String ADDON_NAME = "FeatureRecordingTool";
-    private static final File ADDON_ZIP =
-            new File("src/main/resources/org/jenhan/wowfeatureextractiontool/WoWAddon.zip");
+    private static final String ADDON_ZIP = "WoWAddon.zip";
     private String installFolderExpected;
     // preferences
     private static final String ADDON_DIR_PREF = "addon_dir_pref";
@@ -40,11 +35,11 @@ public class MainControl {
 
     /** unzips addon files to installation directory **/
     private static void unzipAddon(File destinationDir) {
-        try (ZipFile zipFile = new ZipFile(ADDON_ZIP.getAbsolutePath())) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        try (ZipInputStream zipInputStream = new ZipInputStream(getResourceAsInputStream(ADDON_ZIP))) {
+            byte[] buffer = new byte[1024];
+            ZipEntry entry = zipInputStream.getNextEntry();
             boolean confirmOverwrite = false;
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
+            while (entry != null) {
                 File entryDestination = new File(destinationDir, entry.getName());
                 if (entry.isDirectory()) {
                     boolean created = entryDestination.mkdirs();
@@ -58,8 +53,13 @@ public class MainControl {
                     }
                 } else {
                     OutputStream outputStream = new FileOutputStream(entryDestination);
-                    zipFile.getInputStream(entry).transferTo(outputStream);
+                    int len;
+                    while ((len = zipInputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, len);
+                    }
+                    outputStream.close();
                 }
+                entry = zipInputStream.getNextEntry();
             }
             log.info("Unzipped addon files");
         } catch (IOException e) {
@@ -304,4 +304,15 @@ public class MainControl {
         return sessionList;
     }
 
+    private static InputStream getResourceAsInputStream(String fileName)
+    {
+        InputStream inputStream = MainControl.class
+                .getClassLoader()
+                .getResourceAsStream(fileName);
+
+        if (inputStream == null) {
+            handleUserfeedback(Alert.AlertType.ERROR, fileName + " was not found", "");
+        }
+        return inputStream;
+    }
 }

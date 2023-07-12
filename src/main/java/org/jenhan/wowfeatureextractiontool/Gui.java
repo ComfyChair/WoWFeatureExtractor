@@ -32,7 +32,7 @@ public class Gui extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Gui.primaryStage = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 360, 240);
         primaryStage.setTitle("WoW Feature Extraction Tool");
         primaryStage.setScene(scene);
