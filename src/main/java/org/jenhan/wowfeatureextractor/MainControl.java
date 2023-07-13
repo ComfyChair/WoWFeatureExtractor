@@ -127,7 +127,7 @@ public class MainControl {
         if (!isValidDirectory(destinationDir)) return false;
         boolean confirmation = true;
         if (!destinationDir.getName().endsWith(installFolderExpected)) { // check for expected directory name
-            confirmation = Gui.confirmationDialog("Are you sure you want to install in this directory?\n" +
+            confirmation = confirmationDialog("Are you sure you want to install in this directory?\n" +
                     "  It does not appear to be a WoW Addon folder:\n  " + destinationDir);
             if (!confirmation) {
                 log.info("Aborted installing addon");

@@ -1,0 +1,15 @@
+## Interface:  100100
+## Title: FeatureRecorder
+## Notes: Recording of Interactions in WoW for information retrieval purposes
+## Author: Jennifer Hanna
+## Version: 0.1
+## SavedVariables: FRT_FeatureRecordings, FRT_BtnData
+
+# external libraries
+embeds.xml
+# recording tool
+Events.lua
+Features.lua
+SessionManagement.lua
+EventHook.lua
+Main.lua
