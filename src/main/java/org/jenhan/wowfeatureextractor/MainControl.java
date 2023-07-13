@@ -18,8 +18,8 @@ import java.util.zip.ZipInputStream;
 /** Main controller class **/
 public class MainControl {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private static final String ADDON_NAME = "FeatureRecordingTool";
-    private static final String ADDON_ZIP = "WoWAddon.zip";
+    private static final String ADDON_NAME = "FeatureRecorder";
+    private static final String ADDON_ZIP = "FeatureRecorder.zip";
     private String installFolderExpected;
     // preferences
     private static final String ADDON_DIR_PREF = "addon_dir_pref";
