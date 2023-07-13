@@ -19,7 +19,6 @@ public class TimeFormatted extends Date {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         TimeFormatted that = (TimeFormatted) o;
         return this.toString().equals(that.toString());
     }

@@ -15,7 +15,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
-    final static String DECLARATION = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
     String testFilePath = "src/test/resources/ShortSessionsTest.lua";
     File testFile = new File(testFilePath);
     List<Session> sessionList;
@@ -42,6 +41,9 @@ class SessionTest {
     void exportToXML_TestStartOfDocument() throws IOException {
         setShortTestExpected();
         File testOutput = new File("src/test/testOutput/exportTest2.xml");
+        if (!testOutput.getParentFile().exists()){
+            testOutput.getParentFile().mkdirs();
+        }
         Session session = sessionList.get(1);
         System.out.println("Testing start of document: " + testOutput.getPath());
         System.out.println("Session Info: " + sessionList.get(1));
