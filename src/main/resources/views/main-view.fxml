@@ -5,7 +5,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox alignment="CENTER"
+<HBox id="mainViewRoot"
+      alignment="CENTER"
       prefHeight="240.0"
       prefWidth="320.0"
       spacing="20.0"
@@ -28,7 +29,7 @@
     </Button>
 
     <Button id="selectBtn"
-            onAction="#selectFile"
+            onAction="#selectInput"
             prefHeight="80.0"
             prefWidth="80.0"
             text="Select input"

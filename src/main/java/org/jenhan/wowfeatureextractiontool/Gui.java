@@ -54,11 +54,29 @@ public class Gui extends Application {
         return directoryChooser.showDialog(getPrimaryStage());
     }
 
+    static File showSaveDialog(String message, String prefFolder) {
+        FileChooser fileChooser = new FileChooser();
+        if (prefFolder != null) {
+            fileChooser.setInitialDirectory(new File(prefFolder));
+        }
+        fileChooser.setTitle(message);
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+        File selected = fileChooser.showSaveDialog(getPrimaryStage());
+        if (!selected.getName().endsWith(".xml")){
+            String extendedFileName = selected.getName() + ".xml";
+            selected = selected.getParentFile()
+                    .toPath().resolve(new File(extendedFileName).toPath()).toFile();
+        }
+        return selected;
+    }
+
     /** opens a standard FileChooser dialog to select a lua file as input **/
     static File promptForFile(String message, String prefFile) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(message);
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Lua Files", "*.lua"));
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter("Lua Files", "*.lua"));
         if (prefFile != null) {
             fileChooser.setInitialDirectory(new File(prefFile).getParentFile());
         }

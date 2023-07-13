@@ -1,11 +1,13 @@
 package org.jenhan.wowfeatureextractiontool;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.api.FxAssert;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
@@ -13,12 +15,21 @@ import org.testfx.matcher.control.LabeledMatchers;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 @ExtendWith(ApplicationExtension.class)
 class GuiTest {
-    private Gui gui = new Gui();
+    private static final Logger LOG = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private final Gui gui = new Gui();
     private Scene scene;
-    private Button installBtn, selectBtn, exportBtn;
+    private final static String MAIN_ROOT ="#mainViewRoot";
+    private final static String INSTALL_BTN ="#installBtn";
+    private final static String SELECT_BTN = "#selectBtn";
+    private final static String EXPORT_BTN = "#exportBtn";
+    int stepNo;
 
     /**
      * Will be called with {@code @Before} semantics, i. e. before each test method.
@@ -28,11 +39,13 @@ class GuiTest {
     @Start
     private void start(Stage stage) throws IOException, TimeoutException {
         gui.start(stage);
-
         scene = stage.getScene();
-        installBtn = (Button) scene.lookup("#installBtn");
-        selectBtn = (Button) scene.lookup("#selectBtn");
-        exportBtn = (Button) scene.lookup("#exportBtn");
+    }
+
+    @AfterEach
+    void tearDown() throws TimeoutException {
+        // release events
+
     }
 
     /**
@@ -40,9 +53,12 @@ class GuiTest {
      */
     @Test
     void testButtonText(FxRobot robot) {
-        FxAssert.verifyThat(installBtn, LabeledMatchers.hasText("Install addon"));
-        FxAssert.verifyThat(selectBtn, LabeledMatchers.hasText("Select input"));
-        FxAssert.verifyThat(exportBtn, LabeledMatchers.hasText("Export XML"));
+        Button installBtn = (Button) scene.lookup(INSTALL_BTN);
+        Button selectBtn = (Button) scene.lookup(SELECT_BTN);
+        Button exportBtn = (Button) scene.lookup(EXPORT_BTN);
+        verifyThat(installBtn, LabeledMatchers.hasText("Install addon"));
+        verifyThat(selectBtn, LabeledMatchers.hasText("Select input"));
+        verifyThat(exportBtn, LabeledMatchers.hasText("Export XML"));
     }
 
     /**
@@ -50,6 +66,14 @@ class GuiTest {
      */
     @Test
     void installAddon(FxRobot robot) {
+        step("Install Addon", () -> {
+            robot.clickOn(INSTALL_BTN);
+            assertFalse(scene.lookup(MAIN_ROOT).isFocused());
+            //TODO: walkthrough install addon
+        });
+
+        robot.clickOn(INSTALL_BTN);
+        Node pane = scene.lookup(DirectoryChooser.class.descriptorString());
 
     }
 
@@ -57,7 +81,8 @@ class GuiTest {
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void selectFile(FxRobot robot) {
+    void selectInput(FxRobot robot) {
+        //TODO: walkthrough selectInput
     }
 
     /**
@@ -65,6 +90,7 @@ class GuiTest {
      */
     @Test
     void exportToXML(FxRobot robot) {
+        //TODO: walkthrough exportToXML
     }
 
     /**
@@ -89,11 +115,13 @@ class GuiTest {
     void handleUserfeedback(FxRobot robot) {
     }
 
-    /**
-     * @param robot - Will be injected by the test runner.
-     */
-    @Test
-    void sessionList(FxRobot robot) {
+
+    private void step(final String step, final Runnable runnable) {
+        ++stepNo;
+        LOG.info(String.format("STEP %d: Begin - %s", stepNo, step));
+        runnable.run();
+        LOG.info(String.format("STEP %d: End - %s", stepNo, step));
     }
+
 
 }

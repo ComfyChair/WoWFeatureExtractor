@@ -190,7 +190,7 @@ public class MainControl {
 
     /** receives input file path from GUI (called on button click) **/
     @FXML
-    void selectFile() {
+    void selectInput() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         File selectedFile = Gui.promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)",
                 prefs.get(INPUT_FILE_PREF, null));
@@ -210,21 +210,21 @@ public class MainControl {
     /** exports the .lua file to .xml format; called from GUI on button click **/
     @FXML
     void exportToXML() {
-        //TODO: Allow specifying a file name
-        boolean hasOutputDirectory = promptForOutputDirectory();
-        if (!hasOutputDirectory) return; // user canceled
         boolean hasInputFile = inputFile != null;
         if (!hasInputFile) {
             hasInputFile = promptForInputFile();
         }
         if (!hasInputFile) return; // user canceled
+        boolean hasOutputDirectory = showSaveDialog();
+        if (!hasOutputDirectory) return; // user canceled
         // get going
         SessionManager sessionManager = SessionManager.getInstance();
         List<Integer> sessionIDs = selectSessions(sessionManager);
         if (sessionIDs.size() > 0) {
             List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
             handleUserfeedback(Alert.AlertType.INFORMATION,
-                    "Exported  " + outList.size() + " sessions to xml", "Sessions converted");
+                    "Exported  " + outList.size() + " xml file(s):\n"
+                    + outList, "Session(s) converted");
         }
     }
 
@@ -265,13 +265,13 @@ public class MainControl {
 
     /** initiates user prompt for the output directory location
      * @return true if a valid directory was selected **/
-    private boolean promptForOutputDirectory() {
+    private boolean showSaveDialog() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-        File selectedDir = Gui.promptForFolder("Select export directory", prefs.get(OUTPUT_DIR_PREF, null));
-        if (!isValidDirectory(selectedDir)) return false;
-        prefs.put(OUTPUT_DIR_PREF, selectedDir.getPath());
-        outputFile = selectedDir.toPath().toFile();
-        log.info("Output file will be saved to: " + outputFile.getAbsolutePath() + ".xml");
+        File selectedFile = Gui.showSaveDialog("Save output to:", prefs.get(OUTPUT_DIR_PREF, null));
+        if (!isValidDirectory(selectedFile.getParentFile())) return false;
+        prefs.put(OUTPUT_DIR_PREF, selectedFile.getParentFile().getPath());
+        outputFile = selectedFile.toPath().toFile();
+        log.info("Output file will be saved to: " + outputFile.getAbsolutePath());
         return true;
     }
 
