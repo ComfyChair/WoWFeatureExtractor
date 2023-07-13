@@ -279,7 +279,7 @@ public class MainControl {
      * @param message the error message
      * @param e the exception **/
     static void handleError(String message, Exception e) {
-        if (Gui.getPrimaryStage() != null){
+        if (Gui.isActive()){
             Gui.feedbackDialog(Alert.AlertType.ERROR, message, "");
         } else {
             System.err.println(message);
@@ -291,7 +291,7 @@ public class MainControl {
     /** central error handler without Exception
      * @param message the error message **/
     static void handleUserfeedback(Alert.AlertType alertType, String message, String title) {
-        if (Gui.getPrimaryStage() != null){
+        if (Gui.isActive()){
             Gui.feedbackDialog(alertType, message, title);
         } else {
             System.out.println(alertType + " - " +  title + ": " + message);

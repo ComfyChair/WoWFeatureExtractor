@@ -75,7 +75,7 @@ class SessionManagerTest {
 
     @Test
     void exportToXML() throws IOException, SAXException {
-        String outPath = "src/test/testOutput";
+        String outPath = "src/test/testOutput/test.xml";
         File outFile = new File(outPath);
         testManager.getSessionList(shortSessionsFile);
         // single session export

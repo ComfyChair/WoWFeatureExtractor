@@ -21,7 +21,7 @@ public class TimeFormatted extends Date {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TimeFormatted that = (TimeFormatted) o;
-        return this.formattedTime.equals(that.formattedTime);
+        return this.toString().equals(that.toString());
     }
 
     @Override

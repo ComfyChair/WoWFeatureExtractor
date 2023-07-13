@@ -20,6 +20,7 @@ import java.util.Optional;
 /** Main GUI controller class **/
 public class Gui extends Application {
     private static Stage primaryStage;
+    private static boolean isActive;
 
     /** entry point
      * @param args standard arguments, not considered **/
@@ -32,11 +33,18 @@ public class Gui extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Gui.primaryStage = primaryStage;
+        isActive = true;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 360, 240);
         primaryStage.setTitle("WoW Feature Extraction Tool");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        isActive = false;
+        super.stop();
     }
 
     /** lets other classes access the primary stage  for error messages **/
@@ -159,6 +167,10 @@ public class Gui extends Application {
         alert.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    public static boolean isActive() {
+        return isActive;
     }
 
 }

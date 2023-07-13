@@ -5,10 +5,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -17,7 +19,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.testfx.api.FxAssert.verifyThat;
 
 @ExtendWith(ApplicationExtension.class)
@@ -43,10 +45,17 @@ class GuiTest {
     }
 
     @AfterEach
-    void tearDown() throws TimeoutException {
+    void releaseEvents() throws TimeoutException {
+        FxToolkit.cleanupApplication(gui);
         // release events
 
     }
+
+    @AfterAll
+    static void cleanUp() throws Exception {
+        FxToolkit.cleanupStages();
+    }
+
 
     /**
      * @param robot - Will be injected by the test runner.
