@@ -71,7 +71,7 @@ public class Gui extends Application {
         fileChooser.getExtensionFilters()
                 .add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
         File selected = fileChooser.showSaveDialog(getPrimaryStage());
-        if (!selected.getName().endsWith(".xml")){
+        if (selected != null && !selected.getName().endsWith(".xml")){
             String extendedFileName = selected.getName() + ".xml";
             selected = selected.getParentFile()
                     .toPath().resolve(new File(extendedFileName).toPath()).toFile();
