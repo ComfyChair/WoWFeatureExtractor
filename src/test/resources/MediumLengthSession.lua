@@ -5053,41 +5053,6 @@ FRT_FeatureRecordings = {
 		},
 		["startTimeStamp"] = 1689259356,
 	},
-	["session_1"] = {
-		["characterName"] = "Arvensis",
-		["dateTime"] = "16:40, Donnerstag, 13 Juli 2023",
-		["serverName"] = "Sen'jin",
-		["startTimeStamp"] = 1689259297,
-		["featureTable"] = {
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Zaralekhöhle", -- [2]
-				},
-				["timestamp"] = 1689259299,
-				["description"] = "started moving",
-				["type"] = "MOV_1",
-			}, -- [1]
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Zaralekhöhle", -- [2]
-				},
-				["timestamp"] = 1689259300,
-				["description"] = "stopped moving",
-				["type"] = "MOV_2",
-			}, -- [2]
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Hochlanddrache", -- [2]
-				},
-				["timestamp"] = 1689259300,
-				["description"] = "sent spellcast",
-				["type"] = "SPELL_1",
-			}, -- [3]
-		},
-	},
 }
 FRT_BtnData = {
 	["minimapPos"] = 241.6608374840835,

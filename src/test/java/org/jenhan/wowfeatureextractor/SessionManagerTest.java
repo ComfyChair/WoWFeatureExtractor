@@ -22,8 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SessionManagerTest {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     SessionManager testManager;
-    File shortSessionsFile = new File("src/test/resources/ShortSessionsTest.lua");
-    List<Session> expectedList = new ArrayList<>();
+    final File shortSessionsFile = new File("src/test/resources/ShortSessionsTest.lua");
+    final File mediumLengthFile = new File("src/test/resources/MediumLengthSession.lua");
+    final List<Session> expectedList = new ArrayList<>();
     Validator validator;
     XmlErrorHandler xsdErrorHandler;
     private final static File xsdFile = new File("src/test/resources/gmaf-interaction.xsd");
@@ -79,7 +80,7 @@ class SessionManagerTest {
         File outFile = new File(outPath);
         testManager.getSessionList(shortSessionsFile);
         // single session export
-        List<File> outList = testManager.exportToXML(outFile, Arrays.asList(0));
+        List<File> outList = testManager.exportToXML(outFile, List.of(0));
         validate(outList.get(0));
         // multiple session export
         outList = testManager.exportToXML(outFile, Arrays.asList(1, 2, 3));
@@ -87,6 +88,17 @@ class SessionManagerTest {
         ) {
             validate(file);
         }
+        assertEquals(0, xsdErrorHandler.getExceptions().size());
+    }
+
+    @Test
+    void validateMediumLengthExport() throws IOException, SAXException {
+        String outPath = "src/test/testOutput/mediumLength.xml";
+        File outFile = new File(outPath);
+        testManager.getSessionList(mediumLengthFile);
+        // single session export
+        List<File> outList = testManager.exportToXML(outFile, List.of(0));
+        validate(outList.get(0));
         assertEquals(0, xsdErrorHandler.getExceptions().size());
     }
 
