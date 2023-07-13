@@ -47,7 +47,7 @@ class GuiTest {
     @AfterEach
     void releaseEvents() throws TimeoutException {
         FxToolkit.cleanupApplication(gui);
-        // release events
+        // TODO: release events
 
     }
 
@@ -78,12 +78,10 @@ class GuiTest {
         step("Install Addon", () -> {
             robot.clickOn(INSTALL_BTN);
             assertFalse(scene.lookup(MAIN_ROOT).isFocused());
-            //TODO: walkthrough install addon
+            robot.clickOn(INSTALL_BTN);
+            Node pane = scene.lookup(DirectoryChooser.class.descriptorString());
+            //TODO: complete test
         });
-
-        robot.clickOn(INSTALL_BTN);
-        Node pane = scene.lookup(DirectoryChooser.class.descriptorString());
-
     }
 
     /**
@@ -107,7 +105,7 @@ class GuiTest {
      */
     @Test
     void confirmationDialog(FxRobot robot) {
-
+        //TODO: write test
     }
 
     /**
@@ -115,6 +113,7 @@ class GuiTest {
      */
     @Test
     void handleError(FxRobot robot) {
+        //TODO: write test
     }
 
     /**
@@ -122,6 +121,7 @@ class GuiTest {
      */
     @Test
     void handleUserfeedback(FxRobot robot) {
+        //TODO: write test
     }
 
 
