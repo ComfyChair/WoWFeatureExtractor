@@ -53,21 +53,21 @@ public class Gui extends Application {
     }
 
     /** opens a standard FileChooser dialog to select a folder for addon installation **/
-    static File promptForFolder(String message, String prefFolder) {
+    static File promptForAddonInstallDir(String prefFolder) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         if (prefFolder != null) {
             directoryChooser.setInitialDirectory(new File(prefFolder));
         }
-        directoryChooser.setTitle(message);
+        directoryChooser.setTitle("Select installation directory");
         return directoryChooser.showDialog(getPrimaryStage());
     }
 
-    static File showSaveDialog(String message, String prefFolder) {
+    static File showSaveDialog(String prefFolder) {
         FileChooser fileChooser = new FileChooser();
         if (prefFolder != null) {
             fileChooser.setInitialDirectory(new File(prefFolder));
         }
-        fileChooser.setTitle(message);
+        fileChooser.setTitle("Save output to:");
         fileChooser.getExtensionFilters()
                 .add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
         File selected = fileChooser.showSaveDialog(getPrimaryStage());

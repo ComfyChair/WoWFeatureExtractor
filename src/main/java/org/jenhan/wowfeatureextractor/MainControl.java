@@ -122,8 +122,7 @@ public class MainControl {
         String separator = FileSystems.getDefault().getSeparator();
         installFolderExpected = "Interface" + separator + "AddOns";
         log.info("Expected installation folder: " + installFolderExpected);
-        File destinationDir = Gui.promptForFolder(
-                "Select installation directory", prefs.get(ADDON_DIR_PREF, null));
+        File destinationDir = Gui.promptForAddonInstallDir(prefs.get(ADDON_DIR_PREF, null));
         if (isValidInstallDirectory(destinationDir)) {
             this.addonDir = destinationDir;
             prefs.put(ADDON_DIR_PREF, addonDir.getPath());
@@ -299,7 +298,7 @@ public class MainControl {
     private boolean showSaveDialog() {
         boolean isValidFile = false;
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-        File selectedFile = Gui.showSaveDialog("Save output to:", prefs.get(OUTPUT_DIR_PREF, null));
+        File selectedFile = Gui.showSaveDialog(prefs.get(OUTPUT_DIR_PREF, null));
         if (selectedFile != null && isValidDirectory(selectedFile.getParentFile())) {
             prefs.put(OUTPUT_DIR_PREF, selectedFile.getParentFile().getPath());
             outputFile = selectedFile.toPath().toFile();

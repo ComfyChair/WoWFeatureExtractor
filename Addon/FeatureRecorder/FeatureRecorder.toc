@@ -1,4 +1,4 @@
-## Interface:  100100
+## Interface:  100105
 ## Title: FeatureRecorder
 ## Notes: Recording of Interactions in WoW for information retrieval purposes
 ## Author: Jennifer Hanna

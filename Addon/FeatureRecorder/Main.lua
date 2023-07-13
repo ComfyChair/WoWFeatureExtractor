@@ -8,13 +8,13 @@
 ---
 --- @author Jennifer Hanna
 
-FRT_Addon = LibStub("AceAddon-3.0"):NewAddon("FeatureRecordingTool")
+FRT_Addon = LibStub("AceAddon-3.0"):NewAddon("FeatureRecorder")
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
 local libDBicon = LibStub("LibDBIcon-1.0", true)
 
 --- Minimap button icon locations
-local stopButton = "Interface\\AddOns\\FeatureRecordingTool\\icons\\miniButtonRecording.tga"
-local recordButton = "Interface\\AddOns\\FeatureRecordingTool\\icons\\miniButtonStopped.tga"
+local stopButton = "Interface\\AddOns\\FeatureRecorder\\icons\\miniButtonRecording.tga"
+local recordButton = "Interface\\AddOns\\FeatureRecorder\\icons\\miniButtonStopped.tga"
 --- Recording state variable
 local recording = false
 --- Minimap button SavedVariables table
@@ -57,7 +57,6 @@ function FRT_Addon:startRecording()
     FRT_EventHook:startRecording()
     recording = true;
     miniButton.icon = stopButton
-    print("Should have changed icon to ", recordButton)
 end
 
 function FRT_Addon:stopRecording()
