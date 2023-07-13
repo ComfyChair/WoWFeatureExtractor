@@ -1,6 +1,6 @@
 ## Interface:  100105
 ## Title: FeatureRecorder
-## Notes: Recording of Interactions in WoW for information retrieval purposes
+## Notes: Recording of user interactions in WoW; use in combination with the WoWFeatureExtractor to export xml files for the GMAF framework
 ## Author: Jennifer Hanna
 ## Version: 0.1
 ## SavedVariables: FRT_FeatureRecordings, FRT_BtnData
