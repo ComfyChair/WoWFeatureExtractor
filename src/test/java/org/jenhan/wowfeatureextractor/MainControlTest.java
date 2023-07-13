@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractor;
 
 import javafx.scene.control.Alert;
 import org.junit.jupiter.api.AfterEach;
@@ -58,19 +58,19 @@ class MainControlTest {
         Alert.AlertType alertType = Alert.AlertType.ERROR;
         String expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG + "\n";
 
-        MainControl.handleUserfeedback(alertType, TEST_MSG, TEST_TITLE);
+        MainControl.handleUserFeedback(alertType, TEST_MSG, TEST_TITLE);
         assertEquals(expected, outContent.toString());
         outContent.reset();
 
         alertType = Alert.AlertType.INFORMATION;
         expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG  + "\n";
-        MainControl.handleUserfeedback(alertType, TEST_MSG, TEST_TITLE);
+        MainControl.handleUserFeedback(alertType, TEST_MSG, TEST_TITLE);
         assertEquals(expected, outContent.toString());
         outContent.reset();
 
         alertType = Alert.AlertType.WARNING;
         expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG + "\n";
-        MainControl.handleUserfeedback(alertType, TEST_MSG, TEST_TITLE);
+        MainControl.handleUserFeedback(alertType, TEST_MSG, TEST_TITLE);
         assertEquals(expected, outContent.toString());
         outContent.reset();
     }

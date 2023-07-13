@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractor;
 
 import java.io.File;
 import java.io.FileReader;

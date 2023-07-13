@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool.Util;
+package org.jenhan.wowfeatureextractor.Util;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

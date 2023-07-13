@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractor;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,22 +35,14 @@ public class MainControl {
 
     /** unzips addon files to installation directory **/
     private static void unzipAddon(File destinationDir) {
-        try (ZipInputStream zipInputStream = new ZipInputStream(getResourceAsInputStream(ADDON_ZIP))) {
+        try (ZipInputStream zipInputStream = new ZipInputStream(getZipAsInputStream())) {
             byte[] buffer = new byte[1024];
             ZipEntry entry = zipInputStream.getNextEntry();
-            boolean confirmOverwrite = false;
             while (entry != null) {
                 File entryDestination = new File(destinationDir, entry.getName());
                 if (entry.isDirectory()) {
                     boolean created = entryDestination.mkdirs();
-                    if (!created && !confirmOverwrite){
-                        confirmOverwrite = Gui.confirmationDialog("Overwrite existing installation in "
-                                + destinationDir + "?");
-                        if (!confirmOverwrite) {
-                            log.info("Aborted installing addon");
-                            return;
-                        }
-                    }
+                    // silently overwrite; another confirmation dialog would be too annoying
                 } else {
                     OutputStream outputStream = new FileOutputStream(entryDestination);
                     int len;
@@ -77,7 +69,7 @@ public class MainControl {
         if (accountPath.toFile().exists()) {
             return accountPath;
         } else {
-            handleUserfeedback(Alert.AlertType.INFORMATION,
+            handleUserFeedback(Alert.AlertType.INFORMATION,
                     "Can't locate your SavedVariables folder. Please select the input file manually.", "");
             return null;
         }
@@ -126,9 +118,7 @@ public class MainControl {
             prefs.put(ADDON_DIR_PREF, addonDir.getPath());
             unzipAddon(destinationDir);
             locateSavedVariablesDir();
-        } else {
-            handleUserfeedback(Alert.AlertType.ERROR, "Sorry, this is an invalid installation directory", "");
-        }
+        } // else: canceled or no writing access; keep silent
     }
 
     /** checks if a selected directory is valid for addon installation
@@ -137,8 +127,8 @@ public class MainControl {
         if (!isValidDirectory(destinationDir)) return false;
         boolean confirmation = true;
         if (!destinationDir.getName().endsWith(installFolderExpected)) { // check for expected directory name
-            confirmation = Gui.confirmationDialog("Are you sure you want to install in this directory?" +
-                    " It does not appear to be a WoW Addon folder: " + destinationDir);
+            confirmation = Gui.confirmationDialog("Are you sure you want to install in this directory?\n" +
+                    "  It does not appear to be a WoW Addon folder:\n  " + destinationDir);
             if (!confirmation) {
                 log.info("Aborted installing addon");
             }
@@ -153,7 +143,7 @@ public class MainControl {
         log.fine("Selected dir: " + destinationDir);
         // check for writing privileges
         if (!destinationDir.canWrite()) {
-            handleUserfeedback(Alert.AlertType.ERROR,
+            handleUserFeedback(Alert.AlertType.ERROR,
                     "No writing access to this directory, choose another one", "Access Error");
             return false;
         }
@@ -165,7 +155,7 @@ public class MainControl {
         // from Addons directory, move up to "_retail_" directory
         Path addonPath = addonDir.toPath().toAbsolutePath();
         if (addonPath.getNameCount() < 2) { // can we move two directories up?
-            handleUserfeedback(Alert.AlertType.INFORMATION,
+            handleUserFeedback(Alert.AlertType.INFORMATION,
                     "Can't locate your SavedVariables folder. Please select the input file manually.", "");
         } else {
             Path accountPath = getWTFAccountDir(addonPath);
@@ -174,14 +164,14 @@ public class MainControl {
                 List<Path> accountsFound = detectAccountFolders(accountPath);
                 if (accountsFound.size() == 1) { // one account on this installation
                     Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
-                    handleUserfeedback(Alert.AlertType.INFORMATION, ("Saved vars directory located: " + savedVarsDir), "");
+                    handleUserFeedback(Alert.AlertType.INFORMATION, ("Saved vars directory located: " + savedVarsDir), "");
                     Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
                     prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
                     String inputFilePath = savedVarsDir + File.separator + ADDON_NAME + ".lua";
                     inputFile = new File(inputFilePath);
                     prefs.put(INPUT_FILE_PREF, inputFilePath);
                 } else {
-                    handleUserfeedback(Alert.AlertType.INFORMATION,
+                    handleUserFeedback(Alert.AlertType.INFORMATION,
                             "You seem to have multiple WoW accounts. Please select the input file manually.", "");
                 }
             }
@@ -200,8 +190,8 @@ public class MainControl {
                     this.inputFile = selectedFile;
                     prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
                 } else {
-                    handleUserfeedback(Alert.AlertType.ERROR,
-                            "Error: Could not read the file: " + selectedFile.getPath(), "Error");
+                    handleUserFeedback(Alert.AlertType.ERROR,
+                            "Could not read the file: " + selectedFile.getPath(), "Error");
                 }
             }
         }
@@ -222,7 +212,7 @@ public class MainControl {
         List<Integer> sessionIDs = selectSessions(sessionManager);
         if (sessionIDs.size() > 0) {
             List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
-            handleUserfeedback(Alert.AlertType.INFORMATION,
+            handleUserFeedback(Alert.AlertType.INFORMATION,
                     "Exported  " + outList.size() + " xml file(s):\n"
                     + outList, "Session(s) converted");
         }
@@ -235,7 +225,7 @@ public class MainControl {
         sessionList = FXCollections.observableList(sessionManager.getSessionList(inputFile));
         List<Integer> sessionIDs = new ArrayList<>();
         if (sessionList.isEmpty()) { // no session recorded
-            handleUserfeedback(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
+            handleUserFeedback(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
         } else {
             if (sessionList.size() == 1) { // only one session
                 sessionIDs.add(0);
@@ -253,11 +243,10 @@ public class MainControl {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
         inputFile = Gui.promptForFile("Please select the input file", prefs.get(OUTPUT_DIR_PREF, null));
         if (inputFile == null) {
-            handleUserfeedback(Alert.AlertType.ERROR, "There is no valid input file", "");
-            return false;
+            return false; // user canceled
         }
         if (!inputFile.canRead()) {
-            handleUserfeedback(Alert.AlertType.ERROR, "Can not read file: " + inputFile.getAbsolutePath(), "");
+            handleUserFeedback(Alert.AlertType.ERROR, "Can not read file:\n" + inputFile.getAbsolutePath(), "");
             return false;
         }
         return true;
@@ -290,7 +279,7 @@ public class MainControl {
 
     /** central error handler without Exception
      * @param message the error message **/
-    static void handleUserfeedback(Alert.AlertType alertType, String message, String title) {
+    static void handleUserFeedback(Alert.AlertType alertType, String message, String title) {
         if (Gui.isActive()){
             Gui.feedbackDialog(alertType, message, title);
         } else {
@@ -304,14 +293,14 @@ public class MainControl {
         return sessionList;
     }
 
-    private static InputStream getResourceAsInputStream(String fileName)
+    private static InputStream getZipAsInputStream()
     {
         InputStream inputStream = MainControl.class
                 .getClassLoader()
-                .getResourceAsStream(fileName);
+                .getResourceAsStream(ADDON_ZIP);
 
         if (inputStream == null) {
-            handleUserfeedback(Alert.AlertType.ERROR, fileName + " was not found", "");
+            handleUserFeedback(Alert.AlertType.ERROR, ADDON_ZIP + " was not found", "");
         }
         return inputStream;
     }

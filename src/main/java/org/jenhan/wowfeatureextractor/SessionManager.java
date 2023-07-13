@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractor;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -48,9 +48,7 @@ class SessionManager {
             ) {
                 String newOutName = outTruncName + sessionID + ".xml";
                 File thisOutFile  = outPath.resolve(new File(newOutName).toPath()).toFile();
-                System.out.println("Outfile: " + newOutName);
                 exportSingleSession(sessionID, thisOutFile, outList);
-                System.out.println("Outpath: " + thisOutFile.getAbsolutePath());
             }
         }
         return outList;

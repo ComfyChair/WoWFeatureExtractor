@@ -1,11 +1,11 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractor;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import org.jenhan.wowfeatureextractiontool.Util.DateFormatted;
+import org.jenhan.wowfeatureextractor.Util.DateFormatted;
 
 import java.util.List;
 

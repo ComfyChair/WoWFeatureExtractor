@@ -1,4 +1,4 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractor;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -6,8 +6,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
-import org.jenhan.wowfeatureextractiontool.Util.DateFormatted;
-import org.jenhan.wowfeatureextractiontool.Util.TimeFormatted;
+import org.jenhan.wowfeatureextractor.Util.DateFormatted;
+import org.jenhan.wowfeatureextractor.Util.TimeFormatted;
 
 import java.io.File;
 import java.util.ArrayList;

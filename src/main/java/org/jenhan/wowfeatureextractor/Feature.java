@@ -1,7 +1,7 @@
-package org.jenhan.wowfeatureextractiontool;
+package org.jenhan.wowfeatureextractor;
 
 import jakarta.xml.bind.annotation.*;
-import org.jenhan.wowfeatureextractiontool.Util.TimeFormatted;
+import org.jenhan.wowfeatureextractor.Util.TimeFormatted;
 
 import java.util.ArrayList;
 import java.util.Date;
