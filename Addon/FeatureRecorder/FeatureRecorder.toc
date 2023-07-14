@@ -9,7 +9,8 @@
 embeds.xml
 # recording tool
 Events.lua
-Features.lua
-SessionManagement.lua
+Feature.lua
+Session.lua
+SessionManager.lua
 EventHook.lua
 Main.lua

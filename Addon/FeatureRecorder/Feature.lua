@@ -1,5 +1,5 @@
 ---
---- @module Features.lua definitions of the FRT_Feature class
+--- @module Feature.lua definitions of the FRT_Feature class
 --- @author Jennifer Hanna
 ---
 

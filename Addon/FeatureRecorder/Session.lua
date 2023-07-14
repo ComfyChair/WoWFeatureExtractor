@@ -1,49 +1,13 @@
 ---
---- @module SessionManagement.lua session management for the FeatureRecorder Addon
---- contains SessionManager (Singleton) and Session (class)
---- supports adding new sessions and adding new features
+--- @module Session.lua for the FeatureRecorder Addon
+--- contains FRT_Session (class)
+--- supports adding new features to a session
 ---
 --- @author Jennifer Hanna
 ---
 
---- @table data structure for extracted features
---- initialized as empty table, gets overwritten upon loading of SavedVariables
-FRT_FeatureRecordings = {}
-
---- @function counts the sessions in the SavedVariables file (as #table is not applicable)
-function FRT_sessionCount()
-    local count = 0
-    for _ in pairs(FRT_FeatureRecordings) do
-        count = count + 1
-    end
-    return count
-end
-
---- @class SessionManager Singleton, created by FRT_EventHook
---- @field activeSession FRT_Session currently active session
-FRT_SessionManager = {
-    activeSession
-}
---- FRT_SessionManager constructor
---- creates a new session and adds it to the global table FRT_FeatureRecordings
-function FRT_SessionManager:newSession()
-    local recordedSessions = FRT_sessionCount()
-    local sessionID = "session_" .. (recordedSessions + 1)
-    if DLAPI then DLAPI.DebugLog("FeatureRecordingTool", "SessionManager: New session") end
-    activeSession = FRT_Session:new()
-    FRT_FeatureRecordings[sessionID] = activeSession
-end
---- FRT_SessionManager method addFeature
---- adds a feature to the active session
---- Chain of Responsibility pattern: EventHook -> SessionManager -> activeSession
-function FRT_SessionManager:addFeature(event, timestamp, ...)
-    if DLAPI then DLAPI.DebugLog("FeatureRecordingTool", "SessionManager: New feature: %s", event) end
-    local payload = ...
-    activeSession:addFeature(activeSession, event, timestamp, payload)
-end
---- @end class FRT_SessionManager
-
---- @class FRT_Session instances created by FRT_SessionManager
+--- @class FRT_Session data structure that contains recorded features and general information about the recording
+--- instances created by FRT_SessionManager
 --- attributes: dateTime        - time of session start
 ---             characterName   - character with which the session was recorded
 ---             serverName      - server of the character
@@ -86,7 +50,3 @@ function currentTime()
     -- example output: 07:55, Friday, 15 March 2019
 end
 --- @end class FRT_Session
-
-
-
-

@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0d3da9ec-dda6-4e03-a4df-291384bad1d6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/EventHook.lua" beforeDir="false" afterPath="$PROJECT_DIR$/EventHook.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Events.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Events.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Features.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Features.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Main.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SessionManagement.lua" beforeDir="false" afterPath="$PROJECT_DIR$/SessionManagement.lua" afterDir="false" />
+    <list default="true" id="0d3da9ec-dda6-4e03-a4df-291384bad1d6" name="Changes" comment="worked on addon documentation">
+      <change afterPath="$PROJECT_DIR$/Session.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FeatureRecorder.toc" beforeDir="false" afterPath="$PROJECT_DIR$/FeatureRecorder.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Features.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Feature.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SessionManagement.lua" beforeDir="false" afterPath="$PROJECT_DIR$/SessionManager.lua" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,11 +75,23 @@
       <option name="presentableId" value="Default" />
       <updated>1689254936099</updated>
       <workItem from="1689254937113" duration="242000" />
-      <workItem from="1689311084477" duration="6666000" />
+      <workItem from="1689311084477" duration="7844000" />
     </task>
+    <task id="LOCAL-00001" summary="worked on addon documentation">
+      <created>1689321881888</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1689321881888</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="worked on addon documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="worked on addon documentation" />
   </component>
 </project>
