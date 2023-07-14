@@ -1,13 +1,15 @@
 ---
---- World of Warcraft Feature Recording tool.
---- for information retrieval purposes
+--- World of Warcraft FeatureRecorder Addon
 ---
---- to be used in combination with a conversion tool
+--- to be used in combination with the WoWFeatureExtractor java application
 --- to allow import of features into the Generic Multimedia Analysis Framework (GMAF)
---- by Stefan Wagenpfeil, http://www.stefan-wagenpfeil.de/gmaf/
+--- by Stefan Wagenpfeil: http://www.stefan-wagenpfeil.de/gmaf/
+---
+--- @module Main.lua interface definitions and functions
 ---
 --- @author Jennifer Hanna
 
+--- registering with the AceAddon library is necessary for proper minimap button function
 FRT_Addon = LibStub("AceAddon-3.0"):NewAddon("FeatureRecorder")
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
 local libDBicon = LibStub("LibDBIcon-1.0", true)
@@ -51,7 +53,7 @@ local miniButton =  ldb:NewDataObject(
             end,
         })
 
---- Recording functions
+--- Recording function: start
 function FRT_Addon:startRecording()
     print("FRT: Recording events...") -- user feedback in in-game console
     FRT_EventHook:startRecording()
@@ -59,6 +61,7 @@ function FRT_Addon:startRecording()
     miniButton.icon = stopButton
 end
 
+--- Recording function: stop
 function FRT_Addon:stopRecording()
     FRT_EventHook:stopRecording()
     recording = false;
@@ -66,13 +69,14 @@ function FRT_Addon:stopRecording()
     print("FRT: Stopped recording events.") -- user feedback in in-game console
 end
 
+--- Recording function: clear recorded sessions
 function FRT_Addon:clearRecord()
     FRT_Addon:stopRecording()
     FRT_FeatureRecordings = {}
     print("FRT: Cleared recorded events.") -- user feedback in in-game console
 end
 
---- Console commands
+--- Console command definitons
 --- @field SLASH_FRT_FEATURE_RECORDING1 string slash command for WoW
 --- @table SlashCmdList  the internal Blizzard table for slash commands
 --- @field SlashCmdList["FRT_FEATURE_RECORDING"] adding an entry to the internal Blizzard table,
@@ -91,6 +95,7 @@ SlashCmdList["FRT_FEATURE_RECORDING"] = function(msg)
 end
 
 --- this is called after SavedVaraiables were loaded
+--- necessary for proper minimap button function
 function FRT_Addon:OnInitialize()
     --- Button creation handled by libDBicon
     -- this must be delayed until SavedVariables were loaded,

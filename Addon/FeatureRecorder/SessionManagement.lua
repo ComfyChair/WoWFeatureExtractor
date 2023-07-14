@@ -1,16 +1,16 @@
 ---
---- Session management for the feature extraction tool
---- contains SessionManager (Singleton), Session (class) and Feature (class)
+--- @module SessionManagement.lua session management for the FeatureRecorder Addon
+--- contains SessionManager (Singleton) and Session (class)
 --- supports adding new sessions and adding new features
 ---
 --- @author Jennifer Hanna
 ---
 
---- @table FRT_FeatureRecordings table for extracted features
+--- @table data structure for extracted features
 --- initialized as empty table, gets overwritten upon loading of SavedVariables
 FRT_FeatureRecordings = {}
 
---- @function sessionCount() counts the sessions in the SavedVariables file (as #table is not applicable)
+--- @function counts the sessions in the SavedVariables file (as #table is not applicable)
 function FRT_sessionCount()
     local count = 0
     for _ in pairs(FRT_FeatureRecordings) do
@@ -24,7 +24,7 @@ end
 FRT_SessionManager = {
     activeSession
 }
---- FRT_SessionManager method newSession
+--- FRT_SessionManager constructor
 --- creates a new session and adds it to the global table FRT_FeatureRecordings
 function FRT_SessionManager:newSession()
     local recordedSessions = FRT_sessionCount()
@@ -34,6 +34,7 @@ function FRT_SessionManager:newSession()
     FRT_FeatureRecordings[sessionID] = activeSession
 end
 --- FRT_SessionManager method addFeature
+--- adds a feature to the active session
 --- Chain of Responsibility pattern: EventHook -> SessionManager -> activeSession
 function FRT_SessionManager:addFeature(event, timestamp, ...)
     if DLAPI then DLAPI.DebugLog("FeatureRecordingTool", "SessionManager: New feature: %s", event) end
@@ -52,7 +53,7 @@ end
 FRT_Session = {}
 FRT_Session.__index = FRT_Session
 
---- FRT_Session method new
+--- FRT_Session constructor
 function FRT_Session:new()
     local self = setmetatable({}, FRT_Session)
     self.dateTime = currentTime()
@@ -65,6 +66,7 @@ function FRT_Session:new()
 end
 
 --- FRT_Session method addFeature
+--- adds a feature to the session
 --- Chain of Responsibility pattern: EventHook -> SessionManager -> activeSession
 function FRT_Session:addFeature(self, event, timestamp, ...)
     local payload = ...
