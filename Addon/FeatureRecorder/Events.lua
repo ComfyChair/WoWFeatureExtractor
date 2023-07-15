@@ -80,8 +80,9 @@ local interactionType = {
     NPC_1 = {name = "NPC_1", descr = "quest npc" },
     NPC_2 = {name = "NPC_2", descr = "flight master" },
     COMM_1 = {name = "COMM_1", descr = "emote" },
-    COMM_2 = {name = "COMM_2", descr = "whisper" },
-    COMM_3 = {name = "COMM_3", descr = "party chat" },
+    COMM_2 = {name = "COMM_2", descr = "whisper sent" },
+    COMM_3 = {name = "COMM_3", descr = "whisper received"},
+    COMM_4 = {name = "COMM_4", descr = "party chat" },
     GRP_1 = {name = "GRP_1", descr = "grouping: group composition update" },
     SPELL_1 = {name = "SPELL_1", descr = "sent spellcast" },
     DUM_1 = {name = "DUM_1", descr = "dummy description" },
@@ -150,13 +151,19 @@ FRT_EventEnum = {
                                   { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
                                   { FRT_ObjectRetrievalCalls.getEventArgument, 5 } -- arg5: recipient
                                 }),
-    ["CHAT_MSG_WHISPER"] = FRT_Event:new(interactionType.COMM_2.name, interactionType.COMM_2.descr,
+    -- whisper sent is no longer triggering CHAT_MSG_WHISPER, so we have to use a separate event
+    ["CHAT_MSG_WHISPER_INFORM"] = FRT_Event:new(interactionType.COMM_2.name, interactionType.COMM_2.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
+                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: recipient
+            }),
+    -- whisper received
+    ["CHAT_MSG_WHISPER"] = FRT_Event:new(interactionType.COMM_3.name, interactionType.COMM_3.descr,
                              {
                                { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
                                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
-                               { FRT_ObjectRetrievalCalls.getEventArgument, 5 } -- arg5: recipient
                              }),
-    ["CHAT_MSG_PARTY"] = FRT_Event:new(interactionType.COMM_3.name, interactionType.COMM_3.descr,
+    ["CHAT_MSG_PARTY"] = FRT_Event:new(interactionType.COMM_4.name, interactionType.COMM_3.descr,
             {
                          { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- agr1: message
                           { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
