@@ -165,12 +165,16 @@ FRT_EventEnum = {
                                { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
                                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
                              }),
-    ["CHAT_MSG_PARTY"] = FRT_Event:new(interactionType.COMM_4.name, interactionType.COMM_3.descr,
+    ["CHAT_MSG_PARTY"] = FRT_Event:new(interactionType.COMM_4.name, interactionType.COMM_4.descr,
             {
                          { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- agr1: message
                           { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
-                          { FRT_ObjectRetrievalCalls.getEventArgument, 5 } -- arg5: recipient
                           }),
+    ["CHAT_MSG_PARTY_LEADER"] = FRT_Event:new(interactionType.COMM_4.name, interactionType.COMM_4.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- agr1: message
+                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
+            }),
     ["GROUP_ROSTER_UPDATE"] = FRT_Event:new(interactionType.GRP_1.name, interactionType.GRP_1.descr,
                          {{FRT_ObjectRetrievalCalls.getGroupMembers}} ),
     -- spellcast: can have all sorts of targets
