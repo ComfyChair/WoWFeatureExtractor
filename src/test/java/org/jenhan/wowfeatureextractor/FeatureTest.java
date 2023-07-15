@@ -32,7 +32,7 @@ class FeatureTest {
     @Test
     void getDescription() {
         assertEquals(TEST_DESCRIPTION, testFeature.getDescription());
-        assertEquals(Feature.FeatureType.UNKNOWN.getStandardDescription(), emptyFeature.getDescription());
+        assertEquals(Feature.DEFAULT_DESCR, emptyFeature.getDescription());
     }
 
     @Test
@@ -58,21 +58,16 @@ class FeatureTest {
 
     @Test
     void getType() {
-        assertEquals(Feature.FeatureType.UNKNOWN, testFeature.getType());
+        assertEquals(TEST_TYPE, testFeature.getType());
+        assertEquals(Feature.DEFAULT_TYPE, emptyFeature.getType());
     }
 
     @Test
     void setType() {
-        for (Feature.FeatureType featureType: Feature.FeatureType.values()
-             ) {
+        for (FeatureType featureType: FeatureType.values()) {
             testFeature.setType(featureType.toString());
-            assertEquals(featureType, testFeature.getType());
+            assertEquals(featureType.toString(), testFeature.getType());
         }
-        // test invalid string
-        testFeature.setType(Feature.FeatureType.COMM_1.toString());
-        assertEquals(Feature.FeatureType.COMM_1, testFeature.getType());
-        testFeature.setType("not valid");
-        assertEquals(Feature.FeatureType.UNKNOWN, testFeature.getType());
     }
 
     @Test
@@ -117,6 +112,13 @@ class FeatureTest {
         Feature.FeatureObject anotherObject = new Feature.FeatureObject(1, ANOTHER_TERM);
         assertEquals(featureObject.hashCode(), sameObject.hashCode());
         assertNotEquals(featureObject.hashCode(), anotherObject.hashCode());
+    }
+
+    /** enum data structure for allowed types with standard description **/
+    enum FeatureType {
+        MOV_1, MOV_2, ZONE_1, ZONE_2, ZONE_3, OBJ_1, OBJ_2,
+        NPC_1, NPC_2, COMM_1, COMM_2, COMM_3, COMM_4,
+        GRP_1, SPELL_1,
     }
 
 }

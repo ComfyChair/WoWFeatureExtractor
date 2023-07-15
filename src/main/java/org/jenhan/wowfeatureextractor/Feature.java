@@ -14,10 +14,12 @@ import java.util.logging.Logger;
 @XmlType(propOrder = {"beginTime", LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
 class Feature {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    static final String DEFAULT_TYPE = "UNKNOWN";
+    static final String DEFAULT_DESCR = "no description";
     private final List<FeatureObject> objectList = new ArrayList<>();
     private TimeFormatted beginTime = new TimeFormatted(new Date(0L));
-    private FeatureType type = FeatureType.UNKNOWN;
-    private String description = null;
+    private String type = DEFAULT_TYPE;
+    private String description = DEFAULT_DESCR;
 
     /** standard constructor, made explicit for jaxb binding **/
     Feature() {
@@ -40,13 +42,7 @@ class Feature {
 
     @XmlElement(name = LuaToXML.DESCRIPTION)
     String getDescription() {
-        String result;
-        if (description != null) {
-            result = description;
-        } else {
-            result = this.getType().standardDescription;
-        }
-        return result;
+        return description;
     }
 
     void setDescription(String description) {
@@ -54,18 +50,12 @@ class Feature {
     }
 
     @XmlElement(name = LuaToXML.TYPE)
-    FeatureType getType() {
+    String getType() {
         return type;
     }
 
-    void setType(String typeString) {
-        FeatureType newType = FeatureType.UNKNOWN;
-        for (FeatureType type : FeatureType.values()) {
-            if (type.name().equalsIgnoreCase(typeString)) {
-                newType = type;
-            }
-        }
-        this.type = newType;
+    void setType(String type) {
+        this.type = type;
     }
 
     @XmlElements(@XmlElement(name = LuaToXML.OBJECT))
@@ -81,35 +71,6 @@ class Feature {
                 ", description='" + description + '\'' +
                 ", objectList=" + objectList +
                 '}';
-    }
-
-    /** enum data structure for allowed types with standard description **/
-    enum FeatureType {
-        MOV_1("started moving"),
-        MOV_2("stopped moving"),
-        ZONE_1("entered new area"),
-        ZONE_2("entered new subarea"),
-        ZONE_3("entered indoor area"),
-        OBJ_1("looting"),
-        OBJ_2("opened mailbox"),
-        NPC_1("quest npc"),
-        NPC_2("flight master"),
-        COMM_1("emote"),
-        COMM_2("whisper"),
-        COMM_3("party chat"),
-        GRP_1("grouping: group composition update"),
-        SPELL_1("sent spellcast"),
-        UNKNOWN("unknown type");
-
-        private final String standardDescription;
-
-        FeatureType(String description) {
-            this.standardDescription = description;
-        }
-
-        String getStandardDescription(){
-            return this.standardDescription;
-        }
     }
 
     /** Inner class for objects that were detected in a feature **/
