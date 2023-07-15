@@ -121,9 +121,11 @@ FRT_EventEnum = {
                                  { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
                                    { FRT_ObjectRetrievalCalls.getZoneText} }),
     ["ZONE_CHANGED"] = FRT_Event:new(interactionType.ZONE_2.name, interactionType.ZONE_2.descr,
-                        { { FRT_ObjectRetrievalCalls.getUnitName, "player"}, { FRT_ObjectRetrievalCalls.getSubZoneText} }),
-    ["ZONE_CHANGED_INDOORS"] = FRT_Event:new(interactionType.ZONE_3.name, interactionType.ZONE_3.value,
-                                { { FRT_ObjectRetrievalCalls.getUnitName, "player"}, { FRT_ObjectRetrievalCalls.getZoneText} }),
+                        { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                          { FRT_ObjectRetrievalCalls.getSubZoneText} }),
+    ["ZONE_CHANGED_INDOORS"] = FRT_Event:new(interactionType.ZONE_3.name, interactionType.ZONE_3.descr,
+                                { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                                  { FRT_ObjectRetrievalCalls.getSubZoneText} }),
 
     --- Object / NPC interactions:
     -- objects are 1. object/npc name, 2. zone, 3. optional (loot items?, quest id)
