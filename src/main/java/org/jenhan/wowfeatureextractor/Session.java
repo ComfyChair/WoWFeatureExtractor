@@ -14,30 +14,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /** Recording session class containing general information and list of features **/
 @XmlRootElement(name = LuaToXML.GMAF_DATA)
 @XmlType(propOrder = {"fileName", LuaToXML.DATE, "featureList"})
 public class Session implements LuaToXML{
-    private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private final List<Feature> featureList = new ArrayList<>();
-    /** session id displayed in session picker as properties (necessary for javafx) **/
+    private String fileName;
+    /** session information that gets displayed in the session picker, as properties (necessary for javafx) **/
     @FXML
     private final IntegerProperty sessionID = new SimpleIntegerProperty();
-    /** character name displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final StringProperty charName = new SimpleStringProperty();
-    /** server name displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final StringProperty serverName = new SimpleStringProperty();
-    /** formatted recording date displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final ObjectProperty<DateFormatted> date = new SimpleObjectProperty<>();
-    /** formatted recording time displayed in session picker as properties (necessary for javafx) **/
     @FXML
     private final ObjectProperty<TimeFormatted> startTime = new SimpleObjectProperty<>();
-    private String fileName;
 
     /** private constructor; default constructor necessary for javafx table view **/
     private Session() {

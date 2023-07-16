@@ -7,12 +7,13 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.File;
-import java.util.logging.Logger;
 
+/** Converter class for conversion of interaction feature data to xml **/
 class Converter implements LuaToXML {
-    private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    /** outmost element for xml output **/
     private final Collection collection;
 
+    /** @param session the recording session the converter gets bound to **/
     public Converter(Session session) {
         this.collection = new Collection();
         collection.setSession(session);
@@ -35,17 +36,22 @@ class Converter implements LuaToXML {
         return success;
     }
 
+    /** outmost element in output xml **/
     @XmlRootElement(name = LuaToXML.GMAF_COLLECTION)
     static class Collection {
+        /** the session object the collection is created from **/
         private Session session;
 
+        /** explicit standard constructor necessary for marshalling to xml **/
         Collection() {
         }
 
+        /** @param session the session object the collection is created from; called on creation **/
         protected void setSession(Session session) {
             this.session = session;
         }
 
+        /** @return session gets marshalled to gmaf-data element **/
         @XmlElement(name = LuaToXML.GMAF_DATA)
         Session getSession() {
             return session;

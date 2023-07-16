@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 /** Reader class to read extracted features from SavedVariables file **/
  class LuaReader {
     private final static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    /** Lua table fields **/
+    /** Lua table field constants **/
     private final static String SESSION_FIELD_START = "[\"session_";
     private final static String CHAR_NAME = "characterName";
     private final static String SERVER_NAME = "serverName";
@@ -23,11 +23,11 @@ import java.util.logging.Logger;
     private final static String TYPE = "type";
     private final static String FEATURE_TIMESTAMP = "timestamp";
     private final static String OBJECT_LIST = "objects";
+    /** Lua table handling constants **/
     private final static String END_OF_SESSION  = "\t},";
     private final static String END_OF_FEATURE_TABLE = "\t\t},";
     private final static String END_OF_TABLE ="}";
 
-    /** constructor **/
     LuaReader() {
     }
 
@@ -86,7 +86,6 @@ import java.util.logging.Logger;
      * @param session the current session
      * @return last read line; should be END_OF_FEATURE_TABLE **/
     private String readFeatureTable(LineNumberReader reader, Session session) throws IOException {
-        Feature feature;
         log.fine("Reading feature table");
         String line = reader.readLine();
         while (line != null && !line.equals(END_OF_FEATURE_TABLE)) {
@@ -130,8 +129,7 @@ import java.util.logging.Logger;
         return feature;
     }
 
-    /** determines whether a String is an assignment
-     * @param line the line **/
+    /** determines whether a read line is an assignment **/
     private static boolean isAssignment(String line) {
         return line.contains("=");
     }
@@ -180,22 +178,18 @@ import java.util.logging.Logger;
         return leftOfComma.replace("\"", "");
     }
 
-    /** determines whether a line signals the end of a lua table
-     * @param line the line **/
+    /** determines whether a read line signals the end of a lua table **/
     private boolean isEndOfTable(String line) {
         return line.trim().equals("},");
     }
 
-    /** determines whether a line signals the end of a feature entry
-     * @param line the line **/
+    /** determines whether a read line signals the end of a feature entry **/
     private boolean isEndOfFeature(String line) {
         String trimmed = line.trim();
         return trimmed.startsWith("},") && trimmed.endsWith("]");
     }// converts Unix time in seconds (as String from lua field) to Calendar object
 
-    /** determines the Date from a lua assignment with value = unix time in seconds
-     * @param line the assignment line
-     * @return the corresponding Date object **/
+    /** determines the Date from a lua assignment with value = unix time in seconds **/
     private Date getDateFromLuaField(String line) {
         long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000L;
         Calendar startTime = Calendar.getInstance();
@@ -203,9 +197,7 @@ import java.util.logging.Logger;
         return startTime.getTime();
     }
 
-    /** reads feature objects from file and assigns them to the current feature
-     * @param reader the LineNumberReader
-     * @param feature the current feature **/
+    /** reads feature objects from file and assigns them to the current feature **/
     private void readFeatureObjects(LineNumberReader reader, Feature feature) throws IOException {
         String line = reader.readLine();
         int id = 1;

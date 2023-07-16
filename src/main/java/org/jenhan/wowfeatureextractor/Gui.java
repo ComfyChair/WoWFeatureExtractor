@@ -129,10 +129,9 @@ public class Gui extends Application {
         return result;
     }
 
-    //TODO: Deutsche Lokalisierung hinzufügen für GUI?
     /** reroutes uncaught exceptions to Gui, if loaded **/
     private static void showError(Thread thread, Throwable e) {
-        System.err.println("*** Default exception handler ***");
+        System.err.println("*** Uncaught exception handler ***");
         if (Platform.isFxApplicationThread()) {
             System.out.println("Gui is running, rerouting error message");
             showErrorDialog(e);
@@ -169,6 +168,7 @@ public class Gui extends Application {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    /** indicates whether the gui is active in order to reroute gui calls for testing purposes **/
     public static boolean isActive() {
         return isActive;
     }

@@ -7,7 +7,6 @@ import java.util.List;
 
 /** Session Management Singleton **/
 class SessionManager {
-    private static final String OUTFILE_EXTENSION = ".xml";
     private static SessionManager instance;
     private List<Session> sessionList;
 
@@ -59,13 +58,6 @@ class SessionManager {
         if (success){
             outList.add(outFile);
         }
-    }
-
-    /** extends the path with a given file name
-     * @param path the path
-     * @param fileName the file name **/
-    private File extendPath(Path path, String fileName) {
-        return path.resolve(fileName).toFile();
     }
 
 }

@@ -20,24 +20,22 @@ import java.util.zip.ZipInputStream;
  **/
 public class MainControl {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    /** constants **/
     private static final String ADDON_NAME = "FeatureRecorder";
     private static final String ADDON_ZIP = "FeatureRecorder.zip";
-    private String installFolderExpected;
-    // preferences
     private static final String ADDON_DIR_PREF = "addon_dir_pref";
     private static final String SAVED_VAR_DIR_PREF = "saved_vars_dir_pref";
     private static final String INPUT_FILE_PREF = "input_file_pref";
     private static final String OUTPUT_DIR_PREF = "output_dir_pref";
-    // initialize empty observable list for testing
+    /** session list, must be initialized early for testing **/
     private static ObservableList<Session> sessionList = FXCollections.observableList(new ArrayList<>());
-    // paths
+    /** paths **/
+    private String installFolderExpected;
     private File addonDir;
     private File inputFile;
     private File outputFile;
 
-    /**
-     * unzips addon files to installation directory
-     **/
+    /** unzips addon files to installation directory **/
     private static void unzipAddon(File destinationDir) {
         try (ZipInputStream zipInputStream = new ZipInputStream(getZipAsInputStream())) {
             byte[] buffer = new byte[1024];
@@ -45,7 +43,7 @@ public class MainControl {
             while (entry != null) {
                 File entryDestination = new File(destinationDir, entry.getName());
                 if (entry.isDirectory()) {
-                    boolean created = entryDestination.mkdirs();
+                    entryDestination.mkdirs();
                     // silently overwrite; another confirmation dialog would be too annoying
                 } else {
                     OutputStream outputStream = new FileOutputStream(entryDestination);
@@ -63,9 +61,7 @@ public class MainControl {
         }
     }
 
-    /**
-     * moves from Addons folder to ../../WTF/Account folder
-     **/
+    /** moves from Addons folder to ../../WTF/Account folder **/
     private static Path getWTFAccountDir(Path addonPath) {
         // ../.. first, move two directories up
         Path twoUp = addonPath.getRoot()
@@ -81,9 +77,7 @@ public class MainControl {
         }
     }
 
-    /**
-     * looks for folders that are named after account names (in uppercase) in WTF/Account folder
-     **/
+    /** looks for folders that are named after account names (in uppercase) in WTF/Account folder **/
     private static List<Path> detectAccountFolders(Path accountPath) {
         List<Path> accountsFound = new ArrayList<>();
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**[A-Z]");
@@ -169,9 +163,7 @@ public class MainControl {
         return true;
     }
 
-    /**
-     * deducts the SavedVariables directory from the installation path
-     **/
+    /** deducts the SavedVariables directory from the installation path **/
     private void locateSavedVariablesDir() {
         // from Addons directory, move up to "_retail_" directory
         Path addonPath = addonDir.toPath().toAbsolutePath();
@@ -337,15 +329,12 @@ public class MainControl {
         }
     }
 
-    /**
-     * getter for session info, necessary for GUI display
-     *
-     * @return list of sessions to populate the session selection table
-     **/
+    /** getter for session info, necessary for GUI display **/
     static ObservableList<Session> sessionList() {
         return sessionList;
     }
 
+    /** @return input stream of the addon zip file **/
     private static InputStream getZipAsInputStream() {
         InputStream inputStream = MainControl.class
                 .getClassLoader()
