@@ -2,39 +2,27 @@ package org.jenhan.wowfeatureextractor;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SessionManagerTest {
-    private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    SessionManager testManager;
-    final File shortSessionsFile = new File("src/test/resources/ShortSessionsTest.lua");
-    final File mediumLengthFile = new File("src/test/resources/MediumLengthSession.lua");
-    final List<Session> expectedList = new ArrayList<>();
-    Validator validator;
-    XmlErrorHandler xsdErrorHandler;
+
+    private static SessionManager testManager;
+    private final static  File shortSessionsFile = new File("src/test/resources/ShortSessionsTest.lua");
+    private final static  File mediumLengthFile = new File("src/test/resources/MediumLengthSession.lua");
+    private final static  List<Session> expectedList = new ArrayList<>();
+    private XmlValidator validator;
     private final static File xsdFile = new File("src/test/resources/gmaf-interaction.xsd");
 
     @BeforeEach
     void setUp() throws SAXException {
         testManager = SessionManager.getInstance();
-        validator = initValidator();
-        xsdErrorHandler = new XmlErrorHandler();
-        validator.setErrorHandler(xsdErrorHandler);
+        validator = new XmlValidator(xsdFile);
         List<LuaReaderTest.SessionData> sessionData = new ArrayList<>();
         LuaReaderTest.SessionData session_0 = new LuaReaderTest.SessionData("Antigone", "TestServer", new Date(1688840368L *1000));
         LuaReaderTest.SessionData session_1 = new LuaReaderTest.SessionData("Spice", "Sen'jin", new Date(1688891052L * 1000));
@@ -81,14 +69,15 @@ class SessionManagerTest {
         testManager.getSessionList(shortSessionsFile);
         // single session export
         List<File> outList = testManager.exportToXML(outFile, List.of(0));
-        validate(outList.get(0));
+        int exceptions = validator.validate(outList.get(0));
+        assertEquals(0, exceptions);
         // multiple session export
         outList = testManager.exportToXML(outFile, Arrays.asList(1, 2, 3));
         for (File file : outList
         ) {
-            validate(file);
+            exceptions = validator.validate(file);
         }
-        assertEquals(0, xsdErrorHandler.getExceptions().size());
+        assertEquals(0, exceptions);
     }
 
     @Test
@@ -98,49 +87,12 @@ class SessionManagerTest {
         testManager.getSessionList(mediumLengthFile);
         // single session export
         List<File> outList = testManager.exportToXML(outFile, List.of(0));
-        validate(outList.get(0));
-        assertEquals(0, xsdErrorHandler.getExceptions().size());
+        int exceptions = validator.validate(outList.get(0));
+        assertEquals(0, exceptions);
     }
 
-    private void validate(File outFile) throws SAXException, IOException {
-        validator.validate(new StreamSource(outFile));
-        xsdErrorHandler.getExceptions().forEach(e -> log.info(outFile.getName() + ": " + e.getMessage()));
-    }
 
-    /** initializes a xml validator **/
-    private Validator initValidator() throws SAXException {
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Source schemaFile = new StreamSource(xsdFile);
-        Schema schema = factory.newSchema(schemaFile);
-        return schema.newValidator();
-    }
 
-    static class XmlErrorHandler implements ErrorHandler {
 
-        private final List<SAXParseException> exceptions;
-
-        public XmlErrorHandler() {
-            this.exceptions = new ArrayList<>();
-        }
-
-        public List<SAXParseException> getExceptions() {
-            return exceptions;
-        }
-
-        @Override
-        public void warning(SAXParseException exception) {
-            exceptions.add(exception);
-        }
-
-        @Override
-        public void error(SAXParseException exception) {
-            exceptions.add(exception);
-        }
-
-        @Override
-        public void fatalError(SAXParseException exception) {
-            exceptions.add(exception);
-        }
-    }
 
 }
