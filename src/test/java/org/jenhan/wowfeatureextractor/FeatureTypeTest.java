@@ -3,20 +3,17 @@ package org.jenhan.wowfeatureextractor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/** test validation of xml output from input files with specific features **/
 public class FeatureTypeTest {
-    private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private SessionManager testManager;
-    private List<File> inputFileList = new ArrayList<>();
-    private List<File> outputFileList = new ArrayList<>();
+    private final List<File> inputFileList = new ArrayList<>();
+    private final List<File> outputFileList = new ArrayList<>();
     /** test resource constants **/
     private final static File emoteTest = new File("src/test/resources/EmoteTest.lua");
     private final static File flightMasterTest = new File("src/test/resources/FlightmasterTest.lua");
