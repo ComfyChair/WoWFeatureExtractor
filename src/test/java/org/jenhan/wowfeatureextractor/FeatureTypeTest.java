@@ -47,13 +47,13 @@ public class FeatureTypeTest {
             testManager.getSessionList(luaFile);
             String outPath = ("src/test/testOutput/" + luaFile.getName()).replace(".lua", "") + ".xml";
             File outFile = new File(outPath);
-
             // single session export
             List<File> outList = testManager.exportToXML(outFile, List.of(0));
             int exceptions = validator.validate(outList.get(0));
+            outputFileList.addAll(outList);
             assertEquals(0, exceptions);
         }
-
+        assertEquals(inputFileList.size(), outputFileList.size());
     }
 
 }

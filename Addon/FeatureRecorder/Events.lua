@@ -148,10 +148,9 @@ FRT_EventEnum = {
     --- Player character interactions
     -- most objects in this category get added upon feature creation
     ["CHAT_MSG_TEXT_EMOTE"] = FRT_Event:new(interactionType.COMM_1.name, interactionType.COMM_1.descr,
-                                { { FRT_ObjectRetrievalCalls.getUnitName, "target" },
+                                { { FRT_ObjectRetrievalCalls.getUnitName, "target" }, -- target = recipient
                                   { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
                                   { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
-                                  { FRT_ObjectRetrievalCalls.getEventArgument, 5 } -- arg5: recipient
                                 }),
     -- whisper sent is no longer triggering CHAT_MSG_WHISPER, so we have to use a separate event
     ["CHAT_MSG_WHISPER_INFORM"] = FRT_Event:new(interactionType.COMM_2.name, interactionType.COMM_2.descr,
