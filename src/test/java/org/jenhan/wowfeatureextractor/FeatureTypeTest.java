@@ -38,7 +38,7 @@ public class FeatureTypeTest {
     private final static File whisperSendTest = new File("src/test/resources/WhisperTest.lua");
     private final static File whisperReceivedTest = new File("src/test/resources/WhisperTest.lua");
     private final static File partyChatTest = new File("src/test/resources/PartyChatTest.lua");
-    private final static File partyLeadChatTest = new File("src/test/resources/PartyChatTest.lua");
+    private final static File partyLeadTest = new File("src/test/resources/PartyLeadTest.lua");
     private final static File groupingTest = new File("src/test/resources/GroupingTest.lua");
     //spellcast
     private final static File spellcastTest = new File("src/test/resources/SpellcastTest.lua");
@@ -63,6 +63,11 @@ public class FeatureTypeTest {
         inputFileMap.put(questTest, "NPC_1");
         inputFileMap.put(flightMasterTest, "NPC_2");
         inputFileMap.put(emoteTest, "COMM_1");
+        inputFileMap.put(whisperSendTest, "COMM_2");
+        inputFileMap.put(whisperReceivedTest, "COMM_3");
+        inputFileMap.put(partyChatTest, "COMM_4");
+        inputFileMap.put(partyLeadTest, "COMM_4");
+        inputFileMap.put(groupingTest, "GRP_1");
         inputFileMap.put(spellcastTest, "SPELL_1");
     }
 

@@ -1,34 +1,26 @@
 
 FRT_FeatureRecordings = {
-	["session_5"] = {
+	["session_1"] = {
 		["characterName"] = "Arvensis",
-		["dateTime"] = "07:20, Samstag, 15 Juli 2023",
 		["serverName"] = "Sen'jin",
+		["dateTime"] = 1689624123,
 		["featureTable"] = {
 			{
 				["objects"] = {
 				},
-				["timestamp"] = 1689398423,
-				["description"] = "grouping: group composition update",
 				["type"] = "GRP_1",
+				["time"] = 1689624127,
+				["description"] = "grouping: group composition update",
 			}, -- [1]
 			{
 				["objects"] = {
-					"Arthavyl", -- [1]
+					"Eschadion", -- [1]
 				},
-				["timestamp"] = 1689398429,
-				["description"] = "grouping: group composition update",
 				["type"] = "GRP_1",
+				["time"] = 1689624128,
+				["description"] = "grouping: group composition update",
 			}, -- [2]
-			{
-				["objects"] = {
-				},
-				["timestamp"] = 1689398452,
-				["description"] = "grouping: group composition update",
-				["type"] = "GRP_1",
-			}, -- [3]
 		},
-		["startTimeStamp"] = 1689398414,
 	},
 }
 FRT_BtnData = {

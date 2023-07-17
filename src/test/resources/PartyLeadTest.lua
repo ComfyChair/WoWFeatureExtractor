@@ -7,11 +7,11 @@ FRT_FeatureRecordings = {
 		["featureTable"] = {
 			{
 				["objects"] = {
-					"pppaarty", -- [1]
-					"Eschadion-Sen'jin", -- [2]
+					"PAR.... TYYYYY!!!!", -- [1]
+					"Arvensis-Sen'jin", -- [2]
 				},
 				["type"] = "COMM_4",
-				["time"] = 1689624273,
+				["time"] = 1689624264,
 				["description"] = "party chat",
 			}, -- [1]
 		},
