@@ -1,5 +1,7 @@
 package org.jenhan.wowfeatureextractor;
 
+import javafx.scene.control.Alert;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -191,10 +193,16 @@ import java.util.logging.Logger;
 
     /** determines the Date from a lua assignment with value = unix time in seconds **/
     private Date getDateFromLuaField(String line) {
-        long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000L;
-        Calendar startTime = Calendar.getInstance();
-        startTime.setTime(new Date(unixTime));
-        return startTime.getTime();
+        Date result = new Date(0L); // default date in case of Exception
+        try {
+            long unixTime = Long.parseLong(getLuaFieldValue(line)) * 1000L;
+            Calendar startTime = Calendar.getInstance();
+            startTime.setTime(new Date(unixTime));
+            result = startTime.getTime();
+        } catch (NumberFormatException e){
+            MainControl.handleUserFeedback(Alert.AlertType.ERROR, "wrong date format in lua file", "");
+        }
+        return result;
     }
 
     /** reads feature objects from file and assigns them to the current feature **/

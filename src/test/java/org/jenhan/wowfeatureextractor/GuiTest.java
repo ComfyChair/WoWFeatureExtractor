@@ -1,9 +1,7 @@
 package org.jenhan.wowfeatureextractor;
 
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -15,6 +13,7 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.LabeledMatchers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -31,7 +30,8 @@ class GuiTest {
     private final static String INSTALL_BTN ="#installBtn";
     private final static String SELECT_BTN = "#selectBtn";
     private final static String EXPORT_BTN = "#exportBtn";
-    int stepNo;
+    private File testInput = new File("src/test/resources/ShortSessionsTest.lua");
+    private int stepNo;
 
     /**
      * Will be called with {@code @Before} semantics, i. e. before each test method.
@@ -39,7 +39,7 @@ class GuiTest {
      * @param stage - Will be injected by the test runner.
      */
     @Start
-    private void start(Stage stage) throws IOException, TimeoutException {
+    private void start(Stage stage) throws IOException {
         gui.start(stage);
         scene = stage.getScene();
     }
@@ -47,8 +47,6 @@ class GuiTest {
     @AfterEach
     void releaseEvents() throws TimeoutException {
         FxToolkit.cleanupApplication(gui);
-        // TODO: release events
-
     }
 
     @AfterAll
@@ -71,59 +69,48 @@ class GuiTest {
     }
 
     /**
+     * tests if file chooser dialog is opening on button click
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void installAddon(FxRobot robot) {
+    void installAddonBtn(FxRobot robot) {
         step("Install Addon", () -> {
             robot.clickOn(INSTALL_BTN);
-            assertFalse(scene.lookup(MAIN_ROOT).isFocused());
-            robot.clickOn(INSTALL_BTN);
-            Node pane = scene.lookup(DirectoryChooser.class.descriptorString());
-            //TODO: complete test
+            assertFalse(scene.lookup(MAIN_ROOT).isFocused()); // main view loses focus
         });
+        // cannot test further, as the standard  FileChooser and DirectoryChooser work with system windows,
+        // which are not accessible in this version of testFx
     }
 
     /**
+     * tests if file chooser dialog is opening on button click
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void selectInput(FxRobot robot) {
-        //TODO: walkthrough selectInput
+    void selectInputBtn(FxRobot robot) {
+        step("Select File", () -> {
+            robot.clickOn(SELECT_BTN);
+            assertFalse(scene.lookup(MAIN_ROOT).isFocused()); // main view loses focus
+        });
+        // cannot test further, as the standard  FileChooser and DirectoryChooser work with system windows,
+        // which are not accessible in this version of testFx
     }
 
     /**
+     * tests if file chooser dialog is opening on button click
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void exportToXML(FxRobot robot) {
-        //TODO: walkthrough exportToXML
+    void exportToXMLBtn(FxRobot robot) {
+        SessionManager sessionManager = SessionManager.getInstance();
+        sessionManager.getSessionList(testInput);
+        step("Export to XML", () -> {
+            robot.clickOn(EXPORT_BTN);
+            assertFalse(scene.lookup(MAIN_ROOT).isFocused()); // main view loses focus
+        });
+        // cannot test further, as the standard  FileChooser and DirectoryChooser work with system windows,
+        // which are not accessible in this version of testFx
     }
-
-    /**
-     * @param robot - Will be injected by the test runner.
-     */
-    @Test
-    void confirmationDialog(FxRobot robot) {
-        //TODO: write test
-    }
-
-    /**
-     * @param robot - Will be injected by the test runner.
-     */
-    @Test
-    void handleError(FxRobot robot) {
-        //TODO: write test
-    }
-
-    /**
-     * @param robot - Will be injected by the test runner.
-     */
-    @Test
-    void handleUserfeedback(FxRobot robot) {
-        //TODO: write test
-    }
-
 
     private void step(final String step, final Runnable runnable) {
         ++stepNo;
