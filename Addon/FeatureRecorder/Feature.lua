@@ -45,13 +45,6 @@ FRT_Feature = {
     objects = {}
 }
 FRT_Feature.__index = FRT_Feature
---- FRT_Feature base constructor
-function FRT_Feature:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
-    return o
-end
 
 --- FRT_Feature constructor with parameters
 function FRT_Feature:new(eventName, timestamp, ...)
