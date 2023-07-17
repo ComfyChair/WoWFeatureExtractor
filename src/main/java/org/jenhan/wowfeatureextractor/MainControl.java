@@ -231,7 +231,7 @@ public class MainControl {
             boolean hasOutputDirectory = showSaveDialog();
             if (hasOutputDirectory) {
                 SessionManager sessionManager = SessionManager.getInstance();
-                List<Integer> sessionIDs = selectSessions(sessionManager);
+                List<Integer> sessionIDs = getSessionList(sessionManager);
                 if (sessionIDs.size() > 0) {
                     List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
                     handleUserFeedback(Alert.AlertType.INFORMATION,
@@ -248,7 +248,7 @@ public class MainControl {
      * @param sessionManager the SessionManager
      * @return list of selected session IDs
      **/
-    private List<Integer> selectSessions(SessionManager sessionManager) {
+    private List<Integer> getSessionList(SessionManager sessionManager) {
         sessionList = FXCollections.observableList(sessionManager.getSessionList(inputFile));
         List<Integer> sessionIDs = new ArrayList<>();
         if (sessionList.isEmpty()) { // no session recorded
