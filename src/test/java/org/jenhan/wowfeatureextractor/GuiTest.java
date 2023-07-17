@@ -30,7 +30,7 @@ class GuiTest {
     private final static String INSTALL_BTN ="#installBtn";
     private final static String SELECT_BTN = "#selectBtn";
     private final static String EXPORT_BTN = "#exportBtn";
-    private File testInput = new File("src/test/resources/ShortSessionsTest.lua");
+    private final File testInput = new File("src/test/resources/ShortSessionsTest.lua");
     private int stepNo;
 
     /**
@@ -104,12 +104,10 @@ class GuiTest {
     void exportToXMLBtn(FxRobot robot) {
         SessionManager sessionManager = SessionManager.getInstance();
         sessionManager.getSessionList(testInput);
-        step("Export to XML", () -> {
-            robot.clickOn(EXPORT_BTN);
-            assertFalse(scene.lookup(MAIN_ROOT).isFocused()); // main view loses focus
-        });
-        // cannot test further, as the standard  FileChooser and DirectoryChooser work with system windows,
-        // which are not accessible in this version of testFx
+        robot.clickOn(EXPORT_BTN);
+        assertFalse(scene.lookup(MAIN_ROOT).isFocused()); // main view loses focus
+        // cannot test complete walkthrough, as the standard  FileChooser and DirectoryChooser
+        // work with system windows, which are inaccessible in this version of testFx
     }
 
     private void step(final String step, final Runnable runnable) {
@@ -118,6 +116,4 @@ class GuiTest {
         runnable.run();
         LOG.info(String.format("STEP %d: End - %s", stepNo, step));
     }
-
-
 }

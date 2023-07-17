@@ -271,7 +271,7 @@ public class MainControl {
      **/
     private boolean promptForInputFile() {
         Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-        inputFile = Gui.promptForFile("Please select the input file", prefs.get(OUTPUT_DIR_PREF, null));
+        inputFile = Gui.promptForFile("Please select the input file", prefs.get(INPUT_FILE_PREF, null));
         if (inputFile == null) {
             return false; // user canceled
         }
