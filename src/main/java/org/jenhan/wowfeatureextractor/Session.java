@@ -49,11 +49,8 @@ public class Session implements LuaToXML{
     }
 
     /** converts the session content to a GMAF-compatible xml **/
-    @Override
     public boolean exportToXML(File outputFile) {
-        Converter converter = new Converter(this);
-        // pass to default interface method
-        return converter.exportToXML(outputFile);
+        return LuaToXML.super.exportToXML(this, outputFile);
     }
 
    /** @return the character name property **/
