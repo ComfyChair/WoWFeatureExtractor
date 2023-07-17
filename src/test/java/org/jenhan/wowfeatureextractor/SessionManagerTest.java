@@ -24,12 +24,11 @@ class SessionManagerTest {
         testManager = SessionManager.getInstance();
         validator = new XmlValidator(xsdFile);
         List<LuaReaderTest.SessionData> sessionData = new ArrayList<>();
-        LuaReaderTest.SessionData session_0 = new LuaReaderTest.SessionData("Antigone", "TestServer", new Date(1688840368L *1000));
-        LuaReaderTest.SessionData session_1 = new LuaReaderTest.SessionData("Spice", "Sen'jin", new Date(1688891052L * 1000));
-        LuaReaderTest.SessionData session_2 = new LuaReaderTest.SessionData("Antigone","Sen'jin", new Date(1688840385L * 1000));
-        LuaReaderTest.SessionData session_3 = new LuaReaderTest.SessionData("Antigone", "Sen'jin", new Date(1688840200L * 1000));
-        Collections.addAll(sessionData, session_0, session_1, session_2, session_3);
-        for (int i = 0; i < 4; i++) {
+        LuaReaderTest.SessionData session_0 = new LuaReaderTest.SessionData("Ángua", "TestServer", new Date(1689580415L *1000));
+        LuaReaderTest.SessionData session_1 = new LuaReaderTest.SessionData("Spice", "Sen'jin", new Date(1689580493L * 1000));
+        LuaReaderTest.SessionData session_2 = new LuaReaderTest.SessionData("Arvensis","Sen'jin", new Date(1689580359L * 1000));
+        Collections.addAll(sessionData, session_0, session_1, session_2);
+        for (int i = 0; i < 3; i++) {
             Session newSession = Session.create(i, shortSessionsFile.getName());
             expectedList.add(newSession);
             LuaReaderTest.SessionData thisSessionData = sessionData.get(i);
@@ -50,7 +49,7 @@ class SessionManagerTest {
     @Test
     void getSessionList() {
         List<Session> actualList = testManager.getSessionList(shortSessionsFile);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             Session actual = actualList.get(i);
             Session expected = expectedList.get(i);
             assertEquals(expected.sessionIDProperty().get(), actual.sessionIDProperty().get());
@@ -72,7 +71,7 @@ class SessionManagerTest {
         int exceptions = validator.validate(outList.get(0));
         assertEquals(0, exceptions);
         // multiple session export
-        outList = testManager.exportToXML(outFile, Arrays.asList(1, 2, 3));
+        outList = testManager.exportToXML(outFile, Arrays.asList(1, 2));
         for (File file : outList
         ) {
             exceptions = validator.validate(file);

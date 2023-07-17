@@ -2,7 +2,6 @@
 FRT_FeatureRecordings = {
 	["session_1"] = {
 		["characterName"] = "Arvensis",
-		["dateTime"] = "08:31, Samstag, 15 Juli 2023",
 		["serverName"] = "Sen'jin",
 		["featureTable"] = {
 			{

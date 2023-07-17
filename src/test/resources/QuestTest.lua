@@ -2,39 +2,20 @@
 FRT_FeatureRecordings = {
 	["session_1"] = {
 		["characterName"] = "Arvensis",
-		["dateTime"] = "07:57, Samstag, 15 Juli 2023",
 		["serverName"] = "Sen'jin",
+		["dateTime"] = 1689579836,
 		["featureTable"] = {
 			{
 				["objects"] = {
-					"Arvensis", -- [1]
+					"Kazra", -- [1]
 					"Valdrakken", -- [2]
+					"Quest=Ein Aufruf zur Schlacht", -- [3]
 				},
-				["timestamp"] = 1689400594,
-				["description"] = "started moving",
-				["type"] = "MOV_1",
-			}, -- [1]
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Valdrakken", -- [2]
-				},
-				["timestamp"] = 1689400595,
-				["description"] = "stopped moving",
-				["type"] = "MOV_2",
-			}, -- [2]
-			{
-				["objects"] = {
-					"Therazal", -- [1]
-					"Valdrakken", -- [2]
-					"Quest=Die Große Schatzkammer", -- [3]
-				},
-				["timestamp"] = 1689400597,
-				["description"] = "quest npc",
 				["type"] = "NPC_1",
-			}, -- [3]
+				["time"] = 1689579838,
+				["description"] = "quest npc",
+			}, -- [1]
 		},
-		["startTimeStamp"] = 1689400592,
 	},
 }
 FRT_BtnData = {

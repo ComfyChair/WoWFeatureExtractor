@@ -16,18 +16,17 @@ class LuaReaderTest {
     LuaReader testReader;
     List<Session> expectedSessionList;
     List<SessionData> sessionData;
-    SessionData session_0 = new SessionData("Antigone", "TestServer", new Date(1688840368L *1000));
-    SessionData session_1 = new SessionData("Spice", "Sen'jin", new Date(1688891052L * 1000));
-    SessionData session_2 = new SessionData("Antigone","Sen'jin", new Date(1688840385L * 1000));
-    SessionData session_3 = new SessionData("Antigone", "Sen'jin", new Date(1688840200L * 1000));
+    SessionData session_0 = new SessionData("Ángua", "TestServer", new Date(1689580415L *1000));
+    SessionData session_1 = new SessionData("Spice", "Sen'jin", new Date(1689580493L * 1000));
+    SessionData session_2 = new SessionData("Arvensis","Sen'jin", new Date(1689580359L * 1000));
 
     @BeforeEach
     void setUp() {
         testReader = new LuaReader();
         expectedSessionList = new ArrayList<>();
         sessionData = new ArrayList<>();
-        Collections.addAll(sessionData, session_0, session_1, session_2, session_3);
-        for (int i = 0; i < 4; i++) {
+        Collections.addAll(sessionData, session_0, session_1, session_2);
+        for (int i = 0; i < 3; i++) {
             Session newSession = Session.create(i, shortSessionsFile.getName());
             expectedSessionList.add(newSession);
             SessionData thisSessionData = sessionData.get(i);

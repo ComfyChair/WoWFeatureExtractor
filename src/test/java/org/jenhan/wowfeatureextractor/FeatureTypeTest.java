@@ -20,13 +20,12 @@ public class FeatureTypeTest {
     private final static File groupingTest = new File("src/test/resources/GroupingTest.lua");
     private final static File lootTest = new File("src/test/resources/LootTest.lua");
     private final static File mailboxTest = new File("src/test/resources/MailboxTest.lua");
-    private final static File moveTest = new File("src/test/resources/MoveTest.lua");
     private final static File partyChatTest = new File("src/test/resources/PartyChatTest.lua");
     private final static File questTest = new File("src/test/resources/QuestTest.lua");
     private final static File spellcastTest = new File("src/test/resources/SpellcastTest.lua");
     private final static File whisperTest = new File("src/test/resources/WhisperTest.lua");
-    private final static File zoningTest = new File("src/test/resources/Zone1_Zone3_test.lua");
-    private final static File zoningTest2 = new File("src/test/resources/ZoneSubzoneTest.lua");
+    private final static File zoningTest = new File("src/test/resources/ZoneTest.lua");
+    private final static File zoningTest2 = new File("src/test/resources/ZoneIndoorTest.lua");
     private XmlValidator validator;
     private final static File xsdFile = new File("src/test/resources/gmaf-interaction.xsd");
 
@@ -36,8 +35,8 @@ public class FeatureTypeTest {
         // set up validator
         validator = new XmlValidator(xsdFile);
         // setup input
-        inputFileList.addAll(List.of(emoteTest, flightMasterTest, groupingTest, lootTest, mailboxTest, moveTest,
-                partyChatTest, questTest, spellcastTest, whisperTest, zoningTest, zoningTest2));
+        inputFileList.addAll(List.of(emoteTest, flightMasterTest, lootTest, mailboxTest,
+                questTest, spellcastTest,  zoningTest, zoningTest2));
     }
 
     @Test

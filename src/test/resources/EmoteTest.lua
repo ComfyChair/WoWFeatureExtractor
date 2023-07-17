@@ -2,22 +2,30 @@
 FRT_FeatureRecordings = {
 	["session_1"] = {
 		["characterName"] = "Arvensis",
-		["dateTime"] = "07:30, Samstag, 15 Juli 2023",
 		["serverName"] = "Sen'jin",
+		["dateTime"] = 1689579605,
 		["featureTable"] = {
 			{
 				["objects"] = {
-					"Bürgerin von Valdrakken", -- [1]
-					"Ihr winkt Bürgerin von Valdrakken zu.", -- [2]
+					"Wächter der Eidschuppen", -- [1]
+					"Ihr tanzt mit Wächter der Eidschuppen.", -- [2]
 					"Arvensis", -- [3]
-					"", -- [4]
 				},
-				["timestamp"] = 1689399001,
-				["description"] = "emote",
 				["type"] = "COMM_1",
+				["time"] = 1689579609,
+				["description"] = "emote",
 			}, -- [1]
+			{
+				["objects"] = {
+					"Wächter der Eidschuppen", -- [1]
+					"Ihr winkt Wächter der Eidschuppen zu.", -- [2]
+					"Arvensis", -- [3]
+				},
+				["type"] = "COMM_1",
+				["time"] = 1689579611,
+				["description"] = "emote",
+			}, -- [2]
 		},
-		["startTimeStamp"] = 1689398998,
 	},
 }
 FRT_BtnData = {

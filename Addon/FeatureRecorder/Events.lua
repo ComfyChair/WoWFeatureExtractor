@@ -1,4 +1,3 @@
----
 --- @module Events.lua module for the FeatureRecorder AddOn
 --- defines tracked events and links them to the type of interaction
 --- defines functions for retrieving additional information for each interaction type
@@ -55,8 +54,8 @@ FRT_ObjectRetrievalCalls = {
 }
 
 --- @class FRT_Event
-FRT_Event = {   type = interactionType.DUM_1.name,
-                description = interactionType.DUM_1,
+FRT_Event = {   type,
+                description,
                 objectCalls = {}
             }
 --- constructor
@@ -202,5 +201,6 @@ FRT_EventEnum = {
                 { FRT_ObjectRetrievalCalls.getUnitName, "player"}, -- sender is always the player
                 { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: target of the spell
                 { FRT_ObjectRetrievalCalls.getEventArgument, 4 } -- arg5: spellID
-            })
+            }),
+
 }

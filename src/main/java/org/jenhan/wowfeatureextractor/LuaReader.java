@@ -17,11 +17,11 @@ import java.util.logging.Logger;
     private final static String SESSION_FIELD_START = "[\"session_";
     private final static String CHAR_NAME = "characterName";
     private final static String SERVER_NAME = "serverName";
-    private final static String START_TIME = "startTimeStamp";
+    private final static String START_TIME = "dateTime";
     private final static String FEATURE_TABLE = "featureTable";
     private final static String DESCRIPTION = "description";
     private final static String TYPE = "type";
-    private final static String FEATURE_TIMESTAMP = "timestamp";
+    private final static String FEATURE_TIMESTAMP = "time";
     private final static String OBJECT_LIST = "objects";
     /** Lua table handling constants **/
     private final static String END_OF_SESSION  = "\t},";

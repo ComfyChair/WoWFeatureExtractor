@@ -1,66 +1,105 @@
 
 FRT_FeatureRecordings = {
 	["session_2"] = {
-		["characterName"] = "Antigone",
-		["dateTime"] = "20:19, Samstag, 8 Juli 2023",
+		["characterName"] = "Ángua",
 		["serverName"] = "TestServer",
-		["startTimeStamp"] = 1688840368,
+		["dateTime"] = 1689580415,
 		["featureTable"] = {
+			{
+				["objects"] = {
+					"Ángua", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["type"] = "MOV_1",
+				["time"] = 1689580417,
+				["description"] = "started moving",
+			}, -- [1]
+			{
+				["objects"] = {
+					"Ángua", -- [1]
+					"Valdrakken", -- [2]
+				},
+				["type"] = "MOV_2",
+				["time"] = 1689580420,
+				["description"] = "stopped moving",
+			}, -- [2]
 		},
 	},
-	["session_4"] = {
+	["session_3"] = {
 		["characterName"] = "Spice",
-		["dateTime"] = "10:23, Sonntag, 9 Juli 2023",
 		["serverName"] = "Sen'jin",
+		["dateTime"] = 1689580493,
 		["featureTable"] = {
 			{
 				["objects"] = {
 					"Spice", -- [1]
-					"Die Zeitlose Küste", -- [2]
+					"Blingtron 5000", -- [2]
 				},
-				["timestamp"] = 1688891053,
-				["description"] = "entered new subarea",
-				["type"] = "ZONE_2",
-			}, -- [1]
-		},
-		["startTimeStamp"] = 1688891052,
-	},
-	["session_3"] = {
-		["characterName"] = "Antigone",
-		["dateTime"] = "20:19, Samstag, 8 Juli 2023",
-		["serverName"] = "Sen'jin",
-		["startTimeStamp"] = 1688840385,
-		["featureTable"] = {
-			{
-				["objects"] = {
-					"Antigone", -- [1]
-					"Hochlanddrache", -- [2]
-				},
-				["timestamp"] = 1688840387,
-				["description"] = "sent spellcast",
 				["type"] = "SPELL_1",
+				["time"] = 1689580494,
+				["description"] = "sent spellcast",
 			}, -- [1]
 			{
 				["objects"] = {
-					"Antigone", -- [1]
-					"Ebenen von Ohn'ahra", -- [2]
+					"Spice", -- [1]
+					"Mondsturz", -- [2]
 				},
-				["timestamp"] = 1688840389,
-				["description"] = "started moving",
 				["type"] = "MOV_1",
+				["time"] = 1689580503,
+				["description"] = "started moving",
 			}, -- [2]
+			{
+				["objects"] = {
+					"Spice", -- [1]
+					"Mondsturz", -- [2]
+				},
+				["type"] = "MOV_2",
+				["time"] = 1689580504,
+				["description"] = "stopped moving",
+			}, -- [3]
+			{
+				["objects"] = {
+					"Spice", -- [1]
+					"Mondsturz", -- [2]
+				},
+				["type"] = "MOV_1",
+				["time"] = 1689580504,
+				["description"] = "started moving",
+			}, -- [4]
+			{
+				["objects"] = {
+					"Spice", -- [1]
+					"Mondsturz", -- [2]
+				},
+				["type"] = "MOV_2",
+				["time"] = 1689580507,
+				["description"] = "stopped moving",
+			}, -- [5]
+			{
+				["objects"] = {
+					"Spice", -- [1]
+					"Blingtron 5000", -- [2]
+					"Mondsturz", -- [3]
+					"Getriebefederteile", -- [4]
+					"Neuraler Stummschalter", -- [5]
+					"Verschlüsselte Nachricht", -- [6]
+					"Molotowcocktail des Dampfdruckkartells", -- [7]
+					"Draenischer Manatrank", -- [8]
+				},
+				["type"] = "OBJ_1",
+				["time"] = 1689580509,
+				["description"] = "looting",
+			}, -- [6]
 		},
 	},
 	["session_1"] = {
-		["characterName"] = "Antigone",
-		["dateTime"] = "20:16, Samstag, 8 Juli 2023",
+		["characterName"] = "Arvensis",
 		["serverName"] = "Sen'jin",
+		["dateTime"] = 1689580359,
 		["featureTable"] = {
 		},
-		["startTimeStamp"] = 1688840200,
 	},
 }
 FRT_BtnData = {
-	["minimapPos"] = 244.9537485717581,
-	["hide"] = false,
+	["minimapPos"] = 244.9164255495219,
 }

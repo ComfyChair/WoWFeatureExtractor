@@ -30,7 +30,7 @@ class SessionTest {
     @Test
     void readSessionInfo1() {
         setShortTestExpected();
-        int expectedSessions = 4;
+        int expectedSessions = 3;
         assertEquals(expectedSessions, sessionList.size());
         for (int i = 0; i < expectedSessions; i++) {
             assertEquals(expectedList.get(i), sessionList.get(i));
@@ -88,25 +88,20 @@ class SessionTest {
         session.setDateTime(date);
     }
     void setShortTestExpected(){
-        long unixTime = 1688840368L * 1000L;
+        long unixTime = 1689580415L * 1000L;
         Session expectedSession1 = Session.create(0, testFile.getName());
-        setContentProperties(expectedSession1,"Antigone", "TestServer", new Date(unixTime));
+        setContentProperties(expectedSession1,"Ángua", "TestServer", new Date(unixTime));
         expectedList.add(expectedSession1);
 
-        unixTime = 1688891052L * 1000L;
+        unixTime = 1689580493L * 1000L;
         Session expectedSession2 = Session.create(1, testFile.getName());
         setContentProperties(expectedSession2, "Spice", "Sen'jin", new Date(unixTime));
         expectedList.add(expectedSession2);
 
-        unixTime = 1688840385L * 1000L;
+        unixTime = 1689580359L * 1000L;
         Session expectedSession3 = Session.create(2, testFile.getName());
-        setContentProperties(expectedSession3, "Antigone", "Sen'jin", new Date(unixTime));
+        setContentProperties(expectedSession3, "Arvensis", "Sen'jin", new Date(unixTime));
         expectedList.add(expectedSession3);
-
-        unixTime = 1688840200L * 1000L;
-        Session expectedSession4 = Session.create(3, testFile.getName());
-        setContentProperties(expectedSession4, "Antigone", "Sen'jin", new Date(unixTime));
-        expectedList.add(expectedSession4);
     }
 
     @Test

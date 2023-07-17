@@ -2,83 +2,64 @@
 FRT_FeatureRecordings = {
 	["session_1"] = {
 		["characterName"] = "Arvensis",
-		["dateTime"] = "08:01, Samstag, 15 Juli 2023",
 		["serverName"] = "Sen'jin",
+		["dateTime"] = 1689579900,
 		["featureTable"] = {
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Thaldraszus", -- [2]
-				},
-				["timestamp"] = 1689400826,
-				["description"] = "started moving",
-				["type"] = "MOV_1",
-			}, -- [1]
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Thaldraszus", -- [2]
-				},
-				["timestamp"] = 1689400830,
-				["description"] = "stopped moving",
-				["type"] = "MOV_2",
-			}, -- [2]
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Hinterhalt", -- [2]
-				},
-				["timestamp"] = 1689400831,
-				["description"] = "sent spellcast",
-				["type"] = "SPELL_1",
-			}, -- [3]
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Hinterhalt", -- [2]
-				},
-				["timestamp"] = 1689400833,
-				["description"] = "sent spellcast",
-				["type"] = "SPELL_1",
-			}, -- [4]
-			{
-				["objects"] = {
-					"Arvensis", -- [1]
-					"Tötung", -- [2]
-				},
-				["timestamp"] = 1689400834,
-				["description"] = "sent spellcast",
-				["type"] = "SPELL_1",
-			}, -- [5]
 			{
 				["objects"] = {
 					"Arvensis", -- [1]
 					"Finsterer Stoß", -- [2]
 				},
-				["timestamp"] = 1689400835,
-				["description"] = "sent spellcast",
 				["type"] = "SPELL_1",
-			}, -- [6]
+				["time"] = 1689579901,
+				["description"] = "sent spellcast",
+			}, -- [1]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Finsterer Stoß", -- [2]
+				},
+				["type"] = "SPELL_1",
+				["time"] = 1689579902,
+				["description"] = "sent spellcast",
+			}, -- [2]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Schicksalswürfel", -- [2]
+				},
+				["type"] = "SPELL_1",
+				["time"] = 1689579903,
+				["description"] = "sent spellcast",
+			}, -- [3]
 			{
 				["objects"] = {
 					"Arvensis", -- [1]
 					"Pistolenschuss", -- [2]
 				},
-				["timestamp"] = 1689400836,
-				["description"] = "sent spellcast",
 				["type"] = "SPELL_1",
-			}, -- [7]
+				["time"] = 1689579904,
+				["description"] = "sent spellcast",
+			}, -- [4]
 			{
 				["objects"] = {
 					"Arvensis", -- [1]
-					"Tötung", -- [2]
+					"Zwischen die Augen", -- [2]
 				},
-				["timestamp"] = 1689400837,
-				["description"] = "sent spellcast",
 				["type"] = "SPELL_1",
-			}, -- [8]
+				["time"] = 1689579905,
+				["description"] = "sent spellcast",
+			}, -- [5]
+			{
+				["objects"] = {
+					"Arvensis", -- [1]
+					"Hinterhalt", -- [2]
+				},
+				["type"] = "SPELL_1",
+				["time"] = 1689579906,
+				["description"] = "sent spellcast",
+			}, -- [6]
 		},
-		["startTimeStamp"] = 1689400824,
 	},
 }
 FRT_BtnData = {
