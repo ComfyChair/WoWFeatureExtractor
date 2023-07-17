@@ -1,4 +1,3 @@
----
 --- World of Warcraft FeatureRecorder Addon
 ---
 --- to be used in combination with the WoWFeatureExtractor java application
@@ -13,7 +12,11 @@
 FRT_Addon = LibStub("AceAddon-3.0"):NewAddon("FeatureRecorder")
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
 local libDBicon = LibStub("LibDBIcon-1.0", true)
-
+--- colors
+local green = "ff27a620"
+local red = "ffd82e20"
+local grey = "ffc5c5c5"
+local white = "ffffffff"
 --- Minimap button icon locations
 local stopButton = "Interface\\AddOns\\FeatureRecorder\\icons\\miniButtonRecording.tga"
 local recordButton = "Interface\\AddOns\\FeatureRecorder\\icons\\miniButtonStopped.tga"
@@ -22,6 +25,22 @@ local recording = false
 --- Minimap button SavedVariables table
 -- for the libDBicon library
 FRT_BtnData = {}
+--- tooltip update function
+local function updateTooltip(tooltip)
+    tooltip:ClearLines()
+    tooltip:AddLine("Feature Recording Tool")
+    tooltip:AddLine(WrapTextInColorCode("left-click", grey)
+            ..WrapTextInColorCode(" starts / stops recording", white))
+    tooltip:AddLine(WrapTextInColorCode("right-click", grey)
+            ..WrapTextInColorCode(" clears memory", white))
+    tooltip:AddLine("------------------------------------")
+    tooltip:AddLine("sessions recorded: "..WrapTextInColorCode(FRT_sessionCount(), red))
+    if (recording) then
+        tooltip:AddLine(WrapTextInColorCode("   currently recording", red))
+    else
+        tooltip:AddLine(WrapTextInColorCode("   currently not recording", green))
+    end
+end
 
 --- Minimap button creation
 -- create data object using LibDataBroker library
@@ -39,17 +58,12 @@ local miniButton =  ldb:NewDataObject(
                         FRT_Addon:startRecording()
                     end
                 elseif buttonName == "RightButton" then
-                    -- TODO: maybe change this to modifier + rightClick -> less prone to accidental use
                     FRT_Addon:clearRecord()
                 end
             end,
             OnTooltipShow = function(tooltip)
                 if not tooltip or not tooltip.AddLine then return end
-                tooltip:AddLine("Feature Recording Tool")
-                tooltip:AddLine("left click starts / stops recording")
-                tooltip:AddLine("right click clears memory")
-                tooltip:AddLine("-------------------")
-                tooltip:AddLine("sessions recorded: "..FRT_sessionCount())
+                updateTooltip(tooltip)
             end,
         })
 
@@ -59,6 +73,7 @@ function FRT_Addon:startRecording()
     FRT_EventHook:startRecording()
     recording = true;
     miniButton.icon = stopButton
+    updateTooltip(libDBicon.tooltip)
 end
 
 --- Recording function: stop
@@ -66,13 +81,17 @@ function FRT_Addon:stopRecording()
     FRT_EventHook:stopRecording()
     recording = false;
     miniButton.icon = recordButton
+    updateTooltip(libDBicon.tooltip)
     print("FRT: Stopped recording events.") -- user feedback in in-game console
 end
 
 --- Recording function: clear recorded sessions
 function FRT_Addon:clearRecord()
-    FRT_Addon:stopRecording()
+    if recording then
+        FRT_Addon:stopRecording()
+    end
     FRT_FeatureRecordings = {}
+    updateTooltip(libDBicon.tooltip)
     print("FRT: Cleared recorded events.") -- user feedback in in-game console
 end
 
@@ -103,8 +122,3 @@ function FRT_Addon:OnInitialize()
     recording = false
     libDBicon:Register("FRT_Addon", miniButton, FRT_BtnData)
 end
-
-
-
-
-

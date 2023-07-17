@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,8 +21,11 @@ class DateFormattedTest {
     @BeforeEach
     void setUp() {
         testCalendar = new GregorianCalendar();
-        // TODO: randomize test date?
-        testFormatted = new DateFormatted(testCalendar.getTime());
+        Random rnd = new Random();
+        long now = Instant.now().getEpochSecond() * 1000;
+        Date testDate = new Date(rnd.nextLong(0, now));
+        testFormatted = new DateFormatted(testDate);
+        testCalendar.setTime(testDate);
 
         anotherDayCalendar = new GregorianCalendar(testCalendar.get(Calendar.YEAR),
                 testCalendar.get(Calendar.MONTH), (testCalendar.get(Calendar.DAY_OF_MONTH) + 1) % 28 );

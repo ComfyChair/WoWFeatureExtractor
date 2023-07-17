@@ -202,5 +202,4 @@ FRT_EventEnum = {
                 { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: target of the spell
                 { FRT_ObjectRetrievalCalls.getEventArgument, 4 } -- arg5: spellID
             }),
-
 }

@@ -72,5 +72,3 @@ function FRT_Feature:new(eventName, timestamp, ...)
     return self
 end
 --- @end class FRT_Feature
-
-

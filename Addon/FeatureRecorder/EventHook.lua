@@ -1,10 +1,8 @@
----
 --- @module EventHook.lua Event Hook module for the FeatureRecorder AddOn
 --- manages registering / unregestering of events,
 ---    thereby supports starting and stopping the recording
 --- defines the EventHandler for handling incoming events
 --- @author Jennifer Hanna
-
 
 --- @description function receives events from the WoW client and delivers them to the SessionManager
 --- @param _ self; not used
