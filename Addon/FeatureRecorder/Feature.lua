@@ -39,7 +39,7 @@ end
 --- @field interactionType string interaction type as event name
 --- @field payload string payload of the event
 FRT_Feature = {
-    timestamp = 123,
+    time = 123,
     type = "dummyType",
     description = "dummy description",
     objects = {}
@@ -60,7 +60,7 @@ function FRT_Feature:new(eventName, timestamp, ...)
     if DLAPI then DLAPI.DebugLog("FeatureRecordingTool", "Features: Creating new feature: %s", eventName) end
     local eventData = FRT_EventEnum[eventName]
     if DLAPI then DLAPI.DebugLog("FeatureRecordingTool", "Features: EventEnumType: %s", eventData.type) end
-    self.timestamp = timestamp
+    self.time = timestamp
     self.type = eventData.type
     self.description = eventData.description
     self.objects = {}

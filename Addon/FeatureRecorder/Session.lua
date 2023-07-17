@@ -14,14 +14,18 @@
 ---             featureTable    - table of recorded features
 --- functions:  new()           - create new instance
 ---             addFeature()    - adds a feature to the featureTable
-FRT_Session = {}
+FRT_Session = {
+    dateTime,
+    characterName,
+    serverName,
+    featureTable
+}
 FRT_Session.__index = FRT_Session
 
 --- FRT_Session constructor
 function FRT_Session:new()
     local self = setmetatable({}, FRT_Session)
-    self.dateTime = currentTime()
-    self.startTimeStamp = GetServerTime()
+    self.dateTime = GetServerTime()
     self.characterName = UnitName("player")
     self.serverName = GetRealmName()
     self.featureTable = {}
