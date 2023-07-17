@@ -7,8 +7,8 @@
 local function objectFromArgument(eventName, eventPayload, argument)
     local result = eventPayload[argument]
     if DLAPI then DLAPI.DebugLog("FeatureRecordingTool", "Features: Retrieving object from payload: %s", result) end
-    -- special case: spell cast
-    -- => mixed object retrieval: additional api call to convert spell id to spell name
+    -- special case: spell cast => mixed object retrieval
+    -- additional api call converts spell id to spell name
     if string.find(eventName, "SPELL") then
         result, _, _, _, _, _, _, _ = GetSpellInfo(result)
     end

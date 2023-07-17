@@ -109,79 +109,132 @@ FRT_Event.__index = FRT_Event
 FRT_EventEnum = {
     --- Movements:
     -- objects are player character and zone, collected by Blizzard API functions
-    ["PLAYER_STARTED_MOVING"] = FRT_Event:new(interactionType.MOV_1.name, interactionType.MOV_1.descr,
-                                 { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
-                                   { FRT_ObjectRetrievalCalls.getZoneText} }) ,
-    ["PLAYER_STOPPED_MOVING"] = FRT_Event:new(interactionType.MOV_2.name,interactionType.MOV_2.descr,
-                                 { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
-                                   { FRT_ObjectRetrievalCalls.getZoneText} }),
+    ["PLAYER_STARTED_MOVING"] = FRT_Event:new(
+            interactionType.MOV_1.name,
+            interactionType.MOV_1.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                { FRT_ObjectRetrievalCalls.getZoneText}
+            }) ,
+    ["PLAYER_STOPPED_MOVING"] = FRT_Event:new(
+            interactionType.MOV_2.name,
+            interactionType.MOV_2.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                { FRT_ObjectRetrievalCalls.getZoneText}
+            }),
     --- Zone change:
     -- objects are player character and zone, collected by Blizzard API functions
-    ["ZONE_CHANGED_NEW_AREA"] = FRT_Event:new(interactionType.ZONE_1.name,interactionType.ZONE_1.descr,
-                                 { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
-                                   { FRT_ObjectRetrievalCalls.getZoneText} }),
-    ["ZONE_CHANGED"] = FRT_Event:new(interactionType.ZONE_2.name, interactionType.ZONE_2.descr,
-                        { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
-                          { FRT_ObjectRetrievalCalls.getSubZoneText} }),
-    ["ZONE_CHANGED_INDOORS"] = FRT_Event:new(interactionType.ZONE_3.name, interactionType.ZONE_3.descr,
-                                { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
-                                  { FRT_ObjectRetrievalCalls.getSubZoneText} }),
+    ["ZONE_CHANGED_NEW_AREA"] = FRT_Event:new(
+            interactionType.ZONE_1.name,
+            interactionType.ZONE_1.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                { FRT_ObjectRetrievalCalls.getZoneText}
+            }),
+    ["ZONE_CHANGED"] = FRT_Event:new(
+            interactionType.ZONE_2.name,
+            interactionType.ZONE_2.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                { FRT_ObjectRetrievalCalls.getSubZoneText}
+            }),
+    ["ZONE_CHANGED_INDOORS"] = FRT_Event:new(
+            interactionType.ZONE_3.name,
+            interactionType.ZONE_3.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                { FRT_ObjectRetrievalCalls.getSubZoneText}
+            }),
 
     --- Object / NPC interactions:
     -- objects are 1. object/npc name, 2. zone, 3. optional (loot items?, quest id)
-    ["LOOT_OPENED"] = FRT_Event:new(interactionType.OBJ_1.name, interactionType.OBJ_1.descr, -- LOOT_READY fires twice, use LOOT_OPENED instead
-                      { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
-                                { FRT_ObjectRetrievalCalls.getUnitName, "target"},
-                                { FRT_ObjectRetrievalCalls.getZoneText},
-                                {FRT_ObjectRetrievalCalls.getLootItemNames }}),
-    ["MAIL_SHOW"] = FRT_Event:new(interactionType.OBJ_2.name, interactionType.OBJ_2.descr,
-                     { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
-                       { FRT_ObjectRetrievalCalls.getZoneText} }), -- mailbox: add mail headers/senders in the future?
-    ["QUEST_DETAIL"] = FRT_Event:new(interactionType.NPC_1.name, interactionType.NPC_1.descr,
-                         { { FRT_ObjectRetrievalCalls.getUnitName, "npc" },
-                           { FRT_ObjectRetrievalCalls.getZoneText },
-                           { FRT_ObjectRetrievalCalls.getQuestName } }),
-    ["TAXIMAP_OPENED"] = FRT_Event:new(interactionType.NPC_2.name, interactionType.NPC_2.descr,
-                           { { FRT_ObjectRetrievalCalls.getUnitName, "npc" },
-                            { FRT_ObjectRetrievalCalls.getTaxiMapName } }), -- change to flight master id (maybe more significant)?
+    ["LOOT_OPENED"] = FRT_Event:new(
+            interactionType.OBJ_1.name,
+            interactionType.OBJ_1.descr, -- LOOT_READY fires twice, use LOOT_OPENED instead
+            { { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                { FRT_ObjectRetrievalCalls.getUnitName, "target"},
+                { FRT_ObjectRetrievalCalls.getZoneText},
+                {FRT_ObjectRetrievalCalls.getLootItemNames }
+            }),
+    ["MAIL_SHOW"] = FRT_Event:new(
+            interactionType.OBJ_2.name,
+            interactionType.OBJ_2.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "player"},
+                { FRT_ObjectRetrievalCalls.getZoneText}
+            }), -- mailbox: add mail headers/senders in the future?
+    ["QUEST_DETAIL"] = FRT_Event:new(
+            interactionType.NPC_1.name,
+            interactionType.NPC_1.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "npc" },
+                { FRT_ObjectRetrievalCalls.getZoneText },
+                { FRT_ObjectRetrievalCalls.getQuestName }
+            }),
+    ["TAXIMAP_OPENED"] = FRT_Event:new(
+            interactionType.NPC_2.name,
+            interactionType.NPC_2.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "npc" },
+                { FRT_ObjectRetrievalCalls.getTaxiMapName }
+            }), -- change to flight master id (maybe more significant)?
 
     --- Player character interactions
     -- most objects in this category get added upon feature creation
-    ["CHAT_MSG_TEXT_EMOTE"] = FRT_Event:new(interactionType.COMM_1.name, interactionType.COMM_1.descr,
-                                { { FRT_ObjectRetrievalCalls.getUnitName, "target" }, -- target = recipient
-                                  { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
-                                  { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
-                                }),
+    ["CHAT_MSG_TEXT_EMOTE"] = FRT_Event:new(
+            interactionType.COMM_1.name,
+            interactionType.COMM_1.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "target" }, -- target = recipient
+                { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
+                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
+            }),
     -- whisper sent is no longer triggering CHAT_MSG_WHISPER, so we have to use a separate event
-    ["CHAT_MSG_WHISPER_INFORM"] = FRT_Event:new(interactionType.COMM_2.name, interactionType.COMM_2.descr,
+    ["CHAT_MSG_WHISPER_INFORM"] = FRT_Event:new(
+            interactionType.COMM_2.name,
+            interactionType.COMM_2.descr,
             {
                 { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
                 { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: recipient
             }),
     -- whisper received
-    ["CHAT_MSG_WHISPER"] = FRT_Event:new(interactionType.COMM_3.name, interactionType.COMM_3.descr,
-                             {
-                               { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
-                               { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
-                             }),
-    ["CHAT_MSG_PARTY"] = FRT_Event:new(interactionType.COMM_4.name, interactionType.COMM_4.descr,
+    ["CHAT_MSG_WHISPER"] = FRT_Event:new(
+            interactionType.COMM_3.name,
+            interactionType.COMM_3.descr,
             {
-                         { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- agr1: message
-                          { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
-                          }),
-    ["CHAT_MSG_PARTY_LEADER"] = FRT_Event:new(interactionType.COMM_4.name, interactionType.COMM_4.descr,
+                { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- arg1: message
+                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
+            }),
+    ["CHAT_MSG_PARTY"] = FRT_Event:new(
+            interactionType.COMM_4.name,
+            interactionType.COMM_4.descr,
             {
                 { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- agr1: message
                 { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
             }),
-    ["GROUP_ROSTER_UPDATE"] = FRT_Event:new(interactionType.GRP_1.name, interactionType.GRP_1.descr,
-                         {{FRT_ObjectRetrievalCalls.getGroupMembers}} ),
+    ["CHAT_MSG_PARTY_LEADER"] = FRT_Event:new(
+            interactionType.COMM_4.name,
+            interactionType.COMM_4.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getEventArgument, 1 }, -- agr1: message
+                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: sender
+            }),
+    ["GROUP_ROSTER_UPDATE"] = FRT_Event:new(
+            interactionType.GRP_1.name,
+            interactionType.GRP_1.descr,
+            {
+                {FRT_ObjectRetrievalCalls.getGroupMembers}
+            } ),
     -- spellcast: can have all sorts of targets
-    ["UNIT_SPELLCAST_SENT"] = FRT_Event:new(interactionType.SPELL_1.name, interactionType.SPELL_1.descr,
-            {{ FRT_ObjectRetrievalCalls.getUnitName, "player"}, -- sender is always the player
-                        { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: target of the spell
-                        { FRT_ObjectRetrievalCalls.getEventArgument, 4 } -- arg5: spellID
-                        })
+    ["UNIT_SPELLCAST_SENT"] = FRT_Event:new(
+            interactionType.SPELL_1.name,
+            interactionType.SPELL_1.descr,
+            {
+                { FRT_ObjectRetrievalCalls.getUnitName, "player"}, -- sender is always the player
+                { FRT_ObjectRetrievalCalls.getEventArgument, 2 }, -- arg2: target of the spell
+                { FRT_ObjectRetrievalCalls.getEventArgument, 4 } -- arg5: spellID
+            })
 
 }
 
