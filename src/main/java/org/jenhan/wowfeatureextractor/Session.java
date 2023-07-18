@@ -1,5 +1,8 @@
 package org.jenhan.wowfeatureextractor;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -49,8 +52,23 @@ public class Session implements LuaToXML{
     }
 
     /** converts the session content to a GMAF-compatible xml **/
+    @Override
     public boolean exportToXML(File outputFile) {
-        return LuaToXML.super.exportToXML(this, outputFile);
+        System.out.println("Output file: " + outputFile);
+        LuaToXML.Collection collection = new Collection();
+        collection.setSession(this);
+        boolean success = false;
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(Collection.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.marshal(collection, outputFile);
+            success = true;
+        } catch (JAXBException e) {
+            MainControl.handleError("Error while exporting session data to XML\n", e);
+        }
+        return success;
     }
 
    /** @return the character name property **/

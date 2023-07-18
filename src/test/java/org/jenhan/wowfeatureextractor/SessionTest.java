@@ -15,6 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionTest {
+    String DECLARATION = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
     String testFilePath = "src/test/resources/ShortSessionsTest.lua";
     File testFile = new File(testFilePath);
     List<Session> sessionList;
@@ -51,7 +52,7 @@ class SessionTest {
         // check header
         BufferedReader reader = new BufferedReader(new FileReader(testOutput));
         String headerLine = reader.readLine().trim();
-        assertEquals(LuaToXML.DECLARATION, headerLine.toLowerCase());
+        assertEquals(DECLARATION, headerLine.toLowerCase());
         String collectionLine = reader.readLine().trim();
         assertEquals("<gmaf-collection>", collectionLine);
         String dataLine = reader.readLine().trim();
