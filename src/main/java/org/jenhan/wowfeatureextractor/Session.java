@@ -55,7 +55,7 @@ public class Session implements LuaToXML{
     @Override
     public boolean exportToXML(File outputFile) {
         System.out.println("Output file: " + outputFile);
-        LuaToXML.Collection collection = new Collection();
+        Collection collection = new Collection();
         collection.setSession(this);
         boolean success = false;
         JAXBContext context;
@@ -96,16 +96,16 @@ public class Session implements LuaToXML{
         return startTime;
     }
 
-    /** @return the formatted date string, necessary for jaxb bindings **/
-    @XmlElement(name = LuaToXML.DATE)
-    public String getDate() {
-        return date.get().toString();
-    }
-
     /** @return the file name string, necessary for jaxb bindings **/
     @XmlElement(name = LuaToXML.FILE)
     public String getFileName() {
         return fileName;
+    }
+
+    /** @return the formatted date string, necessary for jaxb bindings **/
+    @XmlElement(name = LuaToXML.DATE)
+    public String getDate() {
+        return date.get().toString();
     }
 
     /** @return the feature list, necessary for jaxb bindings **/
