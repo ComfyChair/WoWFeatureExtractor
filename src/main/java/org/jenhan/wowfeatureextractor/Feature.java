@@ -73,7 +73,7 @@ class Feature {
                 '}';
     }
 
-    /** Inner class for objects that were detected in a feature **/
+    /** Inner class for "relevant objects" of a feature **/
     @XmlRootElement(name = LuaToXML.OBJECT)
     @XmlType(propOrder = {LuaToXML.ID, LuaToXML.TERM, LuaToXML.PROBABILITY})
     static class FeatureObject {

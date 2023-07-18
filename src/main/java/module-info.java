@@ -1,5 +1,5 @@
 /** Module information  **/
-module org.jenhan.wowfeatureextractiontool {
+module org.jenhan.wowfeatureextractor {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.base;

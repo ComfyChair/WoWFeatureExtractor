@@ -1,12 +1,13 @@
 package org.jenhan.wowfeatureextractor;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ObservableIntegerValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -22,21 +23,14 @@ public class Gui extends Application {
     private static Stage primaryStage;
     private static boolean isActive;
 
-    /** entry point
-     * @param args standard arguments, not considered **/
-    public static void main(String[] args) {
-        Thread.setDefaultUncaughtExceptionHandler(Gui::showError);
-        launch();
-    }
-
     /** starts the graphical user interface **/
     @Override
     public void start(Stage primaryStage) throws IOException {
         Gui.primaryStage = primaryStage;
         isActive = true;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/views/main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 360, 240);
-        primaryStage.setTitle("WoW Feature Extraction Tool");
+        primaryStage.setTitle("WoW Feature Extractor");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -96,7 +90,7 @@ public class Gui extends Application {
      * dialog content created from session-selection-view.fxml
      * @return  a list of the selected session ids, empty List if canceled **/
     static List<Integer> promptForSession() {
-        FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("/views/session-selection-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(SessionSelectionController.class.getResource("session-selection-view.fxml"));
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(primaryStage);
         dialog.setTitle("Session selection");
@@ -128,25 +122,6 @@ public class Gui extends Application {
                     .toList();
         }
         return result;
-    }
-
-    /** reroutes uncaught exceptions to Gui, if loaded **/
-    private static void showError(Thread thread, Throwable e) {
-        System.err.println("*** Uncaught exception handler ***");
-        if (Platform.isFxApplicationThread()) {
-            System.out.println("Gui is running, rerouting error message");
-            showErrorDialog(e);
-            e.printStackTrace();
-        } else {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /** shows exception dialog and prints stacktrace for uncaught exceptions **/
-    private static void showErrorDialog(Throwable e) {
-        feedbackDialog(Alert.AlertType.ERROR, e.getMessage(), "Uncaught Exception");
-        e.printStackTrace();
     }
 
     /** shows user feedback dialog **/
