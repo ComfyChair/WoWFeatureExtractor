@@ -74,7 +74,7 @@ public class MainControl {
   /** exports the .lua file to .xml format; called from GUI on button click **/
   @FXML
   void exportToXML() {
-      if (!hasInputFile()) {
+    if (!hasInputFile()) {
       promptForInputFile();
     }
     if (hasInputFile()) {
@@ -165,21 +165,14 @@ public class MainControl {
             "Addon has been installed.\n\n" + feedback, "");
   }
 
-  /**
-   * initiates user prompt for the input file location
-   * @return true if a valid file was selected
-   **/
-  private boolean promptForInputFile() {
+  /** initiates user prompt for the input file location **/
+  private void promptForInputFile() {
     Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
     inputFile = Gui.promptForFile("Please select the input file", prefs.get(INPUT_FILE_PREF, null));
-    if (inputFile == null) {
-      return false; // user canceled
-    }
-    if (!inputFile.canRead()) {
+    if (inputFile!= null && !inputFile.canRead()) {
       handleUserFeedback(Alert.AlertType.ERROR, "Can not read file:\n" + inputFile.getAbsolutePath(), "");
-      return false;
+      inputFile = null;
     }
-    return true;
   }
 
   /**
@@ -188,10 +181,12 @@ public class MainControl {
    * @return list of selected session IDs
    **/
   private List<Integer> getSessionList(SessionManager sessionManager) {
-    sessionList = FXCollections.observableList(sessionManager.getSessionList(inputFile));
+    sessionList = FXCollections.observableList(sessionManager
+            .getSessionList(inputFile));
     List<Integer> sessionIDs = new ArrayList<>();
     if (sessionList.isEmpty()) { // no session recorded
-      handleUserFeedback(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
+      handleUserFeedback(Alert.AlertType.ERROR,
+              "There was no recording found in the input file", "");
     } else {
       if (sessionList.size() == 1) { // only one session
         sessionIDs.add(0);

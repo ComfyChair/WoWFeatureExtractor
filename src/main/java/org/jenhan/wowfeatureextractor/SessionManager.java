@@ -10,11 +10,11 @@ class SessionManager {
     private static SessionManager instance;
     private List<Session> sessionList;
 
-    /** private constructor **/
+    /** Singletons keep their constructor private **/
     private SessionManager() {
     }
 
-    /** @return the one and only instance **/
+    /** @return the Singleton instance **/
     static SessionManager getInstance() {
         // "lazy" initialization: delay initialization until needed
         if (instance == null) {
@@ -31,28 +31,26 @@ class SessionManager {
         return sessionList;
     }
 
-    /** initiates export of the selected session to xml
+    /** initiates export of the selected session(s) to xml
      * @param outFile outputFile
-     * @param sessionIDs List if session ids = position in internal session list
-     * @return List of converted files **/
+     * @param sessionIDs List of session ids = position in internal session list
+     * @return List of output files **/
     List<File> exportToXML(File outFile, List<Integer> sessionIDs) {
         List<File> outList = new ArrayList<>();
         if (sessionIDs.size() == 1) { // single session, no additional identifier for output
             exportSingleSession(sessionIDs.get(0), outFile, outList);
         } else { // multiple session, append session id to file name
-            Path outPath = outFile.getParentFile().toPath();
-            String outName = outFile.getName();
-            String outTruncName = outName.substring(0, outName.length()-4) + "_";
+            String outPath = outFile.toPath().toString();
             for (Integer sessionID : sessionIDs
             ) {
-                String newOutName = outTruncName + sessionID + ".xml";
-                File thisOutFile  = outPath.resolve(new File(newOutName).toPath()).toFile();
+                File thisOutFile  = Path.of(outPath.replace(".xml", "_" + sessionID + ".xml")).toFile();
                 exportSingleSession(sessionID, thisOutFile, outList);
             }
         }
         return outList;
     }
 
+    /** calls exportToXML() on the specified session and adds the output file to a List **/
     private void exportSingleSession(int sessionID, File outFile, List<File> outList) {
         boolean success = sessionList.get(sessionID).exportToXML(outFile);
         if (success){
