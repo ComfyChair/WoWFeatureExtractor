@@ -22,7 +22,6 @@ public class MainControl {
   private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   /** constants **/
   private static final String ADDON_NAME = "FeatureRecorder";
-  private static final String ADDON_ZIP = "org/jenhan/wowfeatureextractor/FeatureRecorder.zip";
   private static final String ADDON_DIR_PREF = "addon_dir_pref";
   private static final String SAVED_VAR_DIR_PREF = "saved_vars_dir_pref";
   private static final String INPUT_FILE_PREF = "input_file_pref";
@@ -325,11 +324,9 @@ public class MainControl {
   /** @return input stream of the addon zip file  **/
   private static InputStream getZipAsInputStream() {
     InputStream inputStream = MainControl.class
-            .getClassLoader()
-            .getResourceAsStream(ADDON_ZIP);
-
+            .getResourceAsStream("FeatureRecorder.zip");
     if (inputStream == null) {
-      handleUserFeedback(Alert.AlertType.ERROR, ADDON_ZIP + " was not found", "");
+      handleUserFeedback(Alert.AlertType.ERROR, "Addon files could not be located", "");
     }
     return inputStream;
   }

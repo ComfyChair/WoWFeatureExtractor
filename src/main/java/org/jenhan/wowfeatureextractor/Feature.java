@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /** Data structure for writing feature data to xml **/
 @XmlRootElement(name = LuaToXML.INTERACTION)
 @XmlType(propOrder = {"beginTime", LuaToXML.TYPE, LuaToXML.DESCRIPTION, "objectList"})
 class Feature {
-    private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     static final String DEFAULT_TYPE = "UNKNOWN";
     static final String DEFAULT_DESCR = "no description";
     private final List<FeatureObject> objectList = new ArrayList<>();
