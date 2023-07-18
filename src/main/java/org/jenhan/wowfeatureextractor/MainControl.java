@@ -16,7 +16,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Main controller class
+ * Main controller class, controls behaviour of main-view.fxml
+ * FXML-annotated methods get called upon button press
  **/
 public class MainControl {
     private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -34,6 +35,182 @@ public class MainControl {
     private File addonDir;
     private File inputFile;
     private File outputFile;
+
+    /**
+     * unzips the addon files into the specified folder
+     **/
+    @FXML
+    void installAddon() {
+        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
+        String separator = FileSystems.getDefault().getSeparator();
+        installFolderExpected = "Interface" + separator + "AddOns";
+        log.info("Expected installation folder: " + installFolderExpected);
+        File destinationDir = Gui.promptForAddonInstallDir(prefs.get(ADDON_DIR_PREF, null));
+        if (isValidInstallDirectory(destinationDir)) {
+            this.addonDir = destinationDir;
+            prefs.put(ADDON_DIR_PREF, addonDir.getPath());
+            unzipAddon(destinationDir);
+            locateSavedVariablesDir();
+        } // else: canceled or no writing access; keep silent
+    }
+
+    /**
+     * receives input file path from GUI (called on button click)
+     **/
+    @FXML
+    void selectInput() {
+        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
+        File selectedFile = Gui.promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)",
+                prefs.get(INPUT_FILE_PREF, null));
+        if (selectedFile != null) {
+            if (selectedFile.exists()) {
+                if (selectedFile.canRead()) {
+                    this.inputFile = selectedFile;
+                    //TODO: check why input file prefs are not stored correctly
+                    prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
+                } else {
+                    handleUserFeedback(Alert.AlertType.ERROR,
+                            "Could not read the file: " + selectedFile.getPath(), "Error");
+                }
+            }
+        }
+    }
+
+    /**
+     * exports the .lua file to .xml format; called from GUI on button click
+     **/
+    @FXML
+    void exportToXML() {
+        boolean hasInputFile = inputFile != null;
+        if (hasInputFile && !inputFile.exists()){ // fresh installation, no SavedVariables file yet
+            handleUserFeedback(Alert.AlertType.WARNING,
+                    "No SavedVariables file found, please select input manually.", "");
+        }
+        if (!hasInputFile) { // prompt once for input
+            hasInputFile = promptForInputFile();
+        }
+        if (hasInputFile && inputFile.exists()) {
+            boolean hasOutputDirectory = showSaveDialog();
+            if (hasOutputDirectory) {
+                SessionManager sessionManager = SessionManager.getInstance();
+                List<Integer> sessionIDs = getSessionList(sessionManager);
+                if (sessionIDs.size() > 0) {
+                    List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
+                    handleUserFeedback(Alert.AlertType.INFORMATION,
+                            "Exported  " + outList.size() + " xml file(s):\n"
+                                    + outList, "Session(s) converted");
+                }
+            } // else: user canceled
+        } // else: user canceled
+    }
+
+    /**
+     * checks for writing access to a directory or canceled selection
+     *
+     * @return true for a valid destination directory
+     **/
+    private static boolean isValidDirectory(File destinationDir) {
+        if (destinationDir == null) return false;
+        log.fine("Selected dir: " + destinationDir);
+        // check for writing privileges
+        if (!destinationDir.canWrite()) {
+            handleUserFeedback(Alert.AlertType.ERROR,
+                    "No writing access to this directory, choose another one", "Access Error");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * checks if a selected directory is valid for addon installation
+     *
+     * @return true for a valid destination directory
+     **/
+    private boolean isValidInstallDirectory(File destinationDir) {
+        boolean isValid = false;
+        if (isValidDirectory(destinationDir)) {
+            isValid = true;
+            log.info("Selected folder: " + destinationDir.getPath());
+            if (!destinationDir.getPath().endsWith(installFolderExpected)) { // check for expected directory name
+                isValid = confirmationDialog("Are you sure you want to install in this directory?\n" +
+                        "  It does not appear to be a WoW Addon folder:\n  " + destinationDir);
+                if (!isValid) {
+                    log.info("Aborted installing addon");
+                }
+            }
+        }
+        return isValid;
+    }
+
+    /** deducts the SavedVariables directory from the installation path **/
+    private void locateSavedVariablesDir() {
+        // from Addons directory, move up to "_retail_" directory
+        Path addonPath = addonDir.toPath().toAbsolutePath();
+        String feedback = "";
+        if (addonPath.getNameCount() < 2) { // can we move two directories up?
+            feedback = "Can't locate your SavedVariables folder, please select the input file manually.";
+
+        } else {
+            Path accountPath = getWTFAccountDir(addonPath);
+            if (accountPath != null) {
+                // Account-wide Folders are in UPPERCASE -> look for them
+                List<Path> accountsFound = detectAccountFolders(accountPath);
+                if (accountsFound.size() == 1) { // one account on this installation
+                    Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
+                    feedback = "SavedVariables directory has been located.";
+                    Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
+                    prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
+                    String inputFilePath = savedVarsDir + File.separator + ADDON_NAME + ".lua";
+                    inputFile = new File(inputFilePath);
+                    prefs.put(INPUT_FILE_PREF, inputFilePath);
+                } else {
+                    feedback = "You seem to have multiple WoW accounts, please select the input file manually.";
+                }
+            }
+        }
+        handleUserFeedback(Alert.AlertType.INFORMATION,
+                "Addon has been installed.\n\n" + feedback, "");
+    }
+
+    /**
+     * initiates user prompt for the input file location
+     *
+     * @return true if a valid file was selected
+     **/
+    private boolean promptForInputFile() {
+        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
+        inputFile = Gui.promptForFile("Please select the input file", prefs.get(INPUT_FILE_PREF, null));
+        if (inputFile == null) {
+            return false; // user canceled
+        }
+        if (!inputFile.canRead()) {
+            handleUserFeedback(Alert.AlertType.ERROR, "Can not read file:\n" + inputFile.getAbsolutePath(), "");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * retrieves session list from session manager, prompts for session selection if more than one session is returned
+     *
+     * @param sessionManager the SessionManager
+     * @return list of selected session IDs
+     **/
+    private List<Integer> getSessionList(SessionManager sessionManager) {
+        sessionList = FXCollections.observableList(sessionManager.getSessionList(inputFile));
+        List<Integer> sessionIDs = new ArrayList<>();
+        if (sessionList.isEmpty()) { // no session recorded
+            handleUserFeedback(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
+        } else {
+            if (sessionList.size() == 1) { // only one session
+                sessionIDs.add(0);
+            }
+            if (sessionList.size() > 1) { // if more than 1 session, session selection is required
+                sessionIDs.addAll(Gui.promptForSession());
+            }
+        }
+        return sessionIDs;
+    }
 
     /** unzips addon files to installation directory **/
     private static void unzipAddon(File destinationDir) {
@@ -99,189 +276,6 @@ public class MainControl {
         return accountsFound;
     }
 
-    static boolean confirmationDialog(String message) {
-        if (Gui.getPrimaryStage() != null) {
-            return Gui.confirmationDialog(message);
-        } else {
-            return true; // no confirmation request without GUI, as in test cases
-        }
-    }
-
-    /**
-     * unzips the addon files into the specified folder
-     **/
-    @FXML
-    void installAddon() {
-        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-        String separator = FileSystems.getDefault().getSeparator();
-        installFolderExpected = "Interface" + separator + "AddOns";
-        log.info("Expected installation folder: " + installFolderExpected);
-        File destinationDir = Gui.promptForAddonInstallDir(prefs.get(ADDON_DIR_PREF, null));
-        if (isValidInstallDirectory(destinationDir)) {
-            this.addonDir = destinationDir;
-            prefs.put(ADDON_DIR_PREF, addonDir.getPath());
-            unzipAddon(destinationDir);
-            locateSavedVariablesDir();
-        } // else: canceled or no writing access; keep silent
-    }
-
-    /**
-     * checks if a selected directory is valid for addon installation
-     *
-     * @return true for a valid destination directory
-     **/
-    private boolean isValidInstallDirectory(File destinationDir) {
-        boolean isValid = false;
-        if (isValidDirectory(destinationDir)) {
-            isValid = true;
-            log.info("Selected folder: " + destinationDir.getPath());
-            if (!destinationDir.getPath().endsWith(installFolderExpected)) { // check for expected directory name
-                isValid = confirmationDialog("Are you sure you want to install in this directory?\n" +
-                        "  It does not appear to be a WoW Addon folder:\n  " + destinationDir);
-                if (!isValid) {
-                    log.info("Aborted installing addon");
-                }
-            }
-        }
-        return isValid;
-    }
-
-    /**
-     * checks for writing access to a directory or canceled selection
-     *
-     * @return true for a valid destination directory
-     **/
-    private static boolean isValidDirectory(File destinationDir) {
-        if (destinationDir == null) return false;
-        log.fine("Selected dir: " + destinationDir);
-        // check for writing privileges
-        if (!destinationDir.canWrite()) {
-            handleUserFeedback(Alert.AlertType.ERROR,
-                    "No writing access to this directory, choose another one", "Access Error");
-            return false;
-        }
-        return true;
-    }
-
-    /** deducts the SavedVariables directory from the installation path **/
-    private void locateSavedVariablesDir() {
-        // from Addons directory, move up to "_retail_" directory
-        Path addonPath = addonDir.toPath().toAbsolutePath();
-        String feedback = "";
-        if (addonPath.getNameCount() < 2) { // can we move two directories up?
-            feedback = "Can't locate your SavedVariables folder, please select the input file manually.";
-
-        } else {
-            Path accountPath = getWTFAccountDir(addonPath);
-            if (accountPath != null) {
-                // Account-wide Folders are in UPPERCASE -> look for them
-                List<Path> accountsFound = detectAccountFolders(accountPath);
-                if (accountsFound.size() == 1) { // one account on this installation
-                    Path savedVarsDir = accountsFound.get(0).resolve("SavedVariables");
-                    feedback = "SavedVariables directory has been located.";
-                    Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-                    prefs.put(SAVED_VAR_DIR_PREF, savedVarsDir.toString());
-                    String inputFilePath = savedVarsDir + File.separator + ADDON_NAME + ".lua";
-                    inputFile = new File(inputFilePath);
-                    prefs.put(INPUT_FILE_PREF, inputFilePath);
-                } else {
-                    feedback = "You seem to have multiple WoW accounts, please select the input file manually.";
-                }
-            }
-        }
-        handleUserFeedback(Alert.AlertType.INFORMATION,
-                "Addon has been installed.\n\n" + feedback, "");
-    }
-
-    /**
-     * receives input file path from GUI (called on button click)
-     **/
-    @FXML
-    void selectInput() {
-        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-        File selectedFile = Gui.promptForFile("Select SavedVariables file (usually: FeatureRecordingTool.lua)",
-                prefs.get(INPUT_FILE_PREF, null));
-        if (selectedFile != null) {
-            if (selectedFile.exists()) {
-                if (selectedFile.canRead()) {
-                    this.inputFile = selectedFile;
-                    prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
-                } else {
-                    handleUserFeedback(Alert.AlertType.ERROR,
-                            "Could not read the file: " + selectedFile.getPath(), "Error");
-                }
-            }
-        }
-    }
-
-    /**
-     * exports the .lua file to .xml format; called from GUI on button click
-     **/
-    @FXML
-    void exportToXML() {
-        boolean hasInputFile = inputFile != null;
-        if (hasInputFile && !inputFile.exists()){ // fresh installation, no SavedVariables file yet
-            handleUserFeedback(Alert.AlertType.WARNING,
-                    "No SavedVariables file found, please select input manually.", "");
-        }
-        if (!hasInputFile) { // prompt once for input
-            hasInputFile = promptForInputFile();
-        }
-        if (hasInputFile && inputFile.exists()) {
-            boolean hasOutputDirectory = showSaveDialog();
-            if (hasOutputDirectory) {
-                SessionManager sessionManager = SessionManager.getInstance();
-                List<Integer> sessionIDs = getSessionList(sessionManager);
-                if (sessionIDs.size() > 0) {
-                    List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
-                    handleUserFeedback(Alert.AlertType.INFORMATION,
-                            "Exported  " + outList.size() + " xml file(s):\n"
-                                    + outList, "Session(s) converted");
-                }
-            } // else: user canceled
-        } // else: user canceled
-    }
-
-    /**
-     * retrieves session list from session manager, prompts for session selection if more than one session is returned
-     *
-     * @param sessionManager the SessionManager
-     * @return list of selected session IDs
-     **/
-    private List<Integer> getSessionList(SessionManager sessionManager) {
-        sessionList = FXCollections.observableList(sessionManager.getSessionList(inputFile));
-        List<Integer> sessionIDs = new ArrayList<>();
-        if (sessionList.isEmpty()) { // no session recorded
-            handleUserFeedback(Alert.AlertType.ERROR, "There was no recording found in the input file", "");
-        } else {
-            if (sessionList.size() == 1) { // only one session
-                sessionIDs.add(0);
-            }
-            if (sessionList.size() > 1) { // if more than 1 session, session selection is required
-                sessionIDs.addAll(Gui.promptForSession());
-            }
-        }
-        return sessionIDs;
-    }
-
-    /**
-     * initiates user prompt for the input file location
-     *
-     * @return true if a valid file was selected
-     **/
-    private boolean promptForInputFile() {
-        Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-        inputFile = Gui.promptForFile("Please select the input file", prefs.get(INPUT_FILE_PREF, null));
-        if (inputFile == null) {
-            return false; // user canceled
-        }
-        if (!inputFile.canRead()) {
-            handleUserFeedback(Alert.AlertType.ERROR, "Can not read file:\n" + inputFile.getAbsolutePath(), "");
-            return false;
-        }
-        return true;
-    }
-
     /**
      * initiates user prompt for the output directory location
      *
@@ -326,6 +320,16 @@ public class MainControl {
             Gui.feedbackDialog(alertType, message, title);
         } else {
             System.out.println(alertType + " - " + title + ": " + message);
+        }
+    }
+
+    /** starts a confirmation dialog if Gui is loaded
+     * @param message content of the dialog **/
+    static boolean confirmationDialog(String message) {
+        if (Gui.getPrimaryStage() != null) {
+            return Gui.confirmationDialog(message);
+        } else {
+            return true; // no confirmation request without GUI, as in test cases
         }
     }
 

@@ -62,6 +62,7 @@ public class Gui extends Application {
         return directoryChooser.showDialog(getPrimaryStage());
     }
 
+    /** opens a standard FileChooser dialog to select the output path and file name **/
     static File showSaveDialog(String prefFolder) {
         FileChooser fileChooser = new FileChooser();
         if (prefFolder != null) {
