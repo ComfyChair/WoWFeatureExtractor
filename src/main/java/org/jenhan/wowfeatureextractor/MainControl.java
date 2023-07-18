@@ -85,19 +85,18 @@ public class MainControl {
         if (sessionIDs.size() > 0) {
           List<File> outList = sessionManager.exportToXML(outputFile, sessionIDs);
           handleUserFeedback(Alert.AlertType.INFORMATION,
-                  "Exported  " + outList.size() + " xml file(s):\n"
-                          + outList, "Session(s) converted");
+                  "Exported " + outList.size() + " xml file(s):\n" + outList, "Session(s) converted");
         }
       }
     }
   }
 
   /** checks if input location is known and file exists **/
-    private boolean hasInputFile() {
-        return inputFile != null && inputFile.exists();
-    }
+  private boolean hasInputFile() {
+    return inputFile != null && inputFile.exists();
+  }
 
-    /**
+  /**
    * checks for writing access to a directory or canceled selection
    * @return true for a valid destination directory
    **/
