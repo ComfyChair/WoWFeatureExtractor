@@ -100,15 +100,17 @@ public class MainControl {
    * @return true for a valid destination directory
    **/
   private static boolean isValidDirectory(File destinationDir) {
-    if (destinationDir == null) return false;
-    log.fine("Selected dir: " + destinationDir);
-    // check for writing privileges
-    if (!destinationDir.canWrite()) {
-      handleUserFeedback(Alert.AlertType.ERROR,
-              "No writing access to this directory, choose another one", "Access Error");
-      return false;
+    boolean result = false;
+    if (destinationDir != null && destinationDir.exists()){
+      log.info("Checking directory for writing privileges: " + destinationDir);
+      if (destinationDir.canWrite()) {
+        log.info("can write to: " + destinationDir);
+        result = true;
+      }  else {
+        handleUserFeedback(Alert.AlertType.ERROR,"No writing access to this directory, choose another one", "Access Error");
+      }
     }
-    return true;
+    return result;
   }
 
   /**
