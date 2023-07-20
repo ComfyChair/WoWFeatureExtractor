@@ -5,13 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jenhan</groupId>
     <artifactId>WoWFeatureExtractor</artifactId>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
         <junit.version>5.9.2</junit.version>
-        <javafx.version>17.0.6</javafx.version>
+        <javafx.version>16</javafx.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
         <jaxb.version>4.0.0</jaxb.version>
         <textfx.version>4.0.16-alpha</textfx.version>
@@ -85,21 +86,22 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-                <configuration>
-                    <argLine> --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED </argLine>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
                     <jlinkImageName>wowfeatureextractor</jlinkImageName>
                     <launcher>launcher</launcher>
-                    <mainClass>WoWFeatureExtractor/org.jenhan.wowfeatureextractor.Gui</mainClass>
+                    <mainClass>wowfeatureextractor/org.jenhan.wowfeatureextractor.Launcher</mainClass>
+                </configuration>
+            </plugin>
+            <!-- needed for TestFX only -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <argLine> --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED </argLine>
                 </configuration>
             </plugin>
         </plugins>

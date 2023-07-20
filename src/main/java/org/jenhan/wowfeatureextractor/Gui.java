@@ -23,6 +23,11 @@ public class Gui extends Application {
     private static Stage primaryStage;
     private static boolean isActive;
 
+    /** entry point **/
+    public static void main(String[] args) {
+        launch();
+    }
+
     /** starts the graphical user interface **/
     @Override
     public void start(Stage primaryStage) throws IOException {
