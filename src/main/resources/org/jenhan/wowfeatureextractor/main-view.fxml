@@ -20,7 +20,7 @@
             onAction="#installAddon"
             prefHeight="80.0"
             prefWidth="80.0"
-            text="Install addon"
+            text="Install AddOn"
             textAlignment="CENTER"
             wrapText="true">
         <font>
@@ -32,7 +32,7 @@
             onAction="#selectInput"
             prefHeight="80.0"
             prefWidth="80.0"
-            text="Select input"
+            text="Select Input"
             textAlignment="CENTER"
             wrapText="true">
         <font>
