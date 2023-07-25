@@ -52,20 +52,26 @@ public class Gui extends Application {
     }
 
     /** opens a standard FileChooser dialog to select a folder for addon installation **/
-    static File promptForAddonInstallDir(String prefFolder) {
+    static File promptForAddonInstallDir(String prefFolderString) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        if (prefFolder != null) {
-            directoryChooser.setInitialDirectory(new File(prefFolder));
+        if (prefFolderString != null) {
+            File prefFolder = new File(prefFolderString);
+            if (prefFolder.exists()){ // might have been deleted or renamed in the meantime
+                directoryChooser.setInitialDirectory(prefFolder);
+            }
         }
         directoryChooser.setTitle("Select installation directory");
         return directoryChooser.showDialog(getPrimaryStage());
     }
 
     /** opens a standard FileChooser dialog to select the output path and file name **/
-    static File showSaveDialog(String prefFolder) {
+    static File showSaveDialog(String prefFolderString) {
         FileChooser fileChooser = new FileChooser();
-        if (prefFolder != null) {
-            fileChooser.setInitialDirectory(new File(prefFolder));
+        if (prefFolderString != null) {
+            File prefFolder = new File(prefFolderString);
+            if (prefFolder.exists()){ // might have been deleted or renamed in the meantime
+                fileChooser.setInitialDirectory(prefFolder);
+            }
         }
         fileChooser.setTitle("Save output to:");
         fileChooser.getExtensionFilters()
@@ -86,7 +92,10 @@ public class Gui extends Application {
         fileChooser.getExtensionFilters()
                 .add(new FileChooser.ExtensionFilter("Lua Files", "*.lua"));
         if (prefFile != null) {
-            fileChooser.setInitialDirectory(new File(prefFile).getParentFile());
+            File parentToPref = new File(prefFile).getParentFile();
+            if (parentToPref.exists()){ // might have been deleted or renamed in the meantime
+                fileChooser.setInitialDirectory(parentToPref);
+            }
         }
         return fileChooser.showOpenDialog(getPrimaryStage());
     }

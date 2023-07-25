@@ -63,8 +63,8 @@ class GuiTest {
         Button installBtn = (Button) scene.lookup(INSTALL_BTN);
         Button selectBtn = (Button) scene.lookup(SELECT_BTN);
         Button exportBtn = (Button) scene.lookup(EXPORT_BTN);
-        verifyThat(installBtn, LabeledMatchers.hasText("Install addon"));
-        verifyThat(selectBtn, LabeledMatchers.hasText("Select input"));
+        verifyThat(installBtn, LabeledMatchers.hasText("Install AddOn"));
+        verifyThat(selectBtn, LabeledMatchers.hasText("Select Input"));
         verifyThat(exportBtn, LabeledMatchers.hasText("Export XML"));
     }
 
