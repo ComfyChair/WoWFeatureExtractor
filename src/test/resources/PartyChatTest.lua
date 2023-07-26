@@ -7,7 +7,7 @@ FRT_FeatureRecordings = {
 		["featureTable"] = {
 			{
 				["objects"] = {
-					"pppaarty", -- [1]
+					"pppaarty, baby", -- [1]
 					"Eschadion-Sen'jin", -- [2]
 				},
 				["type"] = "COMM_4",

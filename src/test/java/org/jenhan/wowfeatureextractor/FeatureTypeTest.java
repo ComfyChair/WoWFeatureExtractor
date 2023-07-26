@@ -92,16 +92,39 @@ public class FeatureTypeTest {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             Object collectionObject = unmarshaller.unmarshal(entry.getKey());
             assertEquals(LuaToXML.Collection.class, collectionObject.getClass());
-            List<Feature> featureList = ((LuaToXML.Collection) collectionObject).getSession().getFeatureList();
+            Session session = ((LuaToXML.Collection) collectionObject).getSession();
+            System.out.println("Session: " + session);
+            List<Feature> featureList = session.getFeatureList();
             boolean containsType = false;
             for (Feature feature: featureList
                  ) {
                 if (feature.getType().equals(entry.getValue())){
+                    System.out.println("Feature: " + feature);
+                    System.out.println("Outfile " + entry.getValue() + " contains feature type " + feature.getType());
                     containsType = true;
                 }
             }
             assertTrue(containsType);
         }
+    }
+
+    @Test
+    void chatContentTest() throws JAXBException {
+        File partyChatXML = new File("src/test/testOutput/partyChatTest.xml");
+        List<Session> sessionList = testManager.getSessionList(partyChatTest);
+        assertEquals(1, sessionList.size());
+        List<File> outList = testManager.exportToXML(partyChatXML, List.of(0));
+        System.out.println("Outfile: " + outList.get(0));
+
+        JAXBContext context = JAXBContext.newInstance(LuaToXML.Collection.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        Object collectionObject = unmarshaller.unmarshal(outList.get(0));
+        assertEquals(LuaToXML.Collection.class, collectionObject.getClass());
+
+        Session session = ((LuaToXML.Collection) collectionObject).getSession();
+        List<Feature> featureList = session.getFeatureList();
+        System.out.println(session);
+        assertEquals("pppaarty, baby", featureList.get(0).getObjectList().get(0).getTerm());
     }
 
 }

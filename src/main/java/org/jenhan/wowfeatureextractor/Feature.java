@@ -133,5 +133,16 @@ class Feature {
                     "probalility=" + probability + ']';
         }
 
+        void setId(int id) {
+            this.id = id;
+        }
+
+        void setTerm(String term) {
+            this.term = term;
+        }
+
+        void setProbability(double probability) {
+            this.probability = probability;
+        }
     }
 }

@@ -175,9 +175,12 @@ import java.util.logging.Logger;
      * @param line the complete entry line
      * @return the naked entry String **/
     private String getEntryFromLuaTable(String line) {
-        String trimmed = line.trim();
-        String leftOfComma = trimmed.split(",")[0];
-        return leftOfComma.replace("\"", "");
+        String trimmed = line.trim(); // remove whitespaces from start and end
+        if (trimmed.contains(" -- ")){ // numbered entry in table, remove number part
+            trimmed = trimmed.split(" -- ")[0];
+        }
+        String lastCommaRemoved = trimmed.substring(0, trimmed.length() - 1);
+        return lastCommaRemoved.replace("\"", "");
     }
 
     /** determines whether a read line signals the end of a lua table **/
