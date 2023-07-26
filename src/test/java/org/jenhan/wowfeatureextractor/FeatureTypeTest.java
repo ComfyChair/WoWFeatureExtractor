@@ -71,7 +71,7 @@ public class FeatureTypeTest {
         inputFileMap.put(spellcastTest, "SPELL_1");
     }
 
-    /** validate test file conversion for each feature type **/
+    /** validates test file conversion for each feature type **/
     @Test
     void featureTypeValidation() throws IOException, SAXException, JAXBException {
         for (Map.Entry<File, String> entry: inputFileMap.entrySet()) {
@@ -93,34 +93,34 @@ public class FeatureTypeTest {
             Object collectionObject = unmarshaller.unmarshal(entry.getKey());
             assertEquals(LuaToXML.Collection.class, collectionObject.getClass());
             Session session = ((LuaToXML.Collection) collectionObject).getSession();
-            System.out.println("Session: " + session);
             List<Feature> featureList = session.getFeatureList();
             boolean containsType = false;
             for (Feature feature: featureList
                  ) {
-                if (feature.getType().equals(entry.getValue())){
-                    System.out.println("Feature: " + feature);
-                    System.out.println("Outfile " + entry.getValue() + " contains feature type " + feature.getType());
+                if (feature.getType().equals(entry.getValue())) {
                     containsType = true;
+                    break;
                 }
             }
             assertTrue(containsType);
         }
     }
 
+    /** checks chat message in xml for truncation **/
     @Test
     void chatContentTest() throws JAXBException {
+        // generate new output from party chat test file
         File partyChatXML = new File("src/test/testOutput/partyChatTest.xml");
         List<Session> sessionList = testManager.getSessionList(partyChatTest);
         assertEquals(1, sessionList.size());
         List<File> outList = testManager.exportToXML(partyChatXML, List.of(0));
         System.out.println("Outfile: " + outList.get(0));
-
+        // unmarshal
         JAXBContext context = JAXBContext.newInstance(LuaToXML.Collection.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Object collectionObject = unmarshaller.unmarshal(outList.get(0));
         assertEquals(LuaToXML.Collection.class, collectionObject.getClass());
-
+        // compare chat message
         Session session = ((LuaToXML.Collection) collectionObject).getSession();
         List<Feature> featureList = session.getFeatureList();
         System.out.println(session);

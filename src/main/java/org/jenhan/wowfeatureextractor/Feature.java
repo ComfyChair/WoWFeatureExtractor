@@ -133,6 +133,7 @@ class Feature {
                     "probalility=" + probability + ']';
         }
 
+        /** necessary for unmarshalling while testing for feature content **/
         void setId(int id) {
             this.id = id;
         }

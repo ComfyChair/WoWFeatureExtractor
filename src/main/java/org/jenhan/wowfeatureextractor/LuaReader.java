@@ -176,7 +176,7 @@ import java.util.logging.Logger;
      * @return the naked entry String **/
     private String getEntryFromLuaTable(String line) {
         String trimmed = line.trim(); // remove whitespaces from start and end
-        if (trimmed.contains(" -- ")){ // numbered entry in table, remove number part
+        if (trimmed.endsWith("]")){ // numbered entry in table, remove number part
             trimmed = trimmed.split(" -- ")[0];
         }
         String lastCommaRemoved = trimmed.substring(0, trimmed.length() - 1);
