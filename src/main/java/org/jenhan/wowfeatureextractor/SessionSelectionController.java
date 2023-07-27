@@ -10,7 +10,7 @@ import org.jenhan.wowfeatureextractor.Util.DateFormatted;
 import java.util.List;
 
 /**
- * GUI controlller for session selection dialog
+ * GUI controller for session selection dialog
  **/
 public class SessionSelectionController {
     /** table view for gui representation of session information **/

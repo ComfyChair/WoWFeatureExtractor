@@ -97,13 +97,25 @@ class GuiTest {
     }
 
     /**
-     * tests if file chooser dialog is opening on button click
+     * tests if file chooser dialog is opening on button click (known input file)
      * @param robot - Will be injected by the test runner.
      */
     @Test
-    void exportToXMLBtn(FxRobot robot) {
+    void exportToXMLknownInput(FxRobot robot) {
         SessionManager sessionManager = SessionManager.getInstance();
         sessionManager.getSessionList(testInput);
+        robot.clickOn(EXPORT_BTN);
+        assertFalse(scene.lookup(MAIN_ROOT).isFocused()); // main view loses focus
+        // cannot test complete walkthrough, as the standard  FileChooser and DirectoryChooser
+        // work with system windows, which are inaccessible in this version of testFx
+    }
+
+    /**
+     * tests if file chooser dialog is opening on button click (no known input)
+     * @param robot - Will be injected by the test runner.
+     */
+    @Test
+    void exportToXMLunknownInput(FxRobot robot) {
         robot.clickOn(EXPORT_BTN);
         assertFalse(scene.lookup(MAIN_ROOT).isFocused()); // main view loses focus
         // cannot test complete walkthrough, as the standard  FileChooser and DirectoryChooser

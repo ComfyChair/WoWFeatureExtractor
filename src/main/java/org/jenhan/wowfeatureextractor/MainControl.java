@@ -60,7 +60,6 @@ public class MainControl {
       if (selectedFile.exists()) {
         if (selectedFile.canRead()) {
           this.inputFile = selectedFile;
-          //TODO: check why input file prefs are not stored correctly
           prefs.put(INPUT_FILE_PREF, selectedFile.getPath());
         } else {
           handleUserFeedback(Alert.AlertType.ERROR,
