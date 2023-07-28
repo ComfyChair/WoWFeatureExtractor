@@ -20,12 +20,14 @@ import java.util.zip.ZipInputStream;
  * **/
 public class MainControl {
   private static final Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-  /** constants **/
+  /** path constants **/
   private static final String ADDON_NAME = "FeatureRecorder";
   private static final String ADDON_DIR_PREF = "addon_dir_pref";
   private static final String SAVED_VAR_DIR_PREF = "saved_vars_dir_pref";
   private static final String INPUT_FILE_PREF = "input_file_pref";
   private static final String OUTPUT_DIR_PREF = "output_dir_pref";
+  /** system dependent path separator constant **/
+  private final static String SEPARATOR = FileSystems.getDefault().getSeparator();
   /** session list, must be initialized early for testing **/
   private static ObservableList<Session> sessionList = FXCollections.observableList(new ArrayList<>());
   /** paths **/
@@ -38,8 +40,7 @@ public class MainControl {
   @FXML
   void installAddon() {
     Preferences prefs = Preferences.userNodeForPackage(MainControl.class);
-    String separator = FileSystems.getDefault().getSeparator();
-    installFolderExpected = "Interface" + separator + "AddOns";
+    installFolderExpected = "Interface" + SEPARATOR + "AddOns";
     log.info("Expected installation folder: " + installFolderExpected);
     File destinationDir = Gui.promptForAddonInstallDir(prefs.get(ADDON_DIR_PREF, null));
     if (isValidInstallDirectory(destinationDir)) {
@@ -144,6 +145,7 @@ public class MainControl {
 
     } else {
       Path accountPath = getWTFAccountDir(addonPath);
+      log.info("WTF/Account path: " + accountPath);
       if (accountPath != null) {
         // Account-wide Folders are in UPPERCASE -> look for them
         List<Path> accountsFound = detectAccountFolders(accountPath);
@@ -155,8 +157,10 @@ public class MainControl {
           String inputFilePath = savedVarsDir + File.separator + ADDON_NAME + ".lua";
           inputFile = new File(inputFilePath);
           prefs.put(INPUT_FILE_PREF, inputFilePath);
-        } else {
+        } else if (accountsFound.size() > 1) {
           feedback = "You seem to have multiple WoW accounts, please select the input file manually.";
+        } else {
+          feedback = "No account folder found, please select the input file manually.";
         }
       }
     }
@@ -242,7 +246,8 @@ public class MainControl {
   /** looks for folders that are named after account names (in uppercase) in WTF/Account folder **/
   private static List<Path> detectAccountFolders(Path accountPath) {
     List<Path> accountsFound = new ArrayList<>();
-    PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**[A-Z]");
+    String pattern = "glob:" + accountPath + SEPARATOR + "*[A-Z]";
+    PathMatcher matcher = FileSystems.getDefault().getPathMatcher(pattern);
     try {
       Files.walkFileTree(accountPath, new SimpleFileVisitor<>() {
         @Override
