@@ -22,6 +22,7 @@ class MainControlTest {
     private final static String TEST_MSG = "test message";
     private final static String TEST_EXC_MSG = "test exception";
     private final static String TEST_TITLE = "test title";
+    private final String lineSeparator = System.getProperty("line.separator");
 
     @BeforeEach
     void setUp() {
@@ -45,7 +46,7 @@ class MainControlTest {
     @Test
     void handleError() {
         MainControl.handleError(TEST_MSG, new Exception(TEST_EXC_MSG));
-        String[] outputSplit = errContent.toString().split("\n");
+        String[] outputSplit = errContent.toString().split(lineSeparator);
         String expected_3 = "java.lang.Exception: " + TEST_EXC_MSG;
 
         assertEquals(TEST_MSG, outputSplit[0]);
@@ -56,20 +57,20 @@ class MainControlTest {
     @Test
     void handleUserfeedback() {
         Alert.AlertType alertType = Alert.AlertType.ERROR;
-        String expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG + "\n";
+        String expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG + lineSeparator;
 
         MainControl.handleUserFeedback(alertType, TEST_MSG, TEST_TITLE);
         assertEquals(expected, outContent.toString());
         outContent.reset();
 
         alertType = Alert.AlertType.INFORMATION;
-        expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG  + "\n";
+        expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG  + lineSeparator;
         MainControl.handleUserFeedback(alertType, TEST_MSG, TEST_TITLE);
         assertEquals(expected, outContent.toString());
         outContent.reset();
 
         alertType = Alert.AlertType.WARNING;
-        expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG + "\n";
+        expected = alertType + " - " + TEST_TITLE + ": " + TEST_MSG + lineSeparator;
         MainControl.handleUserFeedback(alertType, TEST_MSG, TEST_TITLE);
         assertEquals(expected, outContent.toString());
         outContent.reset();
